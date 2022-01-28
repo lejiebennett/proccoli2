@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/SingleDateAndTimePicker-master/app/src/main/res/layout/single_date_picker_activity_main.xml" value="0.23229166666666667" />
+        <entry key="app/SingleDateAndTimePicker-master/app/src/main/res/layout/single_date_picker_activity_main_double_picker.xml" value="0.23229166666666667" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_backbtn.xml" value="0.13" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/light11.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/light13_round.xml" value="0.26871794871794874" />
+        <entry key="app/src/main/res/drawable-v24/light14.xml" value="0.22314814814814815" />
+        <entry key="app/src/main/res/drawable-v24/light1_round.xml" value="0.14895833333333333" />
+        <entry key="app/src/main/res/drawable-v24/light4.xml" value="0.14895833333333333" />
+        <entry key="app/src/main/res/drawable/IndividualGoal_round.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/avatar_background.xml" value="0.26871794871794874" />
+        <entry key="app/src/main/res/drawable/avatartest.xml" value="0.26871794871794874" />
+        <entry key="app/src/main/res/drawable/backbtnv2.xml" value="0.9" />
+        <entry key="app/src/main/res/drawable/backbtnv3.xml" value="0.11203703703703703" />
+        <entry key="app/src/main/res/drawable/bg_gradient.xml" value="0.1578125" />
+        <entry key="app/src/main/res/drawable/boarder.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/circle.xml" value="0.14270833333333333" />
+        <entry key="app/src/main/res/drawable/circlestart.xml" value="0.27282051282051284" />
+        <entry key="app/src/main/res/drawable/custom_progress.xml" value="0.14764492753623187" />
+        <entry key="app/src/main/res/drawable/darkgreenprogress.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/darkredprogress.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/dividerformenu.xml" value="0.1015625" />
+        <entry key="app/src/main/res/drawable/greenprogress.xml" value="0.12314814814814815" />
+        <entry key="app/src/main/res/drawable/ic_clear_24dp.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.209375" />
+        <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/drawable/light1.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/light12_round.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/light13_round.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/light14_round.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/light8_round.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/drawable/redprogress.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/roundedtext.xml" value="0.16510416666666666" />
+        <entry key="app/src/main/res/drawable/splash_background.xml" value="0.1578125" />
+        <entry key="app/src/main/res/drawable/timercircle.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.37697516930022573" />
+        <entry key="app/src/main/res/layout/availabletoclaim_popup.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/avatarcollection_view.xml" value="0.2842998585572843" />
+        <entry key="app/src/main/res/layout/creategoal_popup.xml" value="0.6358695652173914" />
+        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.23229166666666667" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3333333333333333" />
+        <entry key="app/src/main/res/layout/fragment_invitations.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.21065989847715735" />
+        <entry key="app/src/main/res/layout/friendsitem_view.xml" value="0.49310872894333846" />
+        <entry key="app/src/main/res/layout/goal_view.xml" value="0.23229166666666667" />
+        <entry key="app/src/main/res/layout/goal_view2.xml" value="0.4364326375711575" />
+        <entry key="app/src/main/res/layout/goalitem_selfReport.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/goalitem_selfreport.xml" value="0.10416666666666667" />
+        <entry key="app/src/main/res/layout/goalitem_view.xml" value="0.21" />
+        <entry key="app/src/main/res/layout/goalprogress_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/goalsetting_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/goaltwowheels.xml" value="0.3590568060021436" />
+        <entry key="app/src/main/res/layout/goaltypewheel.xml" value="0.1265625" />
+        <entry key="app/src/main/res/layout/groupgoal_view.xml" value="0.26666666666666666" />
+        <entry key="app/src/main/res/layout/groupgoalsinglegoalfulldisplay_view.xml" value="0.24716981132075472" />
+        <entry key="app/src/main/res/layout/groupgoalsubgoal_item.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/groupgoalsubgoal_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/groupgoalsubgoalsstartworking_item.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/groupteam_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/howlonghourminutewheel.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/invite_popup.xml" value="0.25980392156862747" />
+        <entry key="app/src/main/res/layout/invite_popupvtwo.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/light0_background.xml" value="0.19322916666666667" />
+        <entry key="app/src/main/res/layout/login_view.xml" value="0.23229166666666667" />
+        <entry key="app/src/main/res/layout/mainprogress_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/makeavailable_popup.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/notes_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/profile_view.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/reportProgressPercentage_popup.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/reportprogress_popup.xml" value="0.34726688102893893" />
+        <entry key="app/src/main/res/layout/reportprogressitem_view.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/reportprogresspercentage_popup.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/reportprogresssubgoalitem_view.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/searchForFriends_view.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/searchforfriends_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/seeprogress_popup.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/seeprogressitem_view.xml" value="0.27935723114956734" />
+        <entry key="app/src/main/res/layout/settings_action_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/singlegoalfulldisplay_view.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/smileyfacesurvey_view.xml" value="0.6442166910688141" />
+        <entry key="app/src/main/res/layout/splashscreen_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/startworking_popup.xml" value="0.44016227180527384" />
+        <entry key="app/src/main/res/layout/subgoal_checkbox_item.xml" value="0.16153846153846155" />
+        <entry key="app/src/main/res/layout/subgoal_checkbox_view.xml" value="0.20878623188405798" />
+        <entry key="app/src/main/res/layout/subgoal_view.xml" value="0.434" />
+        <entry key="app/src/main/res/layout/subgoal_view2.xml" value="0.23229166666666667" />
+        <entry key="app/src/main/res/layout/subgoalitem_goalsetting_view.xml" value="0.6715867158671587" />
+        <entry key="app/src/main/res/layout/subgoalitem_view.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/timer_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/timereport_view.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/toolbar.xml" value="0.15" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/groupgoalsinglegoaltoolbar.xml" value="0.5" />
+        <entry key="app/src/main/res/menu/logoutmenu.xml" value="0.33" />
+        <entry key="app/src/main/res/menu/search.xml" value="0.26145833333333335" />
+        <entry key="app/src/main/res/menu/searchfriendstoolbar.xml" value="0.2078125" />
+        <entry key="app/src/main/res/menu/singlegoalmenu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/singlegoaltoolbar.xml" value="0.22708333333333333" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/fiveface.xml" value="0.27708333333333335" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/intro.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/intro_round.xml" value="0.11197916666666667" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/light0.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/light1.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/timereport.xml" value="0.12604166666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.proccoli2">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/webp_foreground"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/webp_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Proccoli2">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+        </activity>
+        <activity android:name=".loginView"></activity>
+        <activity android:name=".profileView"></activity>
+        <activity android:name=".goalView2"
+            android:windowSoftInputMode="adjustNothing">
+            ></activity>
+        <activity android:name=".subGoalView"></activity>
+        <activity android:name=".avatarView"></activity>
+        <activity android:name=".singleGoalView"
+            android:windowSoftInputMode="adjustPan">
+            ></activity>
+        <activity android:name=".timerView"
+            ></activity>
+        <activity android:name=".goalSettingView"></activity>
+        <activity android:name=".subGoalView_goalSetting"></activity>
+        <activity android:name=".subGoalView_goalSetting_edit"></activity>
+        <activity android:name=".goalProgressView"></activity>
+        <activity android:name=".mainProgressView"></activity>
+        <activity android:name=".SplashScreen"
+            android:theme="@style/SplashScreenWindow"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".timeReportView"></activity>
+        <activity android:name=".selfreport_activity"
+            android:windowSoftInputMode="adjustNothing">
+            ></activity>
+        <activity android:name=".smileyFaceSurveyView"></activity>
+        <activity android:name=".groupgoalsubGoalView"></activity>
+        <activity android:name=".searchforfreinds_view"
+            android:windowSoftInputMode="adjustNothing">
+        </activity>
+        <activity android:name=".progressReportView"
+            android:theme="@style/Theme.AppCompat.Translucent">
+            ></activity>
+        <activity android:name=".groupgoalView"
+            android:windowSoftInputMode="adjustNothing"
+            ></activity>
+        <activity android:name=".groupgoalsingleGoalView"
+            android:windowSoftInputMode="adjustPan">
+            ></activity>
+
+
+    </application>
+
+</manifest>

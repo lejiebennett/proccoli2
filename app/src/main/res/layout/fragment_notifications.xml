@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:windowSoftInputMode="adjustNothing"
+    tools:context=".ui.notifications.NotificationsFragment">
+
+
+    <android.widget.SearchView
+        android:id="@+id/searchBarGoals"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <TextView
+        android:id="@+id/text_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="search notification"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchGoalList"
+        android:layout_width="388dp"
+        android:layout_height="458dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBarGoals" />
+
+
+    <LinearLayout
+        android:layout_width="343dp"
+        android:layout_height="280dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.214">
+
+        <TextView
+            android:id="@+id/reportDescriptionPW"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/grey"
+            android:text="Report past work!\nSelect the start and finish time of your past study session that you forgot to use the timer for Your progress charts will be updated accordingly."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/startTimeLabelPW"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/grey"
+            android:text="Start time"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/startTimeInputPW"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="start time"
+            android:inputType="textPersonName"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/stopTimeLabelPW"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/grey"
+            android:text="Finish time"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/stopTimeInputPW"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="finish time"
+            android:inputType="textPersonName"
+            android:textSize="18dp" />
+
+        <LinearLayout
+            android:id="@+id/reportPastWorkLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/submitTimeReportPW"
+                android:layout_width="117dp"
+                android:layout_height="wrap_content"
+                android:text="submit"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/cancelTimeReportPW"
+                android:layout_width="116dp"
+                android:layout_height="wrap_content"
+                android:text="cancel"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/setStartPW"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="100dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/setStopPW"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="100dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/reportPopupLayout"
+        android:layout_width="228dp"
+        android:layout_height="229dp"
+        android:background="@color/grey"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.30">
+
+        <TextView
+            android:id="@+id/gradeReportTitle"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@color/grey"
+            android:text="\nPerformance Report"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gradeReportDescription"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@color/grey"
+            android:text="What grade or score did you receive for this goal? If it's not graded yet, you may report the grade here later."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/gradePickedInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/boarder"
+            android:hint="e.g 3 hours"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/submitBtnGR"
+                android:layout_width="96dp"
+                android:layout_height="51dp"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/cancelBtnGR"
+                android:layout_width="100dp"
+                android:layout_height="53dp"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gradeReportLayout"
+        android:layout_width="411dp"
+        android:layout_height="289dp"
+        android:background="#e6e8e6"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <NumberPicker
+            android:id="@+id/letterPickerGR"
+            android:layout_width="210dp"
+            android:layout_height="match_parent"
+            android:background="#e6e8e6"
+            android:divider="@color/black" />
+
+        <NumberPicker
+            android:id="@+id/percentPickerGR"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e6e8e6"
+            android:divider="@color/black" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

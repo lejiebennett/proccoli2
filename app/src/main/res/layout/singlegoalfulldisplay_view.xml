@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="397dp"
+        android:layout_height="296dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout42"
+        app:layout_constraintVertical_bias="0.5">
+
+        <TextView
+            android:id="@+id/NotesRecyclerLabel"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/NotesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="179dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/noteInput"
+                android:layout_width="324dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Take a note..."
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:scrollHorizontally="false"
+                tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+
+            <ImageButton
+                android:id="@+id/uploadNote"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:srcCompat="@android:drawable/stat_sys_upload" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/goalInfo"
+        android:layout_width="251dp"
+        android:layout_height="121dp"
+        android:layout_marginTop="60dp"
+        android:layout_weight="1"
+        android:background="@drawable/boarder"
+        android:backgroundTint="#135259"
+        android:text="TextView"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/completeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="complete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/goalInfo"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toEndOf="@+id/goalInfo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.206" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="134dp"
+        android:layout_height="125dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/goalInfo"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/goalInfo">
+
+        <Button
+            android:id="@+id/startWorkingBtn"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:text="Start Working"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/setReminderBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Set Reminder"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout42"
+        android:layout_width="403dp"
+        android:layout_height="285dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/completeBtn"
+        app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/goalProgressBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Goal Progress Report"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/SubGoalRecyclerLabel"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/subGoalRecyclerViewFull"
+            android:layout_width="393dp"
+            android:layout_height="179dp" />
+
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSingleGoalFullDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:menu="@menu/singlegoaltoolbar"
+        app:navigationIcon="@drawable/ic_backbtn" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:orientation="vertical"
+        android:translationZ="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cancelSetReminderBtnS"
+                android:layout_width="81dp"
+                android:textSize="16dp"
+                android:background="#e6e8e6"
+                android:layout_height="30dp"
+                android:textColor="#00BCD4"
+
+                android:text="\t\tcancel" />
+
+            <TextView
+                android:id="@+id/setReminderLabelS"
+                android:layout_width="226dp"
+                android:textSize="16dp"
+                android:background="#e6e8e6"
+                android:layout_height="30dp"
+                android:textColor="@color/black"
+                android:text="Choose your Date"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/doneSetReminderBtnS"
+                android:layout_width="match_parent"
+                android:textSize="16dp"
+                android:background="#e6e8e6"
+                android:layout_height="30dp"
+                android:textAlignment="textEnd"
+                android:textColor="#00BCD4"
+                android:text="Done\t\t" />
+        </LinearLayout>
+
+        <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+            android:id="@+id/setReminderPickerS"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:background="#e6e8e6"
+            android:divider="@color/black"
+            android:translationZ="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

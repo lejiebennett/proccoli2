@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#c0000000">
+
+    <LinearLayout
+        android:layout_width="315dp"
+        android:layout_height="333dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/saveSubgoalBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/BigGoalCompleteByLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/SubGoalLabelSGView"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Subgoal name"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/subGoalInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="sub goal"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/PersonalDeadlineLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Subgoal deadline"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subGoalDeadlineInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="sub - deadline"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/HowLongLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Estimated time"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subGoalHowLongInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="How long will it take?"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/DifficultyLevelLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Difficulty level"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/subGoalDifficultyLevelInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="please select a difficulty level"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="16dp" />
+
+
+        <TextView
+            android:id="@+id/subGoalStartDateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Estimated start date"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subGoalStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="sub - start date"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="16dp" />
+
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/exitSubgoalBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#c0000000"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.02"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+
+    <Button
+        android:id="@+id/saveSubgoalBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="264dp"
+        android:text="save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/subStartPicker"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+    </com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker>
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/subCompletePicker"
+        android:layout_width="match_parent"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="1.0">
+
+    </com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker>
+
+    <NumberPicker
+        android:id="@+id/subHowLongPicker"
+        android:layout_width="409dp"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <NumberPicker
+        android:id="@+id/subDifficultyLevelPicker"
+        android:layout_width="409dp"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

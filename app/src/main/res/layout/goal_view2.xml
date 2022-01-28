@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarGoalView2"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:navigationIcon="@drawable/ic_backbtn" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout22"
+        android:layout_width="408dp"
+        android:layout_height="370dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.193">
+
+
+        <TextView
+            android:id="@+id/bigGoalLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Big goal"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/bigGoalInput2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/boarder"
+            android:cursorVisible="true"
+            android:ems="10"
+            android:hint="big goal"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/PersonalDeadlineLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Personal deadline"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/goalCompleteByInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="When do you want to complete this by?"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/StartDateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Estimated start date"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/goalStartDateInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="start date"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/DueDateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Due date"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/goalDueDateInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="When is it due by?"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/GoalTypeLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Goal type"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/goalTypeInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="goal type"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/CourseNumberLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Course Number"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/courseNumberInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/boarder"
+            android:cursorVisible="true"
+            android:ems="10"
+            android:hint="Related course, N/A if none"
+            android:inputType="textPersonName"
+            android:textAlignment="center" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="407dp"
+        android:layout_height="246dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/displaySubGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subgoals"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/subGoalRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="144dp" />
+
+    </LinearLayout>
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/completeByPicker"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+    </com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker>
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/startPicker"
+        android:layout_width="match_parent"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="1.0">
+
+    </com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker>
+
+    <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+        android:id="@+id/deadlinePicker"
+        android:layout_width="match_parent"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="1.0" />
+
+    <NumberPicker
+        android:id="@+id/goalTypePicker"
+        android:layout_width="409dp"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.632"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/addSubgoalBtn2"
+            android:layout_width="150dp"
+            android:layout_height="51dp"
+            android:text="create subgoal"
+            android:textAllCaps="false"
+            android:textSize="15sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/hideInputBtn"
+            android:layout_width="59dp"
+            android:layout_height="51dp"
+            android:backgroundTint="@color/green"
+            android:text="Hide Input"
+            android:textAllCaps="false"
+            android:textSize="9sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/createGoalBtn2"
+            android:layout_width="150dp"
+            android:layout_height="51dp"
+            android:text="create goal"
+            android:textAllCaps="false"
+            android:textSize="15sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

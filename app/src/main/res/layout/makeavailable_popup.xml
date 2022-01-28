@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="219dp"
+            android:layout_height="164dp"
+            android:background="@color/grey"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.30">
+
+            <TextView
+                android:id="@+id/assignToSelfLabel"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@color/grey"
+                android:text="\nHow long will it take?"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/howLongAssignToSelf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/boarder"
+                android:hint="e.g 3 hours"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/submitAssignToSelfBtn"
+                    android:layout_width="96dp"
+                    android:layout_height="51dp"
+                    android:text="Submit"
+                    android:textAllCaps="false"
+                    android:textSize="16sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/cancelAssignToSelfBtn"
+                    android:layout_width="100dp"
+                    android:layout_height="53dp"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="411dp"
+            android:layout_height="289dp"
+            android:background="#e6e8e6"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <NumberPicker
+                android:id="@+id/hourPickerAssignToSelf"
+                android:layout_width="210dp"
+                android:layout_height="match_parent"
+                android:background="#e6e8e6"
+                android:divider="@color/black" />
+
+            <NumberPicker
+                android:id="@+id/minutePickerAssignToSelf"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#e6e8e6"
+                android:divider="@color/black" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
