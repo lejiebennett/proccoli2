@@ -99,25 +99,6 @@ public class NotificationsFragment extends Fragment {
 
     int goalSelected; //What goal to update with the new completion in the passed goal list
 
-
-
-    //Catch data from time Report
-    /*
-    ActivityResultLauncher<Intent> activityResultLaunch2 = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode()==Result_OK){
-                        GoalModel timeReportedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
-                        Log.d("RecievedFromTimeReport", "onActivityResult: " + timeReportedGoal);
-
-                    }
-                }
-            });
-
-     */
-
     public static NotificationsFragment newInstance(ArrayList<GoalModel> goalList){
         NotificationsFragment notificationsFragment = new NotificationsFragment();
         Bundle bundle = new Bundle();
@@ -245,7 +226,6 @@ public class NotificationsFragment extends Fragment {
                     Log.d("collected grade", "grade: " + gradePickedInput.getText().toString());
                     Log.d("for goal", "onClick for goal: " + searchGoalList.get(goalSelected));
                     searchGoalList.get(goalSelected).setIsGraded(true);
-                    //   adapter.notifyDataSetChanged();
 
                     adapter = new searchGoalAdapter();
                     recyclerView.setAdapter(adapter);
@@ -392,6 +372,7 @@ public class NotificationsFragment extends Fragment {
             searchGoalList = (ArrayList<GoalModel>) bundle.getSerializable("goalList");
         }
         Log.d("recievedGoalList", "onCreate: " + searchGoalList);
+
         //Since the data pass isn't working, hardcoded data in instead
         searchGoalList.add(new GoalModel("GoalIDDD1", "Biggie",1643895301,1643290501,"Project",false));
         searchGoalList.add(new GoalModel("GoalIDDD2", "BigGoal",1643895302,1643290502,"Discussion",false));
@@ -459,16 +440,6 @@ public class NotificationsFragment extends Fragment {
             }
         }
 
-        public void filterList(ArrayList<GoalModel> filterllist) {
-            // below line is to add our filtered
-            // list in our course array list.
-            int size = items.size();
-            items.clear();
-            // below line is to notify our adapter
-            // as change in recycler view data.
-            notifyDataSetChanged();
-            Log.d("filteredList", "filterList: " + items);
-        }
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new SearchGoalViewHolder(parent);
@@ -528,24 +499,12 @@ public class NotificationsFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Log.d("TimeReport", "onClick: I clicked time report");
-                    // For position in myGoals.getSubgoals
-                    //itemsCopyPosition = positionInSearchGoalList; //For position in startWorkingRecyclerView
-
                     goalSelected = searchGoalList.indexOf(goal); //Globally assigns positions
 
                     Log.d("goalSelected", "onClick: " + goalSelected);
                     closeKeyboard(view);
                     openTimeReport();
 
-                   /*
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("passedGoal",itemsCopy.get(goalSelected));
-                    Log.d("timeReportPass", "onClick: passedGoal" + itemsCopy.get(goalSelected));
-                    Intent intent = new Intent(NotificationsFragment.this, timeReportView.class);
-                    intent.putExtras(bundle);
-                    //startActivity(intent);
-                    activityResultLaunch2.launch(intent);
-                    */
                 }
             });
 
