@@ -1,18 +1,13 @@
-package com.example.proccoli2.ui.notifications;
+package com.example.proccoli2;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,44 +20,30 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.proccoli2.GoalModel;
-import com.example.proccoli2.MainActivity;
-import com.example.proccoli2.R;
-import com.example.proccoli2.databinding.FragmentNotificationsBinding;
-import com.example.proccoli2.selfreport_activity;
-import com.example.proccoli2.timeReportView;
+import com.example.proccoli2.ui.notifications.NotificationsFragment_VC;
+import com.example.proccoli2.ui.notifications.NotificationsViewModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NotificationsFragment extends Fragment {
-
-    private NotificationsViewModel notificationsViewModel;
-    private FragmentNotificationsBinding binding;
+public class notification_fragment_activity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<GoalModel> searchGoalList;
     searchGoalAdapter adapter;
     List<GoalModel> itemsCopy;
-
-    NotificationsFragment_VC controller = new NotificationsFragment_VC(this);
-
 
     //Time Report
     TextView reportDescription, startTimeLabel,startTimeInput,stopTimeLabel,stopTimeInput;
@@ -118,63 +99,31 @@ public class NotificationsFragment extends Fragment {
 
      */
 
-    public static NotificationsFragment newInstance(ArrayList<GoalModel> goalList){
-        NotificationsFragment notificationsFragment = new NotificationsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("goalList", goalList);
-        notificationsFragment.setArguments(bundle);
-        return notificationsFragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        Log.d("SavedInstanceState", "onCreate: " + savedInstanceState);
-        Log.d("arguments", "onCreate: " + bundle);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
-
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        setContentView(R.layout.fragment_notifications);
 
 
         //Initalize Report Timer views
-        reportPastWorkLayout = binding.reportPastWorkLayout;
-        reportDescription = binding.reportDescriptionPW;
-        startTimeLabel = binding.startTimeLabelPW;
-        startTimeInput = binding.startTimeInputPW;
-        stopTimeLabel = binding.stopTimeLabelPW;
-        stopTimeInput = binding.stopTimeInputPW;
-        submitTimeReport = binding.submitTimeReportPW;
-        cancelTimeReport = binding.cancelTimeReportPW;
-        setStartPicker = binding.setStartPW;
-        recyclerView = binding.searchGoalList;
-        setStopPicker = binding.setStopPW;
+        reportPastWorkLayout = findViewById(R.id.reportPastWorkLayout);
+        reportDescription = findViewById(R.id.reportDescriptionPW);
+        startTimeLabel = findViewById(R.id.startTimeLabelPW);
+        startTimeInput = findViewById(R.id.startTimeInputPW);
+        stopTimeLabel = findViewById(R.id.stopTimeLabelPW);
+        stopTimeInput = findViewById(R.id.stopTimeInputPW);
+        submitTimeReport = findViewById(R.id.submitTimeReportPW);
+        cancelTimeReport = findViewById(R.id.cancelTimeReportPW);
+        setStartPicker = findViewById(R.id.setStartPW);
+        recyclerView = findViewById(R.id.searchGoalList);
+        setStopPicker = findViewById(R.id.setStopPW);
 
 
         //Initialize Grade Report views
-        gradeReportLayout = binding.gradeReportLayout;
-        reportPopupLayout = binding.reportPopupLayout;
+        gradeReportLayout = findViewById(R.id.gradeReportLayout);
+        reportPopupLayout = findViewById(R.id.reportPopupLayout);
 
-        letterPicker = binding.letterPickerGR;
+        letterPicker = findViewById(R.id.letterPickerGR);
         letterPicker.setMinValue(0);
         letterPicker.setMaxValue(gradeLetters.length-1);
         letterPicker.setDisplayedValues(gradeLetters);
@@ -182,7 +131,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 if(gradeScores[percentPicker.getValue()].equals("Score") == true && gradeLetters[letterPicker.getValue()].equals("Grade") == true){
-                    Toast toast = Toast.makeText(getContext(), "Please select a time duration", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getBaseContext(), "Please select a time duration", Toast.LENGTH_LONG);
                     toast.show();
                 }
                 else{
@@ -202,7 +151,7 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
-        percentPicker = binding.percentPickerGR;
+        percentPicker = findViewById(R.id.percentPickerGR);
         percentPicker.setMinValue(0);
         percentPicker.setMaxValue(gradeScores.length-1);
         percentPicker.setDisplayedValues(gradeScores);
@@ -210,7 +159,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 if(gradeScores[percentPicker.getValue()].equals("Score") == true && gradeLetters[letterPicker.getValue()].equals("Grade") == true){
-                    Toast toast = Toast.makeText(getContext(), "Please select a time duration", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getBaseContext(), "Please select a time duration", Toast.LENGTH_LONG);
                     toast.show();
                 }
                 else{
@@ -231,10 +180,11 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
-        gradeReportTitle = binding.gradeReportTitle;
-        gradeReportDescription = binding.gradeReportDescription;
-        gradePickedInput = binding.gradePickedInput;
-        submitBtnGR = binding.submitBtnGR;
+        gradeReportTitle = findViewById(R.id.gradeReportTitle);
+        gradeReportDescription = findViewById(R.id.gradeReportDescription);
+        gradePickedInput = findViewById(R.id.gradePickedInput);
+        submitBtnGR = findViewById(R.id.submitBtnGR);
+        /*
         submitBtnGR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,7 +197,7 @@ public class NotificationsFragment extends Fragment {
                     searchGoalList.get(goalSelected).setIsGraded(true);
                     //   adapter.notifyDataSetChanged();
 
-                    adapter = new searchGoalAdapter();
+                    adapter = new com.example.proccoli2.ui.notifications.NotificationsFragment.searchGoalAdapter();
                     recyclerView.setAdapter(adapter);
 
 
@@ -256,7 +206,9 @@ public class NotificationsFragment extends Fragment {
                 }
             }
         });
-        cancelBtnGR = binding.cancelBtnGR;
+
+         */
+        cancelBtnGR = findViewById(R.id.cancelBtnGR);
         cancelBtnGR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -289,6 +241,7 @@ public class NotificationsFragment extends Fragment {
                 boolean null0 = false;
                 boolean null1 = false;
 
+                /*
 
                 if (null0 = controller.nullFieldCheck(startTimeInput.getText().toString(), "Please enter a goal start time", getContext(), startTimeInput)) {
                     startTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
@@ -297,7 +250,7 @@ public class NotificationsFragment extends Fragment {
                         Log.d("Date", "compareDates: " + startTimeInput.getText().toString() + stopTimeInput.getText().toString());
                         Log.d("GOAL TO REPORT TIME TO", "onClick: " + goalSelected);
                         try {
-                            if (controller.compareDates(controller.unixToStringDateTime(searchGoalList.get(goalSelected).getStartDate()), startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
+                            if (controller.compareDates(controller.unixToStringDateTime(searchGoalList.get(goalSelected).getStartDate()), startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), com.example.proccoli2.ui.notifications.NotificationsFragment.this)) {
                                 Log.d("Success", "onClick: ran");
                                 startTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
                                 stopTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
@@ -322,7 +275,7 @@ public class NotificationsFragment extends Fragment {
                                 Log.d("New STUDIED", "onClick: " + String.valueOf(searchGoalList.get(goalSelected).getStudiedTime()));
                                 //Refresh the adapter
 
-                                adapter = new searchGoalAdapter();
+                                adapter = new com.example.proccoli2.ui.notifications.NotificationsFragment.searchGoalAdapter();
                                 recyclerView.setAdapter(adapter);
 
 
@@ -337,7 +290,6 @@ public class NotificationsFragment extends Fragment {
                                             }
                                         })
                                         .show();
-
                             } else {
                                 Toast toast = Toast.makeText(getContext(), "At least one date value is invalid.", Toast.LENGTH_LONG);
                                 toast.show();
@@ -350,6 +302,8 @@ public class NotificationsFragment extends Fragment {
                         }
                     }
                 }
+
+                 */
             }
         });
 
@@ -364,7 +318,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onDateChanged(String s, Date date) {
                 Log.d("CompletePicker", "onScrollChange: ");
-                startTimeInput.setText(controller.dateToStr(setStartPicker.getDate()));
+            //    startTimeInput.setText(controller.dateToStr(setStartPicker.getDate()));
 
 
             }
@@ -375,7 +329,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onDateChanged(String s, Date date) {
                 Log.d("CompletePicker", "onScrollChange: ");
-                stopTimeInput.setText(controller.dateToStr(setStopPicker.getDate()));
+            //    stopTimeInput.setText(controller.dateToStr(setStopPicker.getDate()));
 
 
             }
@@ -385,12 +339,15 @@ public class NotificationsFragment extends Fragment {
 
         searchGoalList = new ArrayList<>();
 
+        /*
         Bundle bundle = getArguments();
         Log.d("NOTIFICATION FRAGMENT", "onCreateView: HEREEE");
         Log.d("arguments", "onCreateView: " + getArguments());
         if(bundle!=null){
             searchGoalList = (ArrayList<GoalModel>) bundle.getSerializable("goalList");
         }
+
+         */
         Log.d("recievedGoalList", "onCreate: " + searchGoalList);
         //Since the data pass isn't working, hardcoded data in instead
         searchGoalList.add(new GoalModel("GoalIDDD1", "Biggie",1643895301,1643290501,"Project",false));
@@ -398,16 +355,13 @@ public class NotificationsFragment extends Fragment {
         searchGoalList.add(new GoalModel("GoalIDDD3", "Indy",1643895303,1643290503,"Exam",false));
         searchGoalList.add(new GoalModel("GoalIDDD4", "Goally",1643895304,1643290504,"Assignment",false));
         searchGoalList.add(new GoalModel("GoalIDDD5", "BearGoal",1643895305,1643290505,"Project",false));
+
         setUpGoalSearchRecyclerView();
 
-
-        SearchView searchView = binding.searchBarGoals;
+        SearchView searchView = findViewById(R.id.searchBarGoals);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Log.d("query", "onQueryTextChange: Query changing");
-                filter(s);
-                Log.d("itemCount", "onQueryTextChange: " + adapter.getItemCount());
                 return false;
             }
 
@@ -420,55 +374,51 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
-
-        return root;
-
-
     }
 
     private void filter(String text) {
         ArrayList<GoalModel> filteredList = new ArrayList<>();
+
         for (GoalModel item : searchGoalList) {
             if (item.getBigGoal().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(item);
             }
         }
-        adapter = new searchGoalAdapter();
-        recyclerView.setAdapter(adapter);
-        adapter.loadRV(filteredList);
+        if(filteredList.isEmpty()){
+            Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
+            adapter.filterList(filteredList);
+        } else {
+            adapter.filterList(filteredList);
+        }
+        Log.d("filtered", "filter: " + adapter.items);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 
 
     class searchGoalAdapter extends RecyclerView.Adapter{
         List<GoalModel> items;
+
         public searchGoalAdapter() {
             items = new ArrayList<>();
-        }
 
-        public void loadRV(ArrayList<GoalModel> list){
-            for(int i = 0; i <list.size(); i++){
-                items.add(list.get(i));
-                Log.d("Added", "setUpRecyclerView: " + list.get(i));
-                notifyDataSetChanged();
+            for(int i = 0; i < searchGoalList.size(); i++){
+                items.add(searchGoalList.get(i));
+                Log.d("Added", "setUpRecyclerView: " + searchGoalList.get(i));
+
             }
         }
 
         public void filterList(ArrayList<GoalModel> filterllist) {
             // below line is to add our filtered
             // list in our course array list.
-            int size = items.size();
-            items.clear();
+            items = filterllist;
+            //  itemsCopy = filterllist;
             // below line is to notify our adapter
             // as change in recycler view data.
             notifyDataSetChanged();
             Log.d("filteredList", "filterList: " + items);
         }
+
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new SearchGoalViewHolder(parent);
@@ -490,7 +440,6 @@ public class NotificationsFragment extends Fragment {
                 viewHolder.gradeReport.setVisibility(View.VISIBLE);
             }
         }
-
 
         @Override
         public int getItemCount() {
@@ -522,7 +471,6 @@ public class NotificationsFragment extends Fragment {
                 }
             });
 
-
             timeReport = (ImageView) itemView.findViewById(R.id.timeReport);
             timeReport.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -553,7 +501,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void setUpGoalSearchRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new searchGoalAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -591,7 +539,7 @@ public class NotificationsFragment extends Fragment {
 
     public void closeKeyboard(View view){
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
         }

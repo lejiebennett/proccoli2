@@ -56,10 +56,10 @@
             android:windowSoftInputMode="adjustNothing"
             ></activity>
         <activity android:name=".groupgoalsingleGoalView"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustNothing">
             ></activity>
-
-
+        <activity android:name=".notification_fragment_activity"
+            android:windowSoftInputMode="adjustNothing"></activity>
     </application>
 
 </manifest>

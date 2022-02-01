@@ -10,8 +10,9 @@
 
     <android.widget.SearchView
         android:id="@+id/searchBarGoals"
-        android:layout_width="match_parent"
+        android:layout_width="388dp"
         android:layout_height="42dp"
+        android:iconifiedByDefault="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -266,6 +267,4 @@
             android:divider="@color/black" />
 
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
