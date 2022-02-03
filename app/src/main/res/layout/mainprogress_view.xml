@@ -49,7 +49,27 @@
 
 
     <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/goalProgressChart"
+        android:id="@+id/goalProgressChartActive"
+        android:layout_width="408dp"
+        android:layout_height="701dp"
+        android:background="#abc"
+        android:rotation="90"
+        app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="3dp" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/goalProgressChartExpired"
+        android:layout_width="408dp"
+        android:layout_height="701dp"
+        android:background="#abc"
+        android:rotation="90"
+        app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="3dp" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/goalProgressChartFinished"
         android:layout_width="408dp"
         android:layout_height="701dp"
         android:background="#abc"

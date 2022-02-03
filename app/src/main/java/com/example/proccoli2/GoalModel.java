@@ -45,6 +45,17 @@ public class GoalModel implements Serializable{
         this.isGraded = isGraded;
     }
 
+    public GoalModel(String goalId, String bigGoal, int deadline, int createdAt, String goalType,boolean isGraded, double proposedStudyTime, double studiedTime){
+        this.goalId = goalId;
+        this.bigGoal = bigGoal;
+        this.deadline = deadline;
+        this.createdAt = createdAt;
+        this.goalType = goalType;
+        this.isGraded = isGraded;
+        this.proposedStudyTime = proposedStudyTime;
+        this.studiedTime = studiedTime;
+    }
+
     public GoalModel(String goalId,String bigGoal, int completedBy, String goalType, int startDate, int deadline, int createdAt,ArrayList<SubGoalModel> subgoals){
 //        this.goalId = goalId;
         this.bigGoal = bigGoal;
@@ -203,6 +214,10 @@ public class GoalModel implements Serializable{
 
     public double getStudiedTime(){
         return studiedTime;
+    }
+
+    public double getProposedStudyTime(){
+        return proposedStudyTime;
     }
 
 

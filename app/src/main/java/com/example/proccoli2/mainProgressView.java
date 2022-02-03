@@ -49,15 +49,45 @@ import io.grpc.okhttp.internal.Util;
 
 
 public class mainProgressView extends AppCompatActivity {
-    BarChart chart;
+    BarChart activeChart, expiredChart, finishedChart;
     Toolbar toolbar;
     Button activeBtn, expiredBtn, finishedBtn;
     MaterialButtonToggleGroup toggleGroup;
+
+    ArrayList<GoalModel> activeList = new ArrayList<>();
+    ArrayList<GoalModel> expiredList= new ArrayList<>();
+    ArrayList<GoalModel> finishedList = new ArrayList<>();
+
+    ArrayList<BarEntry> activeBarEntries;
+    ArrayList<BarEntry> expiredBarEntries;
+    ArrayList<BarEntry> finishedBarEntries;
+
+
+    mainProgressView_VC controller = new mainProgressView_VC(this);
 
     @Override
     public void onCreate(Bundle SavedInstanceState) {
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.mainprogress_view);
+
+        //Since the data pass isn't working, hardcoded data in instead
+        activeList.add(new GoalModel("GoalIDDD1", "Biggie",1643895301,1643290501,"Project",false,10,20));
+        activeList.add(new GoalModel("GoalIDDD2", "BigGoal",1643895302,1643290502,"Discussion",false,5,13));
+        activeList.add(new GoalModel("GoalIDDD3", "Indy",1643895303,1643290503,"Exam",false,1,10));
+        activeList.add(new GoalModel("GoalIDDD4", "Goally",1643895304,1643290504,"Assignment",false,2,3));
+        activeList.add(new GoalModel("GoalIDDD5", "BearGoal",1643895305,1643290505,"Project",false,9,10));
+
+        //Since the data pass isn't working, hardcoded data in instead
+        expiredList.add(new GoalModel("GoalIDDD6", "Bug",1643895301,1643290501,"Project",false,5,5));
+        expiredList.add(new GoalModel("GoalIDDD7", "To graduate",1643895302,1643290502,"Discussion",false,1,30));
+        expiredList.add(new GoalModel("GoalIDDD8", "Read book",1643895303,1643290503,"Exam",false,14,10));
+
+        //Since the data pass isn't working, hardcoded data in instead
+        finishedList.add(new GoalModel("GoalIDDD9", "Eat some food",1643895301,1643290501,"Project",false,30,20));
+        finishedList.add(new GoalModel("GoalIDDD10", "Workout at home",1643895302,1643290502,"Discussion",false,2,20));
+
+
+
 
         toolbar = findViewById(R.id.toolbarGoalProgress);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -73,76 +103,156 @@ public class mainProgressView extends AppCompatActivity {
         finishedBtn  = findViewById(R.id.finishedBtnMainProgress);
         toggleGroup = findViewById(R.id.toggleButtonGroupMainProgress);
         toggleGroup.check(R.id.activeBtnMainProgress);
-        chart = findViewById(R.id.goalProgressChart);
-
+        activeChart = findViewById(R.id.goalProgressChartActive);
+        expiredChart = findViewById(R.id.goalProgressChartExpired);
+        finishedChart = findViewById(R.id.goalProgressChartFinished);
 
         //Rotates the chart horizontally
-        chart.getViewTreeObserver().addOnGlobalLayoutListener(
+        activeChart.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onGlobalLayout() {
 
-                        chart.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int offset = (chart.getHeight() - chart.getWidth()) / 2;
+                        activeChart.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int offset = (activeChart.getHeight() - activeChart.getWidth()) / 2;
 
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) chart.getLayoutParams();
-                        layoutParams.width = chart.getHeight();
-                        layoutParams.height = chart.getWidth();
-                        chart.setLayoutParams(layoutParams);
+                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) activeChart.getLayoutParams();
+                        layoutParams.width = activeChart.getHeight();
+                        layoutParams.height = activeChart.getWidth();
+                        activeChart.setLayoutParams(layoutParams);
 
-                        chart.setTranslationX(-offset);
-                        chart.setTranslationY(offset);
+                        activeChart.setTranslationX(-offset);
+                        activeChart.setTranslationY(offset);
 
 
                     }
                 });
 
+
+        expiredChart.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onGlobalLayout() {
+
+                        expiredChart.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int offset = (expiredChart.getHeight() - expiredChart.getWidth()) / 2;
+
+                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) expiredChart.getLayoutParams();
+                        layoutParams.width = expiredChart.getHeight();
+                        layoutParams.height = expiredChart.getWidth();
+                        expiredChart.setLayoutParams(layoutParams);
+
+                        expiredChart.setTranslationX(-offset);
+                        expiredChart.setTranslationY(offset);
+
+
+                    }
+                });
+
+        finishedChart.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                    @Override
+                    public void onGlobalLayout() {
+
+                        finishedChart.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int offset = (finishedChart.getHeight() - finishedChart.getWidth()) / 2;
+
+                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) finishedChart.getLayoutParams();
+                        layoutParams.width = finishedChart.getHeight();
+                        layoutParams.height = finishedChart.getWidth();
+                        finishedChart.setLayoutParams(layoutParams);
+
+                        finishedChart.setTranslationX(-offset);
+                        finishedChart.setTranslationY(offset);
+
+
+                    }
+                });
+
+
+
         //Used to initialize chart
-        chart.setPinchZoom(false);
-        chart.setDrawGridBackground(true);
-        chart.setDrawBarShadow(false);
-        chart.setDrawValueAboveBar(false);
-        chart.setHighlightFullBarEnabled(false);
-        chart.getDescription().setEnabled(false);
-
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setFormSize(8f);
-        l.setFormToTextSpace(4f);
-        l.setXEntrySpace(6f);
-
-        final ArrayList<String> xAxisLabel = new ArrayList<>();
-        xAxisLabel.add("Dec 01 Write paper");
-        xAxisLabel.add("Dec 01 Submit paper");
-        xAxisLabel.add("Dec 04 Read Chapter 1");
-        xAxisLabel.add("Dec 05 Take Quiz");
-        xAxisLabel.add("Dec 10 Finish Project");
-        xAxisLabel.add("Dec 01 Write paper");
-        xAxisLabel.add("Dec 01 Submit paper");
-        xAxisLabel.add("Dec 04 Read Chapter 1");
-        xAxisLabel.add("Dec 05 Take Quiz");
-        xAxisLabel.add("Dec 10 Finish Project");
-        xAxisLabel.add("Dec 01 Write paper");
-        xAxisLabel.add("Dec 01 Submit paper");
-        xAxisLabel.add("Dec 04 Read Chapter 1");
-        xAxisLabel.add("Dec 05 Take Quiz");
-        xAxisLabel.add("Dec 10 Finish Project");
-        xAxisLabel.add("Dec 01 Write paper");
-        xAxisLabel.add("Dec 01 Submit paper");
-        xAxisLabel.add("Dec 04 Read Chapter 1");
-        xAxisLabel.add("Dec 05 Take Quiz");
-        xAxisLabel.add("Dec 10 Finish Project");
+        activeChart.setPinchZoom(false);
+        activeChart.setDrawGridBackground(true);
+        activeChart.setDrawBarShadow(false);
+        activeChart.setDrawValueAboveBar(false);
+        activeChart.setHighlightFullBarEnabled(false);
+        activeChart.getDescription().setEnabled(false);
 
 
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setDrawLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelRotationAngle(-90);
+        expiredChart.setPinchZoom(false);
+        expiredChart.setDrawGridBackground(true);
+        expiredChart.setDrawBarShadow(false);
+        expiredChart.setDrawValueAboveBar(false);
+        expiredChart.setHighlightFullBarEnabled(false);
+        expiredChart.getDescription().setEnabled(false);
 
+        finishedChart.setPinchZoom(false);
+        finishedChart.setDrawGridBackground(true);
+        finishedChart.setDrawBarShadow(false);
+        finishedChart.setDrawValueAboveBar(false);
+        finishedChart.setHighlightFullBarEnabled(false);
+        finishedChart.getDescription().setEnabled(false);
+
+
+
+        Legend activeLegend = activeChart.getLegend();
+        activeLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        activeLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        activeLegend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        activeLegend.setDrawInside(false);
+        activeLegend.setFormSize(8f);
+        activeLegend.setFormToTextSpace(4f);
+        activeLegend.setXEntrySpace(6f);
+
+
+        Legend expiredLegend = expiredChart.getLegend();
+        expiredLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        expiredLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        expiredLegend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        expiredLegend.setDrawInside(false);
+        expiredLegend.setFormSize(8f);
+        expiredLegend.setFormToTextSpace(4f);
+        expiredLegend.setXEntrySpace(6f);
+
+        Legend finishedLegend = finishedChart.getLegend();
+        finishedLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        finishedLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        finishedLegend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        finishedLegend.setDrawInside(false);
+        finishedLegend.setFormSize(8f);
+        finishedLegend.setFormToTextSpace(4f);
+        finishedLegend.setXEntrySpace(6f);
+
+
+
+        final ArrayList<String> activeXAxisLabel = controller.generateXAxisLabel(activeList);
+        final ArrayList<String> finishedXAxisLabel = controller.generateXAxisLabel(finishedList);
+        final ArrayList<String> expiredXAxisLabel = controller.generateXAxisLabel(expiredList);
+
+
+        XAxis activeXAxis = activeChart.getXAxis();
+        activeXAxis.setDrawLabels(true);
+        activeXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        activeXAxis.setLabelRotationAngle(-90);
+
+
+        XAxis expiredXAxis = expiredChart.getXAxis();
+        expiredXAxis.setDrawLabels(true);
+        expiredXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        expiredXAxis.setLabelRotationAngle(-90);
+
+        XAxis finishedXAxis = finishedChart.getXAxis();
+        finishedXAxis.setDrawLabels(true);
+        finishedXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        finishedXAxis.setLabelRotationAngle(-90);
+
+
+
+        /*
         ValueFormatter formatter = new ValueFormatter() {
 
 
@@ -159,129 +269,202 @@ public class mainProgressView extends AppCompatActivity {
 
         };
 
-        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        xAxis.setValueFormatter(new CustomFormatter(xAxisLabel));
-       // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+         */
+        activeXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        activeXAxis.setValueFormatter(new IndexAxisValueFormatter(activeXAxisLabel));
+        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+        /*
+        YAxis activeYAxis = activeChart.getAxisLeft();
+        activeYAxis.setAxisMaximum(100);
+        activeYAxis.setAxisMaximum(-100);
+        activeYAxis.setLabelCount(10);
+
+         */
 
 
-        //Data for the chart
-        ArrayList<BarEntry> values = new ArrayList<BarEntry>();
-        //NOTE: IN ORDER TO GET THEM FLIPPED, NEED TO MAKE ONE NEGATIVE
-        int size = 4;
+        expiredXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        expiredXAxis.setValueFormatter(new IndexAxisValueFormatter(expiredXAxisLabel));
+        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
 
-        for (int i = 0; i < size + 1; i++) {
-            float mult = (size + 1);
-            float val1 = (float) (Math.random() * mult) + mult / 3;
-            float val2 = (float) (Math.random() * mult) + mult / 3;
-            val2 = (float) ((-1.0)*val2);
-            values.add(new BarEntry(
-                    i,
-                    new float[]{val1, val2},
-                    getResources().getDrawable(R.drawable.circle)));
-        }
-
-        ArrayList<BarEntry> values2 = new ArrayList<BarEntry>();
-
-        int size2 = 8;
-
-        for (int i = 0; i < size2 + 1; i++) {
-            float mult = (size2 + 1);
-            float val1 = (float) (Math.random() * mult) + mult / 3;
-            float val2 = (float) (Math.random() * mult) + mult / 3;
-            val2 = (float) ((-1.0)*val2);
-
-            values2.add(new BarEntry(
-                    i,
-                    new float[]{val1, val2},
-                    getResources().getDrawable(R.drawable.circle)));
-        }
-
-        ArrayList<BarEntry> values3 = new ArrayList<BarEntry>();
-
-        int size3 = 12;
-
-        for (int i = 0; i < size3 + 1; i++) {
-            float mult = (size3 + 1);
-            float val1 = (float) (Math.random() * mult) + mult / 3;
-            float val2 = (float) (Math.random() * mult) + mult / 3;
-            val2 = (float) ((-1.0)*val2);
-
-            values3.add(new BarEntry(
-                    i,
-                    new float[]{val1, val2},
-                    getResources().getDrawable(R.drawable.circle)));
-        }
+        finishedXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        finishedXAxis.setValueFormatter(new IndexAxisValueFormatter(finishedXAxisLabel));
+        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
 
 
-        BarDataSet set1;
+        activeBarEntries = controller.generateBarEntries(activeList);
+        expiredBarEntries = controller.generateBarEntries(expiredList);
+        finishedBarEntries = controller.generateBarEntries(finishedList);
 
-        if (chart.getData() != null &&
-                chart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) chart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            chart.getData().notifyDataChanged();
-            chart.notifyDataSetChanged();
+        BarDataSet activeSet, expiredSet,finishedSet;
+        ArrayList<IBarDataSet> activeDataSets, expiredDataSets, finishedDataSets;
+        BarData activeData, expiredData, finishedData;
+
+        if (activeChart.getData() != null &&
+                activeChart.getData().getDataSetCount() > 0) {
+            activeSet = (BarDataSet) activeChart.getData().getDataSetByIndex(0);
+            activeSet.setValues(activeBarEntries);
+            activeChart.getData().notifyDataChanged();
+            activeChart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(values, "Statistics Vienna 2014");
-            set1.setDrawIcons(false);
-            set1.setColors(getColors());
-            set1.setStackLabels(new String[]{"Studied","Proposed"});
+            activeSet = new BarDataSet(activeBarEntries, "Active Goals");
+            activeSet.setDrawIcons(false);
+            activeSet.setColors(getColors());
+            activeSet.setStackLabels(new String[]{"Studied","Proposed"});
 
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set1);
+            activeDataSets = new ArrayList<>();
+            activeDataSets.add(activeSet);
 
-            BarData data = new BarData(dataSets);
-            data.setValueFormatter(new MyValueFormatter());
-            data.setValueTextSize(12);
-            data.setValueTextColor(Color.WHITE);
+            activeData = new BarData(activeDataSets);
+            activeData.setValueFormatter(new MyValueFormatter());
+            activeData.setValueTextSize(12);
+            activeData.setValueTextColor(Color.WHITE);
 
 
-            chart.getAxisLeft().setValueFormatter(new MyValueFormatter());
-            chart.setData(data);
+            activeChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+            activeChart.setData(activeData);
         }
 
-        chart.setFitBars(true);
-        chart.invalidate();
+        activeChart.setFitBars(true);
+        activeChart.invalidate();
+
+
+
+
+        if (expiredChart.getData() != null &&
+                expiredChart.getData().getDataSetCount() > 0) {
+            expiredSet = (BarDataSet) expiredChart.getData().getDataSetByIndex(0);
+            expiredSet.setValues(expiredBarEntries);
+            expiredChart.getData().notifyDataChanged();
+            expiredChart.notifyDataSetChanged();
+        } else {
+            expiredSet = new BarDataSet(expiredBarEntries, "Expired Goals");
+            expiredSet.setDrawIcons(false);
+            expiredSet.setColors(getColors());
+            expiredSet.setStackLabels(new String[]{"Studied","Proposed"});
+
+
+            expiredDataSets = new ArrayList<>();
+            expiredDataSets.add(activeSet);
+
+            expiredData = new BarData(expiredDataSets);
+            expiredData.setValueFormatter(new MyValueFormatter());
+            expiredData.setValueTextSize(12);
+            expiredData.setValueTextColor(Color.WHITE);
+
+
+            expiredChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+            expiredChart.setData(expiredData);
+        }
+
+        expiredChart.setFitBars(true);
+        expiredChart.invalidate();
+
+
+        if (finishedChart.getData() != null &&
+                finishedChart.getData().getDataSetCount() > 0) {
+            finishedSet = (BarDataSet) finishedChart.getData().getDataSetByIndex(0);
+            finishedSet.setValues(finishedBarEntries);
+            finishedChart.getData().notifyDataChanged();
+            finishedChart.notifyDataSetChanged();
+        } else {
+            finishedSet = new BarDataSet(finishedBarEntries, "Finished Goals");
+            finishedSet.setDrawIcons(false);
+            finishedSet.setColors(getColors());
+            finishedSet.setStackLabels(new String[]{"Studied","Proposed"});
+
+
+            finishedDataSets = new ArrayList<>();
+            finishedDataSets.add(activeSet);
+
+            finishedData = new BarData(finishedDataSets);
+            finishedData.setValueFormatter(new MyValueFormatter());
+            finishedData.setValueTextSize(12);
+            finishedData.setValueTextColor(Color.WHITE);
+
+
+            finishedChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+            finishedChart.setData(finishedData);
+        }
+
+        finishedChart.setFitBars(true);
+        finishedChart.invalidate();
+
+
+        activeChart.setVisibility(View.VISIBLE);
+
+        finishedChart.setVisibility(View.INVISIBLE);
+        expiredChart.setVisibility(View.INVISIBLE);
+
+
+        activeSet.setValues(activeBarEntries);
+        activeChart.getData().notifyDataChanged();
+        activeChart.notifyDataSetChanged();
+        activeChart.setFitBars(true);
+
+        activeChart.invalidate();
+
 
         toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 if(isChecked){
                     if(checkedId == R.id.activeBtnMainProgress){
-                        set1.setValues(values);
-                        chart.getData().notifyDataChanged();
-                        chart.notifyDataSetChanged();
-                        chart.setFitBars(true);
-                        chart.invalidate();
+                        activeChart.setVisibility(View.VISIBLE);
 
+                        finishedChart.setVisibility(View.INVISIBLE);
+                        expiredChart.setVisibility(View.INVISIBLE);
+
+                        activeSet.setValues(activeBarEntries);
+                        activeChart.getData().notifyDataChanged();
+                        activeChart.notifyDataSetChanged();
+                        activeChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+
+                        activeChart.setFitBars(true);
+                        activeChart.invalidate();
                     }
 
 
                     if(checkedId == R.id.expiredBtnMainProgress){
                         Log.d("expired", "onButtonChecked: ExpiredChecked");
-                        set1.setValues(values2);
-                        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-                        xAxis.setValueFormatter(new CustomFormatter(xAxisLabel));
-                        chart.getData().notifyDataChanged();
-                        chart.notifyDataSetChanged();
-                        chart.setFitBars(true);
-                        chart.invalidate();
+                        expiredChart.setVisibility(View.VISIBLE);
+
+                        //activeChart.setVisibility(View.INVISIBLE);
+                        finishedChart.setVisibility(View.INVISIBLE);
+
+                        Log.d("expiredEntries", "onButtonChecked: " + expiredBarEntries);
+                        activeSet.setValues(expiredBarEntries);
+
+                        //   activeChart.setData(expiredData);
+                        activeChart.getData().notifyDataChanged();
+                        activeChart.notifyDataSetChanged();
+                        activeChart.setFitBars(true);
+                        activeChart.invalidate();
+
                     }
                     if(checkedId == R.id.finishedBtnMainProgress){
                         Log.d("finished", "onButtonChecked: finishedChecked");
-                        set1.setValues(values3);
-                        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-                        xAxis.setValueFormatter(new CustomFormatter(xAxisLabel));
-                        chart.getData().notifyDataChanged();
-                        chart.notifyDataSetChanged();
-                        chart.setFitBars(true);
-                        chart.invalidate();
+                        finishedChart.setVisibility(View.VISIBLE);
+
+                        //activeChart.setVisibility(View.INVISIBLE);
+                        expiredChart.setVisibility(View.INVISIBLE);
+
+                        Log.d("finishedEntries", "onButtonChecked: " + finishedBarEntries);
+                        activeSet.setValues(finishedBarEntries);
+
+                        // activeChart.setData(finishedData);
+                        activeChart.getData().notifyDataChanged();
+                        activeChart.notifyDataSetChanged();
+                        activeChart.setFitBars(true);
+                      //  finishedChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+                        activeChart.invalidate();
                     }
                 }
             }
         });
     }
+
+
 
 
     private int[] getColors() {
@@ -365,6 +548,6 @@ public class mainProgressView extends AppCompatActivity {
 
 
 
+
+
 }
-
-
