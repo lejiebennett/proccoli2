@@ -38,6 +38,7 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.common.base.Splitter;
 
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
@@ -113,7 +114,6 @@ public class mainProgressView extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onGlobalLayout() {
-
                         activeChart.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         int offset = (activeChart.getHeight() - activeChart.getWidth()) / 2;
 
@@ -272,7 +272,7 @@ public class mainProgressView extends AppCompatActivity {
          */
         activeXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         activeXAxis.setValueFormatter(new IndexAxisValueFormatter(activeXAxisLabel));
-        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+        //chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
         /*
         YAxis activeYAxis = activeChart.getAxisLeft();
         activeYAxis.setAxisMaximum(100);
@@ -280,15 +280,31 @@ public class mainProgressView extends AppCompatActivity {
         activeYAxis.setLabelCount(10);
 
          */
+        activeChart.getAxisLeft().setDrawZeroLine(true);
+        activeChart.getAxisLeft().setAxisMinimum(-100f);
+        activeChart.getAxisLeft().setAxisMaximum(100f);
+        activeChart.getAxisLeft().setLabelCount(3);
+
 
 
         expiredXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         expiredXAxis.setValueFormatter(new IndexAxisValueFormatter(expiredXAxisLabel));
         // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+        expiredChart.getAxisLeft().setDrawZeroLine(true);
+        expiredChart.getAxisLeft().setAxisMinimum(-100f);
+        expiredChart.getAxisLeft().setAxisMaximum(100f);
+        expiredChart.getAxisLeft().setLabelCount(3);
+
+
 
         finishedXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        finishedXAxis.setValueFormatter(new IndexAxisValueFormatter(finishedXAxisLabel));
-        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+      //  finishedXAxis.setValueFormatter(new IndexAxisValueFormatter(finishedXAxisLabel));
+        finishedXAxis.setValueFormatter(new CustomFormatter(finishedXAxisLabel));
+        //finishedChart.setXAxisRenderer(new CustomXAxisRenderer(finishedChart.getViewPortHandler(), finishedXAxis, finishedChart.getTransformer(XAxis.AxisDependency.LEFT), finishedChart));
+        finishedChart.getAxisLeft().setDrawZeroLine(true);
+        finishedChart.getAxisLeft().setAxisMinimum(-100f);
+        finishedChart.getAxisLeft().setAxisMaximum(100f);
+        finishedChart.getAxisLeft().setLabelCount(3);
 
 
         activeBarEntries = controller.generateBarEntries(activeList);
@@ -398,9 +414,11 @@ public class mainProgressView extends AppCompatActivity {
 
 
         activeSet.setValues(activeBarEntries);
+        activeChart.setVisibleYRange(-100f,100f, YAxis.AxisDependency.LEFT);
+        activeChart.setFitBars(true);
+        activeChart.setAutoScaleMinMaxEnabled(false);
         activeChart.getData().notifyDataChanged();
         activeChart.notifyDataSetChanged();
-        activeChart.setFitBars(true);
 
         activeChart.invalidate();
 
@@ -435,11 +453,15 @@ public class mainProgressView extends AppCompatActivity {
                         Log.d("expiredEntries", "onButtonChecked: " + expiredBarEntries);
                         activeSet.setValues(expiredBarEntries);
 
-                        //   activeChart.setData(expiredData);
-                        activeChart.getData().notifyDataChanged();
-                        activeChart.notifyDataSetChanged();
-                        activeChart.setFitBars(true);
-                        activeChart.invalidate();
+                        expiredChart.setVisibleYRange(-100f,100f, YAxis.AxisDependency.LEFT);
+                        expiredChart.setFitBars(true);
+                        expiredChart.setAutoScaleMinMaxEnabled(false);
+                        expiredChart.getAxisLeft().setDrawZeroLine(true);
+                        expiredChart.getAxisLeft().setAxisMinimum(-100f);
+                        expiredChart.getAxisLeft().setAxisMaximum(100f);
+                        expiredChart.getAxisLeft().setLabelCount(3);
+                        expiredChart.getData().notifyDataChanged();
+                        expiredChart.notifyDataSetChanged();
 
                     }
                     if(checkedId == R.id.finishedBtnMainProgress){
@@ -452,12 +474,11 @@ public class mainProgressView extends AppCompatActivity {
                         Log.d("finishedEntries", "onButtonChecked: " + finishedBarEntries);
                         activeSet.setValues(finishedBarEntries);
 
-                        // activeChart.setData(finishedData);
-                        activeChart.getData().notifyDataChanged();
-                        activeChart.notifyDataSetChanged();
-                        activeChart.setFitBars(true);
-                      //  finishedChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
-                        activeChart.invalidate();
+                        finishedChart.setVisibleYRange(-100f,100f, YAxis.AxisDependency.LEFT);
+                        finishedChart.setFitBars(true);
+                        finishedChart.setAutoScaleMinMaxEnabled(false);
+                        finishedChart.getData().notifyDataChanged();
+                        finishedChart.notifyDataSetChanged();
                     }
                 }
             }
@@ -533,21 +554,18 @@ public class mainProgressView extends AppCompatActivity {
 
         @Override
         public String getFormattedValue(float value) {
-            String[] label = getValues()[((int) value)].split(" ");
             String finalLabel = "";
-            for(int i = 0; i<label.length;i++)
-                finalLabel = finalLabel + "\n"+ label[i];
+            if((int)value<getValues().length){
+                Log.d("getValues", "getFormattedValue: " + getValues()[((int) value)]);
 
+                String[] label = getValues()[((int) value)].split(" ");
+                for(int i = 0; i<label.length;i++)
+                    finalLabel = finalLabel + label[i] + "\n2";
+            }
+            Log.d("value", "getFormattedValue: " + value);
+            Log.d("label", "getFormattedValue: " + finalLabel);
             return  finalLabel;
         }
     }
-
-
-
-
-
-
-
-
 
 }
