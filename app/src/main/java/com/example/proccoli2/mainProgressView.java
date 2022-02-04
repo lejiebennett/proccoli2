@@ -32,6 +32,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart;
 import com.github.mikephil.charting.renderer.XAxisRendererRadarChart;
+import com.github.mikephil.charting.renderer.YAxisRendererHorizontalBarChart;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
@@ -199,6 +200,7 @@ public class mainProgressView extends AppCompatActivity {
 
 
 
+
         Legend activeLegend = activeChart.getLegend();
         activeLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         activeLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
@@ -249,6 +251,7 @@ public class mainProgressView extends AppCompatActivity {
         finishedXAxis.setDrawLabels(true);
         finishedXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         finishedXAxis.setLabelRotationAngle(-90);
+        finishedXAxis.setYOffset(-10f);
 
 
 
@@ -271,15 +274,8 @@ public class mainProgressView extends AppCompatActivity {
 
          */
         activeXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        activeXAxis.setValueFormatter(new IndexAxisValueFormatter(activeXAxisLabel));
-        //chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
-        /*
-        YAxis activeYAxis = activeChart.getAxisLeft();
-        activeYAxis.setAxisMaximum(100);
-        activeYAxis.setAxisMaximum(-100);
-        activeYAxis.setLabelCount(10);
-
-         */
+        activeXAxis.setValueFormatter(new CustomFormatter(activeXAxisLabel));
+        activeChart.setXAxisRenderer(new CustomXAxisRenderer(activeChart.getViewPortHandler(), activeXAxis, activeChart.getTransformer(YAxis.AxisDependency.LEFT)));
         activeChart.getAxisLeft().setDrawZeroLine(true);
         activeChart.getAxisLeft().setAxisMinimum(-100f);
         activeChart.getAxisLeft().setAxisMaximum(100f);
@@ -287,9 +283,10 @@ public class mainProgressView extends AppCompatActivity {
 
 
 
+
         expiredXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        expiredXAxis.setValueFormatter(new IndexAxisValueFormatter(expiredXAxisLabel));
-        // chart.setXAxisRenderer(new CustomXAxisRenderer(chart.getViewPortHandler(), xAxis, chart.getTransformer(YAxis.AxisDependency.LEFT), chart));
+        expiredXAxis.setValueFormatter(new CustomFormatter(expiredXAxisLabel));
+        expiredChart.setXAxisRenderer(new CustomXAxisRenderer(expiredChart.getViewPortHandler(), expiredXAxis, expiredChart.getTransformer(YAxis.AxisDependency.LEFT)));
         expiredChart.getAxisLeft().setDrawZeroLine(true);
         expiredChart.getAxisLeft().setAxisMinimum(-100f);
         expiredChart.getAxisLeft().setAxisMaximum(100f);
@@ -298,9 +295,8 @@ public class mainProgressView extends AppCompatActivity {
 
 
         finishedXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-      //  finishedXAxis.setValueFormatter(new IndexAxisValueFormatter(finishedXAxisLabel));
         finishedXAxis.setValueFormatter(new CustomFormatter(finishedXAxisLabel));
-        //finishedChart.setXAxisRenderer(new CustomXAxisRenderer(finishedChart.getViewPortHandler(), finishedXAxis, finishedChart.getTransformer(XAxis.AxisDependency.LEFT), finishedChart));
+        finishedChart.setXAxisRenderer(new CustomXAxisRenderer(finishedChart.getViewPortHandler(), finishedXAxis, finishedChart.getTransformer(YAxis.AxisDependency.LEFT)));
         finishedChart.getAxisLeft().setDrawZeroLine(true);
         finishedChart.getAxisLeft().setAxisMinimum(-100f);
         finishedChart.getAxisLeft().setAxisMaximum(100f);
@@ -509,7 +505,7 @@ public class mainProgressView extends AppCompatActivity {
         @Override
         public String getBarStackedLabel(float value, BarEntry stackedEntry) {
             super.getBarStackedLabel(value, stackedEntry);
-            return mFormat.format(abs(value)) + " m";
+            return mFormat.format(abs(value)) + " h";
         }
 
         private float abs(float value) {
@@ -521,28 +517,39 @@ public class mainProgressView extends AppCompatActivity {
 
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
-            return mFormat.format(abs(value)) + " m";
+            return mFormat.format(abs(value)) + " h";
         }
 
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            return mFormat.format(value) + " m";
+            return mFormat.format(value) + " h";
         }
     }
 
-    public class CustomXAxisRenderer extends XAxisRendererHorizontalBarChart{
-        public CustomXAxisRenderer(ViewPortHandler viewPortHandler, XAxis xAxis, Transformer trans, BarChart chart) {
-            super(viewPortHandler, xAxis, trans, chart);
+    public class CustomXAxisRenderer extends XAxisRenderer {
+        public CustomXAxisRenderer(ViewPortHandler viewPortHandler, XAxis xAxis, Transformer trans) {
+            super(viewPortHandler, xAxis, trans);
         }
 
         @Override
         protected void drawLabel(Canvas c, String formattedLabel, float x, float y, MPPointF anchor, float angleDegrees) {
-            String[] line = formattedLabel.split("\n");
-            Utils.drawXAxisValue(c,line[0], x,y,mAxisLabelPaint,anchor,angleDegrees);
-            for(int i = 1; i< line.length;i++){
-                Utils.drawXAxisValue(c,line[i],x,y+mAxisLabelPaint.getTextSize()*i,mAxisLabelPaint,anchor,angleDegrees);
+
+            if(formattedLabel.contains(" ")){
+                String line[] = formattedLabel.split(" ");
+                for (String a:
+                        line) {
+                    Log.d("labels", "drawLabel: " + a);
+                }
+
+                Utils.drawXAxisValue(c, line[0], x, y, mAxisLabelPaint, anchor, angleDegrees);
+                for (int i =1; i<line.length;i++)
+                    Utils.drawXAxisValue(c, line[i], x + (i)*mAxisLabelPaint.getTextSize(), y +mAxisLabelPaint.getTextSize(), mAxisLabelPaint, anchor, angleDegrees);
+
             }
+            else
+                Utils.drawXAxisValue(c, formattedLabel, x, y, mAxisLabelPaint, anchor, angleDegrees);
+
 
         }
     }
@@ -552,20 +559,20 @@ public class mainProgressView extends AppCompatActivity {
             super(values);
         }
 
+        /**
+         * This sets the xaxis label to actually be the goal name rather than a number 0,1,2,etc...
+         * @param value
+         * @return
+         */
         @Override
         public String getFormattedValue(float value) {
             String finalLabel = "";
             if((int)value<getValues().length){
                 Log.d("getValues", "getFormattedValue: " + getValues()[((int) value)]);
-
-                String[] label = getValues()[((int) value)].split(" ");
-                for(int i = 0; i<label.length;i++)
-                    finalLabel = finalLabel + label[i] + "\n2";
+                finalLabel  = getValues()[((int) value)];
             }
-            Log.d("value", "getFormattedValue: " + value);
             Log.d("label", "getFormattedValue: " + finalLabel);
             return  finalLabel;
         }
     }
-
 }
