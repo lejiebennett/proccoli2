@@ -16,6 +16,12 @@ public class mainProgressView_VC extends AppCompatActivity {
         this.mainProgressView = mainProgressView;
     }
 
+    /**
+     * This assumges that getStudiedTime is already in hours not in unix seconds or minutes
+     * Fix this method to change the units
+     * @param list The goal data
+     * @return the bar entry values
+     */
     public  ArrayList<BarEntry> generateBarEntries(ArrayList<GoalModel> list){
         ArrayList<BarEntry> values = new ArrayList<BarEntry>();
         for(int i = 0; i<list.size();i++){

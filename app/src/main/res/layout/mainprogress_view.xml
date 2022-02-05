@@ -50,7 +50,7 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartActive"
-        android:layout_width="408dp"
+        android:layout_width="370dp"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
@@ -60,7 +60,7 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartExpired"
-        android:layout_width="408dp"
+        android:layout_width="370dp"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
@@ -70,13 +70,42 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartFinished"
-        android:layout_width="408dp"
+        android:layout_width="370dp"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
         app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="3dp" />
+
+    <LinearLayout
+        android:layout_width="370dp"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="29dp"
+        app:layout_constraintTop_toBottomOf="@id/toggleButtonGroupMainProgress"
+        tools:layout_editor_absoluteY="21dp">
+
+        <TextView
+            android:id="@+id/mainProgressProposed"
+            android:layout_width="177dp"
+            android:layout_height="20dp"
+            android:text="Proposed"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:translationZ="90dp" />
+
+        <TextView
+            android:id="@+id/mainProgrssStudied"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Studied"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:translationZ="90dp" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

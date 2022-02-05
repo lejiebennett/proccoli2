@@ -2,6 +2,8 @@ package com.example.proccoli2;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -28,7 +31,9 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart;
 import com.github.mikephil.charting.renderer.XAxisRendererRadarChart;
@@ -182,6 +187,7 @@ public class mainProgressView extends AppCompatActivity {
         activeChart.setDrawValueAboveBar(false);
         activeChart.setHighlightFullBarEnabled(false);
         activeChart.getDescription().setEnabled(false);
+        activeChart.animateY(3000);
 
 
         expiredChart.setPinchZoom(false);
@@ -190,6 +196,8 @@ public class mainProgressView extends AppCompatActivity {
         expiredChart.setDrawValueAboveBar(false);
         expiredChart.setHighlightFullBarEnabled(false);
         expiredChart.getDescription().setEnabled(false);
+        expiredChart.animateY(3000);
+
 
         finishedChart.setPinchZoom(false);
         finishedChart.setDrawGridBackground(true);
@@ -197,10 +205,9 @@ public class mainProgressView extends AppCompatActivity {
         finishedChart.setDrawValueAboveBar(false);
         finishedChart.setHighlightFullBarEnabled(false);
         finishedChart.getDescription().setEnabled(false);
+        finishedChart.animateY(3000);
 
-
-
-
+        //Sets up the legend for showing what is
         Legend activeLegend = activeChart.getLegend();
         activeLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         activeLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
@@ -251,7 +258,6 @@ public class mainProgressView extends AppCompatActivity {
         finishedXAxis.setDrawLabels(true);
         finishedXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         finishedXAxis.setLabelRotationAngle(-90);
-        finishedXAxis.setYOffset(-10f);
 
 
 
@@ -280,8 +286,7 @@ public class mainProgressView extends AppCompatActivity {
         activeChart.getAxisLeft().setAxisMinimum(-100f);
         activeChart.getAxisLeft().setAxisMaximum(100f);
         activeChart.getAxisLeft().setLabelCount(3);
-
-
+        //activeChart.setRenderer(new MyBarChartRenderer(activeChart, activeChart.getAnimator(), activeChart.getViewPortHandler()));
 
 
         expiredXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
@@ -292,7 +297,8 @@ public class mainProgressView extends AppCompatActivity {
         expiredChart.getAxisLeft().setAxisMaximum(100f);
         expiredChart.getAxisLeft().setLabelCount(3);
 
-
+        //This will rotate the labels so they are horizontal but then they will go off the chart?
+       // activeChart.setRenderer(new MyBarChartRenderer(activeChart, activeChart.getAnimator(), activeChart.getViewPortHandler()));
 
         finishedXAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         finishedXAxis.setValueFormatter(new CustomFormatter(finishedXAxisLabel));
@@ -321,7 +327,7 @@ public class mainProgressView extends AppCompatActivity {
             activeSet = new BarDataSet(activeBarEntries, "Active Goals");
             activeSet.setDrawIcons(false);
             activeSet.setColors(getColors());
-            activeSet.setStackLabels(new String[]{"Studied","Proposed"});
+            activeSet.setStackLabels(new String[]{"Proposed","Studied"});
 
 
             activeDataSets = new ArrayList<>();
@@ -333,11 +339,12 @@ public class mainProgressView extends AppCompatActivity {
             activeData.setValueTextColor(Color.WHITE);
 
 
-            activeChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
+           // activeChart.getAxisRight().setValueFormatter(new MyValueFormatter());
             activeChart.setData(activeData);
         }
 
         activeChart.setFitBars(true);
+
         activeChart.invalidate();
 
 
@@ -395,6 +402,7 @@ public class mainProgressView extends AppCompatActivity {
             finishedData.setValueTextColor(Color.WHITE);
 
 
+
             finishedChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
             finishedChart.setData(finishedData);
         }
@@ -432,8 +440,8 @@ public class mainProgressView extends AppCompatActivity {
                         activeSet.setValues(activeBarEntries);
                         activeChart.getData().notifyDataChanged();
                         activeChart.notifyDataSetChanged();
-                        activeChart.getAxisLeft().setValueFormatter(new MyValueFormatter());
-
+                       // activeChart.getAxisRight().setValueFormatter(new MyValueFormatter());
+                        activeChart.animateY(2000);
                         activeChart.setFitBars(true);
                         activeChart.invalidate();
                     }
@@ -458,6 +466,8 @@ public class mainProgressView extends AppCompatActivity {
                         expiredChart.getAxisLeft().setLabelCount(3);
                         expiredChart.getData().notifyDataChanged();
                         expiredChart.notifyDataSetChanged();
+                        expiredChart.animateY(2000);
+
 
                     }
                     if(checkedId == R.id.finishedBtnMainProgress){
@@ -475,6 +485,8 @@ public class mainProgressView extends AppCompatActivity {
                         finishedChart.setAutoScaleMinMaxEnabled(false);
                         finishedChart.getData().notifyDataChanged();
                         finishedChart.notifyDataSetChanged();
+                        finishedChart.animateY(2000);
+
                     }
                 }
             }
@@ -573,6 +585,27 @@ public class mainProgressView extends AppCompatActivity {
             }
             Log.d("label", "getFormattedValue: " + finalLabel);
             return  finalLabel;
+        }
+    }
+
+
+    /**
+     * Used to rotate the bar labels, but if you implement this then it will make them overlap
+     */
+    public class MyBarChartRenderer extends BarChartRenderer {
+        public MyBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+            super(chart, animator, viewPortHandler);
+        }
+
+        @Override
+        public void drawValue(Canvas c, String valueText, float x, float y, int color) {
+           // super.drawValue(c, valueText, x, y, color);
+
+            Paint paint=super.mDrawPaint;
+            paint.setTextSize(25f);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            Utils.drawXAxisValue(c,valueText,x,y,paint, MPPointF.getInstance(),270);
         }
     }
 }

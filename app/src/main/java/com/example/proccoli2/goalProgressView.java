@@ -8,6 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +41,16 @@ import java.util.ArrayList;
 public class goalProgressView extends AppCompatActivity {
     BarChart chart;
     Toolbar toolbar;
+    ImageView calendar, graphs;
+    boolean twoGraph = true;
+
+    //Calendar Date Picker
+    Spinner dateSpinner;
+    TextView cancelBtn, doneBtn;
+
+    LinearLayout dateGoalProgressLinearLayout;
+
+
     @Override
     public void onCreate(Bundle SavedInstanceState) {
         super.onCreate(SavedInstanceState);
@@ -51,6 +65,14 @@ public class goalProgressView extends AppCompatActivity {
             }
         });
 
+        dateGoalProgressLinearLayout = findViewById(R.id.dateGoalProgressLinearLayout);
+        cancelBtn = findViewById(R.id.cancelGoalProgressBtn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dateGoalProgressLinearLayout.setVisibility(View.INVISIBLE);
+            }
+        });
         chart = findViewById(R.id.goalProgressChart);
 
         //Rotates the chart horizontally
@@ -171,6 +193,46 @@ public class goalProgressView extends AppCompatActivity {
 
         chart.setFitBars(true);
         chart.invalidate();
+
+        calendar = findViewById(R.id.calendarBtn);
+        calendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Calendar", "onClick: I clicked the calendar btn");
+                dateGoalProgressLinearLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        graphs = findViewById(R.id.graphsBtn);
+        graphs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("graphs", "onClick: I clicked the graph btn" + getResources());
+                if(twoGraph == true){
+                    graphs.setImageResource(R.drawable.onegraph_foreground);
+                    twoGraph = false;
+
+                }
+                else{
+                    graphs.setImageResource(R.drawable.twograph_foreground);
+                    twoGraph=true;
+
+                }
+
+            }
+        });
+
+        doneBtn = findViewById(R.id.doneGoalProgressBtn);
+        doneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("SelectedDate", "onClick: " + dateSpinner.getSelectedItem().toString());
+                dateGoalProgressLinearLayout.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+
     }
 
 

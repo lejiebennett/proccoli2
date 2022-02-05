@@ -55,7 +55,7 @@
         <entry key="app/src/main/res/layout/goalitem_selfReport.xml" value="0.67" />
         <entry key="app/src/main/res/layout/goalitem_selfreport.xml" value="0.10416666666666667" />
         <entry key="app/src/main/res/layout/goalitem_view.xml" value="0.21" />
-        <entry key="app/src/main/res/layout/goalprogress_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/goalprogress_view.xml" value="0.5" />
         <entry key="app/src/main/res/layout/goalsetting_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/goaltwowheels.xml" value="0.3590568060021436" />
         <entry key="app/src/main/res/layout/goaltypewheel.xml" value="0.1265625" />
@@ -70,7 +70,7 @@
         <entry key="app/src/main/res/layout/invite_popupvtwo.xml" value="0.1" />
         <entry key="app/src/main/res/layout/light0_background.xml" value="0.19322916666666667" />
         <entry key="app/src/main/res/layout/login_view.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/mainprogress_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/mainprogress_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/makeavailable_popup.xml" value="0.25" />
         <entry key="app/src/main/res/layout/notes_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/profile_view.xml" value="0.22" />

@@ -291,14 +291,9 @@ public class singleGoalView extends AppCompatActivity {
         goalProgressBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 openReportProgressPopUp();
-
-                /*
                 //Actual code for goalProgressBtn
                 Intent myIntent = new Intent(singleGoalView.this, goalProgressView.class);
                 startActivity(myIntent);
-
-                 */
             }
         });
 
