@@ -214,9 +214,11 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
         setReminderLabel = findViewById(R.id.setReminderLabel);
 
         setReminderPicker.setVisibility(View.INVISIBLE);
+        setReminderPicker.setMustBeOnFuture(true);
         cancelSetReminderBtn.setVisibility(View.INVISIBLE);
         doneSetReminderBtn.setVisibility(View.INVISIBLE);
         setReminderLabel.setVisibility(View.INVISIBLE);
+
 
         cancelSetReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override

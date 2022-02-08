@@ -37,7 +37,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-
+/**
+ * Class for when an individual goal is clicked to view goal progress in the single goal view page
+ * Need to update from Fall 2021
+ */
 public class goalProgressView extends AppCompatActivity {
     BarChart chart;
     Toolbar toolbar;
@@ -105,6 +108,7 @@ public class goalProgressView extends AppCompatActivity {
         chart.setHighlightFullBarEnabled(false);
         chart.getDescription().setEnabled(false);
 
+        //Set the chart legend
         Legend l = chart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);

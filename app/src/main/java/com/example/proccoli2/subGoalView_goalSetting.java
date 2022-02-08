@@ -27,6 +27,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Class used to edit a subgoal that has already been previously created
+ * This is used in the goal setting edit page when the pencil is clicked on a certain subgoal
+ * It first fills in the current fields and then updates the fields if they are changed
+ * The changes are then sent  back to the goalSetting view
+ */
 public class subGoalView_goalSetting extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] subGoalDifficultyLevels = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
     String [] subGoalHowLongTimes = {
@@ -107,7 +113,7 @@ public class subGoalView_goalSetting extends AppCompatActivity implements Adapte
         });
 
 
-        //Initialize difficuly level picker
+        //Initialize difficulty level picker
         difficultLevelPicker.setMinValue(0);
         difficultLevelPicker.setMaxValue(subGoalDifficultyLevels.length-1);
         difficultLevelPicker.setDisplayedValues(subGoalDifficultyLevels);

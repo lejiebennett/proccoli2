@@ -72,24 +72,36 @@ public class MainActivity extends AppCompatActivity{
     int completedCount = 0;
     String colorCode;
     int passedAvatar = 6;
-    ArrayList<GoalModel> goalList = new ArrayList<>();
-    ArrayList<GoalModel> recyclerList = new ArrayList<>();
+
+
+    ArrayList<GoalModel> goalList = new ArrayList<>(); //List used to keep track of all Users' goals
+    ArrayList<GoalModel> recyclerList = new ArrayList<>(); //List that as a container to display the goals in all of the recycler views
+
+    //Used to sort and order the goals in each respective category
     ArrayList<GoalModel> activePersonal = new ArrayList<>();
     ArrayList<GoalModel> activeDue = new ArrayList<>();
     ArrayList<GoalModel> expiredPersonal = new ArrayList<>();
     ArrayList<GoalModel> expiredDue = new ArrayList<>();
     ArrayList<GoalModel> finishedPersonal = new ArrayList<>();
     ArrayList<GoalModel> finishedDue = new ArrayList<>();
+
+
     MainActivity_VC controller = new MainActivity_VC(this);
+
+    //Buttons to specify what recycler view to show, what order they should be sorted by
     ImageButton personalDeadlineBtn, dueDateBtn;
     Button activeBtn, expiredBtn, finishedBtn;
     boolean personalSelected = true;
     boolean dueDateSelected = false;
     MaterialButtonToggleGroup toggleGroup;
+
+    //Collect goal from goal creation pages (both indivudal and grou goals)
     GoalModel passedGoal;
     Button mainProgressBtn;
-    TextView texthome;
+    TextView texthome; //Default text created by android studio
     Toolbar toolbar;
+
+    //Used for bottom navigation
     AppBarConfiguration appBarConfiguration;
     NavController navController;
     androidx.fragment.app.FragmentManager fm;
@@ -128,11 +140,15 @@ public class MainActivity extends AppCompatActivity{
                         Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
                         Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
+                        //Get rid of the goal that was just selected from the goal list and update it with the newly passed updated goal
                         controller.removeGoalFromList(goalSelected,goalList);
                         goalList.add(passedGoal);
                         Log.d("goalList", "Just added onActivityResult: goalLst" + goalList);
 
+                        //Update the recyclers lists by removing the old goal version
                         controller.findOldAndRemoveFromRecyclers(passedGoal);
+
+                        //Update the recycler lists by adding it to the correct lists
                         controller.assignGoal(passedGoal);
                         Log.d("activePersonal", "activePersonal: "+activePersonal);
                         Log.d("AD", "AD: "+activeDue );
@@ -142,6 +158,7 @@ public class MainActivity extends AppCompatActivity{
                         Log.d("FD", "FD: "+ finishedDue );
 
 
+                        //Show recycler view with update list based on button selection
                         recyclerView.setVisibility(View.VISIBLE);
                         switch(controller.setRecyclerViewList(MainActivity.this)){
                             case "activePersonal":
@@ -194,6 +211,7 @@ public class MainActivity extends AppCompatActivity{
                         Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
 
+                        //Update goal board counts
                         //Used to get a list of all of the group goals, individual goals to get counts
                         ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                         int sumindividualCount = 0;

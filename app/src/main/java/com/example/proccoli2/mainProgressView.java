@@ -54,7 +54,13 @@ import java.util.List;
 
 import io.grpc.okhttp.internal.Util;
 
-
+/**
+ * Class for when main progress is clicked on which displays progress charts for all of the goals
+ * Notes to self:
+ *          Need to ask if the chart is scrollable in the x direction so more goals can be viewed
+ *          Also need to update the input data to make sure the proposed vs studied time is in hours vs. minutes vs unix seconds
+ *          Formatting issues about rotating bar labels, need to fix bar sizes, have them be seen outside of the bars etc
+ */
 public class mainProgressView extends AppCompatActivity {
     BarChart activeChart, expiredChart, finishedChart;
     Toolbar toolbar;

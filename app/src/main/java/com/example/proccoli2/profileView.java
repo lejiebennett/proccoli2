@@ -43,6 +43,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+/**
+ * Used to collect, change, update user profile data
+ */
 public class profileView extends AppCompatActivity {
 
     TextInputEditText fullNameInput, occupationInput, highestEducationInput;
@@ -55,7 +58,7 @@ public class profileView extends AppCompatActivity {
     String avatarImageO;
     Toolbar toolbar;
 
-    //get data from collection
+    //get data from the avatar collection
     ActivityResultLauncher<Intent> activityResultLaunchAvatarCollection = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -63,7 +66,9 @@ public class profileView extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
+                        //Get image number
                         avatarImageO = result.getData().getStringExtra("avatarImage");
+                        //Get color
                         newColor= result.getData().getStringExtra("colorCode");
                         Log.d("ReceivedImage", "onActivityResult: " + avatarImageO);
                         Log.d("ReceivedColorCode", "onActivityResult: " + colorCode);
@@ -135,6 +140,9 @@ public class profileView extends AppCompatActivity {
         dateButtonBirthdate.setText(getTodaysDate());
     }
 
+    /**
+     * Creates a datepicker dialog to select a date for birthdate
+     */
     public void initiatePickerBirthdate(){
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -155,11 +163,23 @@ public class profileView extends AppCompatActivity {
 
     }
 
+    /**
+     * Used to convert date picker dialog format into a Birthdate String
+     * @param day Number
+     * @param month Number
+     * @param year Number
+     * @return String verison of that birthdate in the Form MMM DD YYYY
+     */
     private String makeDateString(int day, int month, int year)
     {
         return getMonthFormat(month) + " " + day + " " + year;
     }
 
+    /**
+     * Convert int to MMM Month
+     * @param month int
+     * @return Month String MMM
+     */
     private String getMonthFormat(int month)
     {
         if(month == 1)
@@ -231,7 +251,10 @@ public class profileView extends AppCompatActivity {
     }
 
 
-    //Used to set the avatar profile picture
+    /**
+     * Used to set the avatar profile picture based on the image number and the color from avatarCollection
+     * @param i Avatar Image Number
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void setAvatar(int i) {
         Log.d("set avatarFun", "setAvatar: " + "org:" +  originalColor + "new: " +  newColor);
@@ -268,6 +291,11 @@ public class profileView extends AppCompatActivity {
     }
 
     //Sends the displayed avatar information to main activity
+
+    /**
+     * Send the dispalyed avatar information ot the main activity
+     * @param i Avatar Image Number
+     */
     public void setAvatarIntent(int i){
 
         Intent myIntent = new Intent(this, MainActivity.class);

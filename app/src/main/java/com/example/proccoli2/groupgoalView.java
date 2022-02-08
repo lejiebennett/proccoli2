@@ -47,6 +47,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class that creates a group goal and sends it back to main activity
+ * Current controller groupgoalCreation_VC
+ */
 public class groupgoalView extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] goalTypes = {"Assignment", "Discussion/Forum","Exam (Final)", "Exam (Midterm)",
             "Exam (Other)", "Group Project", "Project (Individual)", "Studying (Reading)", "Studying (Watching Videos)",
@@ -99,7 +103,6 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
         });
 
         //Initialize and hide pickers
-
         deadlinePicker = findViewById(R.id.groupDeadlinePickerGG);
         goalTypePicker = findViewById(R.id.goalTypePickerGG);
         deadlinePicker.setVisibility(View.INVISIBLE);
@@ -162,6 +165,8 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
             public void onClick(View view) {
                 Log.d("I was clicked", "onClick: createGoal");
                 closeKeyboard(view);
+                goalTypePicker.setVisibility(View.INVISIBLE);
+                deadlinePicker.setVisibility(View.INVISIBLE);
                 //goalCompleteBy, goalStartDate, goalDueDate, goalType
 
                 boolean null0 = false;
@@ -170,6 +175,7 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
                 boolean null3 = false;
 
 
+                //Check to see if the fields have data
                 if(null0 = controller.nullFieldCheck(bigGoalInput.getText().toString(),"Please enter a goal",context,bigGoalInput)) {
                     goalType.setHintTextColor(Color.rgb(128,128,128));
                             if (null1 = controller.nullFieldCheck(goalDueDate.getText().toString(), "Please enter a goal due date", context, goalDueDate)) {
@@ -178,12 +184,16 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
                                     goalType.setHintTextColor(Color.rgb(128,128,128));
                                     if (null3 = controller.nullFieldCheck(courseNumberInput.getText().toString().toUpperCase(), "Please enter a course number", context, courseNumberInput)) {
                                         courseNumberInput.setHintTextColor(Color.rgb(128, 128, 128));
-                                      //  Log.d("Date", "compareDates: " + goalStartDate.getText().toString() + goalCompleteBy.getText().toString() + goalDueDate.getText().toString()); DO NOT NEED FOR GROUP GOAL UI
-                                          Log.d("Date", "compareDates: " + goalDueDate.getText().toString());
 
+                                        //All fields have data
                                         try {
+                                            //Compare dates to verify logic was upheld
+                                            //  Log.d("Date", "compareDates: " + goalStartDate.getText().toString() + goalCompleteBy.getText().toString() + goalDueDate.getText().toString()); DO NOT NEED FOR GROUP GOAL UI
+                                            Log.d("Date", "compareDates: " + goalDueDate.getText().toString());
                                             if (controller.compareDates(goalDueDate.getText().toString(), context, groupgoalView.this)) {
                                                 Log.d("Success", "onClick: ran");
+                                                //Date logic was upheld, can create goal now
+
                                                // goalCompleteBy.setHintTextColor(Color.rgb(128, 128, 128)); DO NOT NEED FOR GROUP GOAL UI
                                                // goalStartDate.setHintTextColor(Color.rgb(128, 128, 128)); DO NOT NEED FOR GOUP GOAL UI
                                                 goalDueDate.setHintTextColor(Color.rgb(128, 128, 128));
@@ -193,12 +203,14 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
                                                 goalDueDate.setTextColor(Color.rgb(128, 128, 128));
 
 
+                                                //Convert String to unix
                                                // int uStart = controller.dateStrToUnix(goalStartDate.getText().toString()); DO NOT NEED FOR GROUP GOAL UI
                                                 int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
                                                 int uComplete =controller.dateStrToUnix(goalDueDate.getText().toString());
 
                                                 long currentUnix = System.currentTimeMillis() / 1000L;
 
+                                                //Create goal either using constructor or a group of setters making sure group goal is set as goal type
                                                 // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
                                                 myGoal.setBigGoal(bigGoalInput.getText().toString());
                                                 myGoal.setCompletedBy(uComplete);
@@ -215,12 +227,14 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
                                                 Log.d("GoalMade", "onClick: " + myGoal.toString());
 
 
+                                                //Send goal to main activity
                                                 Intent i = new Intent(groupgoalView.this, MainActivity.class);
                                                 i.putExtra("bigGoal", myGoal);
                                                 Log.d("putExtras", "onClick: " + myGoal);
                                                 setResult(RESULT_OK, i);
                                                 Log.d("setExtras", "onClick: " + myGoal);
                                                 finish();
+                                            //Date logic errored, need to correct
                                             } else {
                                                 Toast toast = Toast.makeText(getBaseContext(), "At least one date value is invalid.", Toast.LENGTH_LONG);
                                                 toast.show();

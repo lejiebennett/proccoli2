@@ -16,6 +16,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Random;
 
+/**
+ * Class where users can view a collection of avatars to choose and update their profile from.
+ * Colors of the avatar are randomly generated in this class and the image number and color
+ * are sent back to profile page activity to be updated
+ */
 public class avatarView extends AppCompatActivity {
 
     ImageView avatar0, avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatar9;

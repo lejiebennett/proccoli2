@@ -42,6 +42,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class for displaying an individual single goal view
+ * Current controller is called singleGoalView_VC
+ * Other notes: See scratch_singleGoalView to see popup versions of group goal start working, report progress etc
+ */
 public class singleGoalView extends AppCompatActivity {
 
     GoalModel passedGoal;
@@ -62,52 +67,12 @@ public class singleGoalView extends AppCompatActivity {
     Button goalProgressBtn;
     int smileRating;
 
-    //Start Working popup
-    startWorkingFullAdapter startAdapter;
-    RecyclerView startWorkingRecyclerView;
-
-    //Report Progress popup
-    reportProgressFullAdapter reportProgressAdapter;
-    RecyclerView reportProgressRecyclerView;
-    List<SubGoalModel> reportProgressItems;
-    int subGoalPositionForProgressReport;
-
-    //See Progress popup
-    List<SubGoalModel> seeProgressItems;
-    seeProgressFullAdapter seeProgressAdapter;
-    RecyclerView seeProgressRecyclerView;
-
-
     //Set Reminder
     SingleDateAndTimePicker setReminderPicker;
     TextView cancelSetReminderBtn, doneSetReminderBtn, setReminderLabel;
 
-
-
-
     /***
-     * Used to catch data from the reportProgressGroupGoal where users can the report their percentage of progress
-     */
-    ActivityResultLauncher<Intent> activityResultLaunchProgressReport = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Log.d("onActivityResult", "ActivityResultLaunchprogressReport: RUNNING");
-                        int pickedPercentage = result.getData().getIntExtra("pickedPercentage",0);
-                        myGoal.getSubGoals().get(subGoalPositionForProgressReport).setPercentageComplete(pickedPercentage);
-                        Log.d("NewCompletePercentage", myGoal.getSubGoals().get(subGoalPositionForProgressReport).getSubGoalName() + " " + String.valueOf(myGoal.getSubGoals().get(subGoalPositionForProgressReport).getPercentageComplete()));
-                        if(myGoal.getSubGoals().get(subGoalPositionForProgressReport).getPercentageComplete()==100){
-                            reportProgressAdapter.remove(subGoalPositionForProgressReport);
-                            Log.d("removed!!!", "completion rate was 100%: RUNNING");
-                        }
-                    }
-                }
-            });
-
-    /***
-     * Used to catch data from the smileFace survey where users can rate their satisfaction with the goal they just completed
+     * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
      */
     ActivityResultLauncher<Intent> activityResultLaunchSmileyRating = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -125,6 +90,10 @@ public class singleGoalView extends AppCompatActivity {
             });
 
 
+    /**
+     * Used to catch data from goal setting page
+     * Will need to further update since it is only manually setting a few fields. I will need all of the fields later on
+     */
     ActivityResultLauncher<Intent> activityResultLaunch3 = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -161,12 +130,16 @@ public class singleGoalView extends AppCompatActivity {
         Log.d("OriginGoalFromMain", String.valueOf(originalGoal));
 
 
+        //Initalize Reminder views
         setReminderPicker = findViewById(R.id.setReminderPickerS);
         cancelSetReminderBtn = findViewById(R.id.cancelSetReminderBtnS);
         doneSetReminderBtn = findViewById(R.id.doneSetReminderBtnS);
         setReminderLabel = findViewById(R.id.setReminderLabelS);
 
+
+        //Hide Reminder Views
         setReminderPicker.setVisibility(View.INVISIBLE);
+        setReminderPicker.setMustBeOnFuture(true);
         cancelSetReminderBtn.setVisibility(View.INVISIBLE);
         doneSetReminderBtn.setVisibility(View.INVISIBLE);
         setReminderLabel.setVisibility(View.INVISIBLE);
@@ -174,6 +147,7 @@ public class singleGoalView extends AppCompatActivity {
         cancelSetReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Hide reminder views
                 cancelSetReminderBtn.setVisibility(View.INVISIBLE);
                 doneSetReminderBtn.setVisibility(View.INVISIBLE);
                 setReminderPicker.setVisibility(View.INVISIBLE);
@@ -184,6 +158,7 @@ public class singleGoalView extends AppCompatActivity {
         doneSetReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //INSERT THE CODE TO SET A LOCAL NOTIFICATION HERE//
                 Log.d("setReminder", "onClick: I selected this date" + setReminderPicker.getDate().toString());
                 cancelSetReminderBtn.setVisibility(View.INVISIBLE);
                 doneSetReminderBtn.setVisibility(View.INVISIBLE);
@@ -269,9 +244,6 @@ public class singleGoalView extends AppCompatActivity {
             }
         });
 
-
-
-
         startWorking = findViewById(R.id.startWorkingBtn);
         startWorking.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,6 +263,7 @@ public class singleGoalView extends AppCompatActivity {
             }
         });
 
+        //Initalize the text on the single goal view screen
         goalInfo = (TextView) findViewById(R.id.goalInfo);
         goalInfo.setText("\n" + myGoal.getBigGoal() + "\n\n" + controller.unixToString(myGoal.getDeadline()));
         subGoalLabel = findViewById(R.id.SubGoalRecyclerLabel);
@@ -308,6 +281,7 @@ public class singleGoalView extends AppCompatActivity {
 
         notesRecyclerView.setVisibility(View.VISIBLE);
 
+        //If there are subgaols then show them
         if(myGoal.getSubGoals().size()!= 0){
             subGoalLabel.setVisibility(View.VISIBLE);
             subGoalRecyclerView.setVisibility(View.VISIBLE);
@@ -316,7 +290,6 @@ public class singleGoalView extends AppCompatActivity {
         noteInput = findViewById(R.id.noteInput);
 
         uploadNoteBtn = findViewById(R.id.uploadNote);
-
         uploadNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -343,6 +316,7 @@ public class singleGoalView extends AppCompatActivity {
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Mark goal as complete
                 myGoal.setCompleted(true);
                 completeBtn.setBackgroundColor(Color.GREEN);
                 checkIfGoalComplete(myGoal.getIsCompleted());
@@ -408,9 +382,7 @@ public class singleGoalView extends AppCompatActivity {
             else{
                 Log.d("subgoalCompletedStatus", "onBindViewHolder: " + items.get(position).getIsChecked());
                 viewHolder.completeCheckbox.setChecked(false);
-
             }
-
         }
 
         @Override
@@ -445,6 +417,7 @@ public class singleGoalView extends AppCompatActivity {
             Log.d("AfterItemsAdd", "addItems: " + items);
         }
     }
+
 
     class SubGoalFullViewHolder extends RecyclerView.ViewHolder {
 
@@ -487,6 +460,9 @@ public class singleGoalView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set up the subgoal recycler viewer
+     */
     private void setUpSubgoalRecyclerView() {
         subGoalRecyclerView.setVisibility(View.VISIBLE);
         subGoalLabel.setVisibility(View.VISIBLE);
@@ -494,7 +470,6 @@ public class singleGoalView extends AppCompatActivity {
         adapter = new SubGoalFullAdapter();
         subGoalRecyclerView.setAdapter(adapter);
         subGoalRecyclerView.setHasFixedSize(true);
-
     }
 
 
@@ -551,6 +526,9 @@ public class singleGoalView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set up Notes Recycler view
+     */
     private void setUpNotesRecyclerView() {
         notesRecyclerView.setVisibility(View.INVISIBLE);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -559,6 +537,11 @@ public class singleGoalView extends AppCompatActivity {
         Log.d("finishedSetup", "setUpNotesRecyclerView: finished setUpNotesRecyclerView");
     }
 
+
+    /**
+     * Hides keyboard from view
+     * @param view
+     */
     public void closeKeyboard(View view){
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -567,411 +550,6 @@ public class singleGoalView extends AppCompatActivity {
 
         }
     }
-
-
-    /////////////////Everything below is for startWorking Popup///////////
-
-    class startWorkingFullAdapter extends RecyclerView.Adapter {
-        List<SubGoalModel> startWorkingItems;
-
-        public startWorkingFullAdapter() {
-            startWorkingItems = new ArrayList<>();
-
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                Log.d("trying to add", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                startWorkingItems.add(myGoal.getSubGoals().get(i));
-                Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-            }
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new startWorkingSubGoalViewHolder(parent);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Log.d("Position", "onBindViewHolder: position" + position);
-            startWorkingSubGoalViewHolder viewHolder = (startWorkingSubGoalViewHolder) holder;
-            final SubGoalModel item = startWorkingItems.get(position);
-            Log.d("Position", "onBindViewHolder: position" + item);
-            viewHolder.subGoalText.setText("\n" + startWorkingItems.get(position).getSubGoalName() + "\nDeadline: "+ controller.unixToStringDateTime(startWorkingItems.get(position).getDeadline()));
-            if(startWorkingItems.get(position).getSubGoalAssignerID()!= null && startWorkingItems.get(position).getSubGoalAssignerID().equals("available")){
-                viewHolder.availableToClaim.setVisibility(View.VISIBLE);
-                viewHolder.availableToClaim.setClickable(true);
-            }
-            else
-            {
-                viewHolder.availableToClaim.setVisibility(View.INVISIBLE);
-                viewHolder.availableToClaim.setClickable(false);
-                viewHolder.creatorInfo.setText(startWorkingItems.get(position).getSubGoalAssignerID());
-            }
-            viewHolder.setSubGoalPosition(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return startWorkingItems.size();
-        }
-
-        public void remove(int position) {
-            SubGoalModel item = startWorkingItems.get(position);
-            if (startWorkingItems.contains(item)) {
-                startWorkingItems.remove(position);
-                notifyItemRemoved(position);
-                for(int i = 0; i<myGoal.getSubGoals().size()-1;i++){
-                    if(myGoal.getSubGoals().get(i) == item){
-                        myGoal.getSubGoals().remove(item);
-                    }
-                }
-            }
-        }
-
-        public void addInitialItems(){
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                Log.d("trying to add", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                startWorkingItems.add(myGoal.getSubGoals().get(i));
-                Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-            }
-        }
-
-        public void addItem(SubGoalModel subgoal){
-            startWorkingItems.add(subgoal);
-            notifyItemInserted(startWorkingItems.size() - 1);
-            Log.d("AfterItemsAdd", "addItems: " + startWorkingItems);
-        }
-    }
-
-    class startWorkingSubGoalViewHolder extends RecyclerView.ViewHolder {
-
-        TextView subGoalText,creatorInfo;
-        Button availableToClaim;
-        int subGoalPosition;
-
-        public void setSubGoalPosition(int subGoalPosition) {
-            this.subGoalPosition = subGoalPosition;
-        }
-
-        public int getSubGoalPosition() {
-            return subGoalPosition;
-        }
-
-        public startWorkingSubGoalViewHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.groupgoalsubgoal_item, parent, false));
-            subGoalText = (TextView) itemView.findViewById(R.id.subGoalItemInfoGG);
-
-            subGoalText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(singleGoalView.this, timerView.class);
-                    startActivity(i);
-                }
-            });
-
-            creatorInfo = (TextView) itemView.findViewById(R.id.creatorInfoGG);
-            creatorInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(singleGoalView.this, timerView.class);
-                    startActivity(i);
-                }
-            });
-
-            availableToClaim = (Button) itemView.findViewById(R.id.availableToClaimBtn);
-            availableToClaim.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("available", "onClick: Clicked available to claim");
-                }
-            });
-
-            availableToClaim.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setUpStartWorkingRecyclerView() {
-        startWorkingRecyclerView.setVisibility(View.VISIBLE);
-        startWorkingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        startAdapter = new startWorkingFullAdapter();
-        startWorkingRecyclerView.setAdapter(startAdapter);
-        startWorkingRecyclerView.setHasFixedSize(true);
-
-    }
-
-    private void openInviteUserPopUp(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View viewPopup = this.getLayoutInflater().inflate(R.layout.startworking_popup, null);
-        builder.setView(viewPopup);
-        ImageView cancelStartWorking;
-
-        startWorkingRecyclerView = (RecyclerView) viewPopup.findViewById(R.id.startWorkingRecyclerView);
-        setUpStartWorkingRecyclerView();
-        cancelStartWorking = (ImageView) viewPopup.findViewById(R.id.startWorkingBtnCancel);
-        cancelStartWorking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-        builder.setNegativeButton("Exit", null);
-        builder.create().show();
-    }
-
-/////////////////Everything below is for reportProgress Popup///////////
-
-    class reportProgressFullAdapter extends RecyclerView.Adapter {
-
-
-        public reportProgressFullAdapter() {
-            reportProgressItems = new ArrayList<>();
-
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                if(myGoal.getSubGoals().get(i).getPercentageComplete()!=100){
-                    reportProgressItems.add(myGoal.getSubGoals().get(i));
-                    Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                }
-
-            }
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new reportProgressSubGoalViewHolder(parent);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Log.d("Position", "onBindViewHolder: position" + position);
-            reportProgressSubGoalViewHolder viewHolder = (reportProgressSubGoalViewHolder) holder;
-            final SubGoalModel item = reportProgressItems.get(position);
-            Log.d("Position", "onBindViewHolder: position" + item);
-            viewHolder.subGoalText.setText("\n" + reportProgressItems.get(position).getSubGoalName());
-            viewHolder.setSubGoalPosition(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return reportProgressItems.size();
-        }
-
-        public void remove(int position) {
-            SubGoalModel item = reportProgressItems.get(position);
-            if (reportProgressItems.contains(item)) {
-                reportProgressItems.remove(position);
-                notifyItemRemoved(position);
-                for(int i = 0; i<myGoal.getSubGoals().size()-1;i++){
-                    if(myGoal.getSubGoals().get(i) == item){
-                        myGoal.getSubGoals().remove(item);
-                    }
-                }
-            }
-        }
-
-        public void addInitialItems(){
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                Log.d("trying to add", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                reportProgressItems.add(myGoal.getSubGoals().get(i));
-                Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-            }
-        }
-
-        public void addItem(SubGoalModel subgoal){
-            reportProgressItems.add(subgoal);
-            notifyItemInserted(reportProgressItems.size() - 1);
-            Log.d("AfterItemsAdd", "addItems: " + reportProgressItems);
-        }
-    }
-
-    class reportProgressSubGoalViewHolder extends RecyclerView.ViewHolder {
-
-        TextView subGoalText;
-        Button reportBtn;
-        int subGoalPosition;
-
-        public void setSubGoalPosition(int subGoalPosition) {
-            this.subGoalPosition = subGoalPosition;
-        }
-
-        public int getSubGoalPosition() {
-            return subGoalPosition;
-        }
-
-        public reportProgressSubGoalViewHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.reportprogressitem_view, parent, false));
-            subGoalText = (TextView) itemView.findViewById(R.id.subGoalInfoSingleViewGG);
-
-            reportBtn = (Button) itemView.findViewById(R.id.reportBtn);
-            reportBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("reportBTnClicked", "onClick: ReportingBtn clicked");
-                        subGoalPositionForProgressReport = subGoalPosition;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("subgoalText", subGoalText.getText().toString());
-                        bundle.putString("currentPercentageComplete",String.valueOf(reportProgressItems.get(subGoalPosition).getPercentageComplete()));
-                        Intent i = new Intent(singleGoalView.this,progressReportView.class);
-                        i.putExtras(bundle);
-                        activityResultLaunchProgressReport.launch(i);
-                   //     startActivity(i);
-                }
-            });
-        }
-    }
-
-    private void setUpReportProgressRecyclerView() {
-        reportProgressRecyclerView.setVisibility(View.VISIBLE);
-        reportProgressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        reportProgressAdapter = new reportProgressFullAdapter();
-        reportProgressRecyclerView.setAdapter(reportProgressAdapter);
-        reportProgressRecyclerView.setHasFixedSize(true);
-
-    }
-
-
-    private void openReportProgressPopUp(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View viewPopup = this.getLayoutInflater().inflate(R.layout.reportprogress_popup, null);
-        builder.setView(viewPopup);
-        reportProgressRecyclerView = (RecyclerView) viewPopup.findViewById(R.id.reportProgressRecyclerView);
-        setUpReportProgressRecyclerView();
-        builder.setNegativeButton("Exit", null);
-        builder.create().show();
-    }
-
-    /////////////////Everything below is for reportProgress Popup///////////
-    class seeProgressFullAdapter extends RecyclerView.Adapter {
-
-        public seeProgressFullAdapter() {
-            seeProgressItems = new ArrayList<>();
-
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                    seeProgressItems.add(myGoal.getSubGoals().get(i));
-                    Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                }
-
-            Collections.sort(seeProgressItems,compareByProgressComplete);
-
-            }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new seeProgressSubGoalViewHolder(parent);
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Log.d("Position", "onBindViewHolder: position" + position);
-            seeProgressSubGoalViewHolder viewHolder = (seeProgressSubGoalViewHolder) holder;
-            final SubGoalModel item = seeProgressItems.get(position);
-            Log.d("Position", "onBindViewHolder: position" + item);
-            viewHolder.subGoalText.setText(seeProgressItems.get(position).getSubGoalName());
-            viewHolder.percentageText.setText(String.valueOf(seeProgressItems.get(position).getPercentageComplete()) + "%");
-            viewHolder.creatorText.setText(seeProgressItems.get(position).getSubGoalAssignerID());
-            viewHolder.progressBar.setProgress(seeProgressItems.get(position).getPercentageComplete(),true);
-            viewHolder.progressBar.setScaleY(3f);
-
-            //Sets colors for progress bar
-            int percentForProgress = seeProgressItems.get(position).getPercentageComplete();
-            if(percentForProgress < 25){
-                viewHolder.progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.darkredprogress));
-
-            }
-            else if(percentForProgress >=25 && percentForProgress<50){
-                viewHolder.progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.redprogress));
-
-            }
-            else if(percentForProgress >=50 && percentForProgress<75){
-                viewHolder.progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.greenprogress));
-
-            }
-            else
-                viewHolder.progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.darkgreenprogress));
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return seeProgressItems.size();
-        }
-
-
-        public void remove(int position) {
-            SubGoalModel item = seeProgressItems.get(position);
-            if (seeProgressItems.contains(item)) {
-                seeProgressItems.remove(position);
-                notifyItemRemoved(position);
-                for(int i = 0; i<myGoal.getSubGoals().size()-1;i++){
-                    if(myGoal.getSubGoals().get(i) == item){
-                        myGoal.getSubGoals().remove(item);
-                    }
-                }
-            }
-        }
-
-        public void addInitialItems(){
-            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
-                Log.d("trying to add", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-                seeProgressItems.add(myGoal.getSubGoals().get(i));
-                Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
-            }
-        }
-
-        public void addItem(SubGoalModel subgoal){
-            seeProgressItems.add(subgoal);
-            notifyItemInserted(seeProgressItems.size() - 1);
-            Log.d("AfterItemsAdd", "addItems: " + seeProgressItems);
-        }
-    }
-
-
-    class seeProgressSubGoalViewHolder extends RecyclerView.ViewHolder {
-
-        TextView subGoalText, percentageText, creatorText;
-        ProgressBar progressBar;
-
-        public seeProgressSubGoalViewHolder(ViewGroup parent) {
-            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.seeprogressitem_view, parent, false));
-            subGoalText = (TextView) itemView.findViewById(R.id.subGoalNameSeeProgress);
-
-            percentageText= (TextView) itemView.findViewById(R.id.percentCompleteSeeProgress);
-
-            creatorText =  (TextView) itemView.findViewById(R.id.subgoalCreatorSeeProgress);
-
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
-        }
-    }
-
-    private void setUpSeeProgressRecyclerView() {
-        seeProgressRecyclerView.setVisibility(View.VISIBLE);
-        seeProgressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        seeProgressAdapter = new seeProgressFullAdapter();
-        seeProgressRecyclerView.setAdapter(seeProgressAdapter);
-        seeProgressRecyclerView.setHasFixedSize(true);
-
-    }
-
-
-    private void openSeeProgressPopUp(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View viewPopup = this.getLayoutInflater().inflate(R.layout.seeprogress_popup, null);
-        builder.setView(viewPopup);
-        seeProgressRecyclerView = (RecyclerView) viewPopup.findViewById(R.id.seeProgressRecyclerView);
-        setUpSeeProgressRecyclerView();
-        builder.setNegativeButton("Exit", null);
-        builder.create().show();
-    }
-
-
-    /**
-     * Used to compare the progressCompleteBy to sort the progress bars in the see Progress popup
-     */
-    Comparator<SubGoalModel> compareByProgressComplete = new Comparator<SubGoalModel>() {
-        @Override
-        public int compare(SubGoalModel subgoal1, SubGoalModel subgoal2) {
-            return Integer.compare(subgoal1.getPercentageComplete(),subgoal2.getPercentageComplete());
-        }
-    };
 
 
 }

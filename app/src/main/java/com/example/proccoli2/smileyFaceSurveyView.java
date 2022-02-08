@@ -18,6 +18,10 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.Random;
 
+/**
+ * Used to get goal feedback using smiley faces from the user once an individual goal is marked complete
+ * Data will be sent back to singeGoalView so it can update that singleGoal which will then be sent to main actiivty page
+ */
 public class smileyFaceSurveyView extends AppCompatActivity {
 
     ImageView face1, face2, face3, face4, face5;
