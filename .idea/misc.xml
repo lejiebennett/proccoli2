@@ -51,7 +51,7 @@
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.1" />
         <entry key="app/src/main/res/layout/friendsitem_view.xml" value="0.49310872894333846" />
         <entry key="app/src/main/res/layout/goal_view.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/goal_view2.xml" value="0.4364326375711575" />
+        <entry key="app/src/main/res/layout/goal_view2.xml" value="0.33" />
         <entry key="app/src/main/res/layout/goalitem_selfReport.xml" value="0.67" />
         <entry key="app/src/main/res/layout/goalitem_selfreport.xml" value="0.10416666666666667" />
         <entry key="app/src/main/res/layout/goalitem_view.xml" value="0.21" />
@@ -86,6 +86,7 @@
         <entry key="app/src/main/res/layout/settings_action_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/singlegoalfulldisplay_view.xml" value="0.5" />
         <entry key="app/src/main/res/layout/smileyfacesurvey_view.xml" value="0.6442166910688141" />
+        <entry key="app/src/main/res/layout/specify_planned_study_time.xml" value="0.12689969604863222" />
         <entry key="app/src/main/res/layout/splashscreen_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/startworking_popup.xml" value="0.44016227180527384" />
         <entry key="app/src/main/res/layout/subgoal_checkbox_item.xml" value="0.16153846153846155" />

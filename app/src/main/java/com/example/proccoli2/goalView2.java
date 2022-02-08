@@ -65,12 +65,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is used to create an individual goal
+ * It uses the controlled currently named goalCreation_VC.java
+ */
+
 public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] goalTypes = {"Assignment", "Discussion/Forum","Exam (Final)", "Exam (Midterm)",
             "Exam (Other)", "Group Project", "Project (Individual)", "Studying (Reading)", "Studying (Watching Videos)",
             "Studying (Other)", "Other"};
 
-    GoalModel myGoal = new GoalModel();
+    GoalModel myGoal = new GoalModel(); //Used to store the input fields and send back to mainActivity
     TextInputEditText bigGoalInput, courseNumberInput;
     Button createSubGoalBtn, createGoalBtn;
     TextView goalCompleteBy, goalStartDate, goalDueDate, goalType,displaySubGoals;
@@ -82,8 +87,26 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
     //Pickers used to get input
     SingleDateAndTimePicker completeByPicker, startPicker, duePicker;
-    NumberPicker goalTypePicker;
+    NumberPicker goalTypePicker, plannedStudyPicker;
     Button hideInputBtn;
+
+
+    //Used if no Subgoals are created so need to set a planned study time
+    TextView plannedStudyInput;
+    LinearLayout plannedStudyLayout;
+    Button noPlannedStudyBtn, yesPlannedStudyBtn;
+    String [] plannedStudyHowLong = {
+            "1 hour", "2 hours", "3 hours", "4 hours", "5 hours", "6 hours", "7 hours", "8 hours", "9 hours", "10 hours",
+            "11 hour", "12 hours", "13 hours", "14 hours", "15 hours", "16 hours", "17 hours", "18 hours", "19 hours", "20 hours",
+            "21 hour", "22 hours", "23 hours", "24 hours", "5 hours", "26 hours", "27 hours", "28 hours", "29 hours", "30 hours",
+            "31 hour", "32 hours", "33 hours", "34 hours", "35 hours", "36 hours", "37 hours", "38 hours", "39 hours", "40 hours",
+            "41 hour", "42 hours", "43 hours", "44 hours", "45 hours", "46 hours", "47 hours", "48 hours", "49 hours", "50 hours",
+            "51 hour", "52 hours", "53 hours", "54 hours", "55 hours", "56 hours", "57 hours", "58 hours", "59 hours", "60 hours",
+            "61 hour", "62 hours", "63 hours", "64 hours", "65 hours", "66 hours", "67 hours", "68 hours", "69 hours", "70 hours",
+            "71 hour", "72 hours", "73 hours", "74 hours", "75 hours", "76 hours", "77 hours", "78 hours", "79 hours", "80 hours",
+            "81 hour", "82 hours", "83 hours", "84 hours", "85 hours", "86 hours", "87 hours", "88 hours", "89 hours", "90 hours",
+            "91 hour", "92 hours", "93 hours", "94 hours", "95 hours", "96 hours", "97 hours", "98 hours", "99 hours", "100 hours"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +128,10 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
             @Override
             public void onClick(View view) {
                 courseNumberInput.setCursorVisible(true);
+                goalTypePicker.setVisibility(View.INVISIBLE);
+                duePicker.setVisibility(View.INVISIBLE);
+                startPicker.setVisibility(View.INVISIBLE);
+                completeByPicker.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -118,6 +145,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
             }
         });
 
+        //Set up all the pickers and the hide input/pickers btn
         hideInputBtn = findViewById(R.id.hideInputBtn);
         goalTypePicker = findViewById(R.id.goalTypePicker);
         goalTypePicker.setVisibility(View.INVISIBLE);
@@ -127,6 +155,17 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         completeByPicker.setVisibility(View.INVISIBLE);
         duePicker = findViewById(R.id.deadlinePicker);
         duePicker.setVisibility(View.INVISIBLE);
+
+        //Set up planned study views and hide them
+        plannedStudyPicker = findViewById(R.id.plannedStudyPicker);
+        plannedStudyLayout = findViewById(R.id.plannedStudyLayout);
+        plannedStudyInput = findViewById(R.id.plannedStudyInput);
+        yesPlannedStudyBtn = findViewById(R.id.yesPlannedStudyBtn);
+        noPlannedStudyBtn = findViewById(R.id.noPlannedStudyBtn);
+        plannedStudyLayout.setVisibility(View.INVISIBLE);
+
+
+
 
         goalType = findViewById(R.id.goalTypeInput);
         goalTypePicker.setMinValue(0);
@@ -141,7 +180,6 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                 completeByPicker.setVisibility(View.INVISIBLE);
                 duePicker.setVisibility(View.INVISIBLE);
                 startPicker.setVisibility(View.INVISIBLE);
-
                 goalTypePicker.setVisibility(View.VISIBLE);
 
             }
@@ -159,6 +197,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         setUpRecyclerView();
 
 
+        //Used to collect the subgoals created and make them appear in the recycler view
+        //Adds them to myGoal
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -173,6 +213,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                             }
 
                             */
+                            //Add subgoal to myGoal which will be passed to the main goal if create goal is successfully executed
                             myGoal.getSubGoals().add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
                             displaySubGoals.setText("\nSubgoals");
                             displaySubGoals.setVisibility(View.VISIBLE);
@@ -190,6 +231,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
             public void onClick(View view) {
                 Log.d("I was clicked", "onClick: addSubGoal");
                 boolean null2 = false;
+
+                //Ensures that a complete by time was selected first
                 if (null2 = controller.nullFieldCheck(goalCompleteBy.getText().toString(), "Please enter a complete by date", context, goalCompleteBy)) {
                     goalCompleteBy.setHintTextColor(Color.rgb(128,128,128));
                     Intent i = new Intent(goalView2.this, subGoalView.class);
@@ -227,8 +270,6 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
             public void onDateChanged(String s, Date date) {
                 Log.d("CompletePicker", "onScrollChange: ");
                 goalCompleteBy.setText(controller.dateToStr(completeByPicker.getDate()));
-
-
             }
         });
 
@@ -270,6 +311,26 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         });
 
 
+        plannedStudyInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                plannedStudyPicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        //Initalizes the planned Study Picker
+        plannedStudyPicker.setMinValue(0);
+        plannedStudyPicker.setMaxValue(plannedStudyHowLong.length-1);
+        plannedStudyPicker.setDisplayedValues(plannedStudyHowLong);
+        plannedStudyPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                plannedStudyInput.setText(plannedStudyHowLong[plannedStudyPicker.getValue()]);
+
+            }
+        });
+
+
         /*
         Goal is not created or checked for errors until the createGoalBtn is clicked.
         This is where it will do nullFieldChecks and other logical checks.
@@ -282,6 +343,10 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                 Log.d("I was clicked", "onClick: createGoal");
 
                 closeKeyboard(view);
+                goalTypePicker.setVisibility(View.INVISIBLE);
+                startPicker.setVisibility(View.INVISIBLE);
+                duePicker.setVisibility(View.INVISIBLE);
+                completeByPicker.setVisibility(View.INVISIBLE);
                 //goalCompleteBy, goalStartDate, goalDueDate, goalType
 
                 boolean null0 = false;
@@ -292,8 +357,9 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                 boolean null5 = false;
 
 
+                //This does all the null checking and changes the color of the text fields if there is a null or invalid field
                 if(null0 = controller.nullFieldCheck(bigGoalInput.getText().toString(),"Please enter a goal",context,bigGoalInput)) {
-                    goalType.setHintTextColor(Color.rgb(128,128,128));
+                    bigGoalInput.setHintTextColor(Color.rgb(128,128,128));
                     if (null1 = controller.nullFieldCheck(goalCompleteBy.getText().toString(), "Please enter a complete by date", context, goalCompleteBy)) {
                         goalCompleteBy.setHintTextColor(Color.rgb(128,128,128));
                         if (null2 = controller.nullFieldCheck(goalStartDate.getText().toString(), "Please enter a goal start date", context, goalStartDate)) {
@@ -306,8 +372,12 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                         courseNumberInput.setHintTextColor(Color.rgb(128, 128, 128));
                                         Log.d("Date", "compareDates: " + goalStartDate.getText().toString() + goalCompleteBy.getText().toString() + goalDueDate.getText().toString());
                                         try {
+                                            //Once all of the fields are verified to contain data, compare dates to check for logic
                                             if (controller.compareDates(goalStartDate.getText().toString(), goalCompleteBy.getText().toString(), goalDueDate.getText().toString(), context, goalView2.this)) {
+                                                //Data input is successful
                                                 Log.d("Success", "onClick: ran");
+
+                                                //Reset the background colors in case they previously were errored
                                                 goalCompleteBy.setHintTextColor(Color.rgb(128, 128, 128));
                                                 goalStartDate.setHintTextColor(Color.rgb(128, 128, 128));
                                                 goalDueDate.setHintTextColor(Color.rgb(128, 128, 128));
@@ -317,35 +387,112 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                 goalDueDate.setTextColor(Color.rgb(128, 128, 128));
 
 
-                                                int uComplete = controller.dateStrToUnix(goalCompleteBy.getText().toString());
-                                                int uStart = controller.dateStrToUnix(goalStartDate.getText().toString());
-                                                int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
-                                                long currentUnix = System.currentTimeMillis() / 1000L;
+                                                //If there are no subgoals then must set a proposed study time
+                                                if(myGoal.getSubGoals().size()==0){
+                                                    Log.d("No subgoals", "onClick: NO SUBGOALS");
+                                                    plannedStudyLayout.setVisibility(View.VISIBLE);
 
-                                                // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
-                                                myGoal.setBigGoal(bigGoalInput.getText().toString());
-                                                myGoal.setCompletedBy(uComplete);
-                                                myGoal.setGoalType(goalType.getText().toString());
-                                                myGoal.setStartDate(uStart);
-                                                myGoal.setDeadline(uDue);
-                                                myGoal.setCreatedAt((int) currentUnix);
-                                                myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
-                                                myGoal.setGoalType("individual");
-                                                String myGoalID = "TESTGOALID";
-                                                myGoal.setGoalId(myGoalID);
+                                                    noPlannedStudyBtn.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            plannedStudyLayout.setVisibility(View.INVISIBLE);
+                                                            plannedStudyPicker.setVisibility(View.INVISIBLE);
+                                                        }
+                                                    });
 
-                                                Log.d("GoalMade", "onClick: " + myGoal.toString());
-                                                //  myGoal = new GoalModel();
+                                                    yesPlannedStudyBtn.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            boolean nullPlanned = false;
+
+                                                            //Verifies that a proposed time was selected
+                                                            if (nullPlanned = controller.nullFieldCheck(plannedStudyInput.getText().toString(), "Please select a planned study time", context, plannedStudyInput)) {
+                                                                //Proposed time was selected
+                                                                //Recolor field in case errored
+                                                                plannedStudyInput.setHintTextColor(Color.rgb(128, 128, 128));
+                                                                Log.d("proposedStudyTime", "onClick: " + plannedStudyInput.getText().toString());
+
+                                                                //Convert String Dates to unix
+                                                                int uComplete = controller.dateStrToUnix(goalCompleteBy.getText().toString());
+                                                                int uStart = controller.dateStrToUnix(goalStartDate.getText().toString());
+                                                                int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
+                                                                long currentUnix = System.currentTimeMillis() / 1000L;
+
+                                                                //Set all of the attributes of the goal either using commented out constructor or set individually
+                                                                // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
+                                                                myGoal.setBigGoal(bigGoalInput.getText().toString());
+                                                                myGoal.setCompletedBy(uComplete);
+                                                                myGoal.setGoalType(goalType.getText().toString());
+                                                                myGoal.setStartDate(uStart);
+                                                                myGoal.setDeadline(uDue);
+                                                                myGoal.setCreatedAt((int) currentUnix);
+                                                                myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
+                                                                myGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
+                                                                myGoal.setGoalType("individual");
+                                                                String myGoalID = "TESTGOALID";
+                                                                myGoal.setGoalId(myGoalID);
 
 
-                                                Intent i = new Intent(goalView2.this, MainActivity.class);
-                                                i.putExtra("bigGoal", myGoal);
-                                                //  startActivity(i);
-                                                //  finish();
-                                                Log.d("putExtras", "onClick: " + myGoal);
-                                                setResult(RESULT_OK, i);
-                                                Log.d("setExtras", "onClick: " + myGoal);
-                                                finish();
+
+                                                                Log.d("GoalMade", "onClick: " + myGoal.toString());
+                                                                //  myGoal = new GoalModel();
+
+                                                                //Send goal back to main activity
+                                                                Intent i = new Intent(goalView2.this, MainActivity.class);
+                                                                i.putExtra("bigGoal", myGoal);
+                                                                //  startActivity(i);
+                                                                //  finish();
+                                                                Log.d("putExtras", "onClick: " + myGoal);
+                                                                setResult(RESULT_OK, i);
+                                                                Log.d("setExtras", "onClick: " + myGoal);
+                                                                finish();
+                                                            }
+                                                        }
+                                                    });
+
+                                                }
+
+                                                //Subgoals were found so directly create goal
+                                                else{
+
+                                                    //Convert String dates to unix
+                                                    int uComplete = controller.dateStrToUnix(goalCompleteBy.getText().toString());
+                                                    int uStart = controller.dateStrToUnix(goalStartDate.getText().toString());
+                                                    int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
+                                                    long currentUnix = System.currentTimeMillis() / 1000L;
+
+                                                    //Set all of the attributes of the goal either using commented out constructor or set individually
+                                                    // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
+                                                    myGoal.setBigGoal(bigGoalInput.getText().toString());
+                                                    myGoal.setCompletedBy(uComplete);
+                                                    myGoal.setGoalType(goalType.getText().toString());
+                                                    myGoal.setStartDate(uStart);
+                                                    myGoal.setDeadline(uDue);
+                                                    myGoal.setCreatedAt((int) currentUnix);
+                                                    myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
+                                                    myGoal.setGoalType("individual");
+                                                    String myGoalID = "TESTGOALID";
+                                                    myGoal.setGoalId(myGoalID);
+
+
+
+                                                    Log.d("GoalMade", "onClick: " + myGoal.toString());
+                                                    //  myGoal = new GoalModel();
+
+
+                                                    //Send goal to MainActivity
+                                                    Intent i = new Intent(goalView2.this, MainActivity.class);
+                                                    i.putExtra("bigGoal", myGoal);
+                                                    //  startActivity(i);
+                                                    //  finish();
+                                                    Log.d("putExtras", "onClick: " + myGoal);
+                                                    setResult(RESULT_OK, i);
+                                                    Log.d("setExtras", "onClick: " + myGoal);
+                                                    finish();
+                                                }
+
+
+                                            //Dates failed to have valid logic and must be corrected, turn fields red
                                             } else {
                                                 Toast toast = Toast.makeText(getBaseContext(), "At least one date value is invalid.", Toast.LENGTH_LONG);
                                                 toast.show();
@@ -419,6 +566,10 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Hides keyboard from view
+     * @param view
+     */
     public void closeKeyboard(View view){
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -429,6 +580,9 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         }
     }
 
+    /**
+     * Set up subgoal recycler view
+     */
     private void setUpRecyclerView() {
         subGoalRecyclerView.setVisibility(View.INVISIBLE);
         subGoalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -439,6 +593,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
     }
 
     /**
+     * https://gist.github.com/nwellis/bfc09c92de28147ffcd04747f9706f06
      * This is the standard support library way of implementing "swipe to delete" feature. You can do custom drawing in onChildDraw method
      * but whatever you draw will disappear once the swipe is over, and while the items are animating to their new position the recycler view
      * background will be visible. That is rarely an desired effect.

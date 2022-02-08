@@ -168,7 +168,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        >
 
         <TextView
             android:id="@+id/displaySubGoal"
@@ -231,7 +232,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         app:layout_constraintVertical_bias="1.0" />
 
     <NumberPicker
@@ -241,6 +241,90 @@
         android:background="#e6e8e6"
         android:divider="@color/black"
         android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:id="@+id/plannedStudyLayout"
+        android:layout_width="255dp"
+        android:layout_height="170dp"
+        android:background="@color/dark_grey"
+        android:orientation="vertical"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="@id/plannedStudyPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/plannedStudyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:height="51dp"
+            android:ems="10"
+            android:text="Warning!"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/plannedStudyLabel"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:height="51dp"
+            android:ems="10"
+            android:textColor="@color/white"
+            android:text="You have not set any subgoals!\nTo proceed without subgoal,\nplease specify the planned study time!"
+            android:textAlignment="center"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/plannedStudyInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:height="51dp"
+            android:background="@drawable/boarder"
+            android:ems="10"
+            android:hint="How long will it take?"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textSize="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/noPlannedStudyBtn"
+                android:layout_width="141dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:text="No" />
+
+            <Button
+                android:id="@+id/yesPlannedStudyBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_grey"
+                android:text="Yes" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <NumberPicker
+        android:id="@+id/plannedStudyPicker"
+        android:layout_width="409dp"
+        android:layout_height="194dp"
+        android:background="#e6e8e6"
+        android:divider="@color/black"
+        android:translationZ="90dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

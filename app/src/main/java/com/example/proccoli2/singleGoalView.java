@@ -276,14 +276,8 @@ public class singleGoalView extends AppCompatActivity {
         startWorking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // openInviteUserPopUp();
-               // openReportProgressPopUp();
-                openSeeProgressPopUp();
-                /*
                 Intent i = new Intent(singleGoalView.this, timerView.class);
                 startActivity(i);
-
-                 */
             }
         });
 
