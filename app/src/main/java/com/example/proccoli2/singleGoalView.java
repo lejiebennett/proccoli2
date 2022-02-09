@@ -1,11 +1,19 @@
 package com.example.proccoli2;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,9 +33,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +46,9 @@ import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.nio.channels.Channel;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -70,6 +82,7 @@ public class singleGoalView extends AppCompatActivity {
     //Set Reminder
     SingleDateAndTimePicker setReminderPicker;
     TextView cancelSetReminderBtn, doneSetReminderBtn, setReminderLabel;
+    NotificationChannel notificationChannel;
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -156,6 +169,7 @@ public class singleGoalView extends AppCompatActivity {
         });
 
         doneSetReminderBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 //INSERT THE CODE TO SET A LOCAL NOTIFICATION HERE//
@@ -164,6 +178,92 @@ public class singleGoalView extends AppCompatActivity {
                 doneSetReminderBtn.setVisibility(View.INVISIBLE);
                 setReminderPicker.setVisibility(View.INVISIBLE);
                 setReminderLabel.setVisibility(View.INVISIBLE);
+
+
+                notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
+                notificationChannel.enableLights(true);
+                notificationChannel.enableVibration(true);
+                notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+
+
+                Calendar currentCalendar = Calendar.getInstance();
+                Calendar calendarNotification = Calendar.getInstance();
+                calendarNotification.setTimeInMillis(controller.dateStrToUnix(setReminderPicker.getDate().toString()));
+                if(!calendarNotification.before(currentCalendar))
+                    scheduleNotification(getNotification(myGoal.getBigGoal()), calendarNotification.getTimeInMillis());
+                else Log.d("notification date check", "onClick: calendarNotification is not before currentCalendar");
+
+
+
+
+                /*
+                    // Create the NotificationChannel, but only on API 26+ because
+                    // the NotificationChannel class is new and not in the support library
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        CharSequence name = "Reminders";
+                        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                        NotificationChannel channel = new NotificationChannel("Proccoli", name, importance);
+                        // Register the channel with the system; you can't change the importance
+                        // or other notification behaviors after this
+                        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                        notificationManager.createNotificationChannel(channel);
+                    }
+
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext())
+                        .setSmallIcon(R.drawable.intro_foreground)
+                        .setContentTitle("Are you ready to study")
+                        .setT
+                        .setContentText(myGoal.getBigGoal() + "\n Don't forget to set timer while studying!")
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(myGoal.getBigGoal() + "\n Don't forget to set timer while studying!"))
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                   */
+
+
+
+                /*
+                Intent myIntent = new Intent(singleGoalView.this, SplashScreenActivity.class);
+                AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                PendingIntent pendingIntent = PendingIntent.getService(getBaseContext(), 0, myIntent, 0);
+
+
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(controller.dateStrToUnix(setReminderPicker.getDate().toString()));
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+
+                Service NotifyService = new Service() {
+                    @Nullable
+                    @Override
+                    public IBinder onBind(Intent intent) {
+                        return null;
+                    }
+                    @Override
+                    public void onCreate() {
+                        NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+                        Notification notification = new Notification(R.drawable.intro_foreground, "Notify Alarm strart", System.currentTimeMillis());
+                        Intent myIntent = new Intent(singleGoalView.this,SplashScreenActivity.class);
+                        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, myIntent, 0);
+                        notification.setLatestEventInfo(this, "Notify label", "Notify text", contentIntent);
+                        mNM.notify(NOTIFICATION, notification);
+                    }
+                }
+                //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),1000*60*60*24,pendingIntent);
+                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24 , pendingIntent);
+
+
+                 */
+                //Alert popup
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setTitle("Success")
+                        .setMessage("You have set a reminder")
+                        .setNegativeButton("Ok", null)
+                        .create();
+                dialog.show();
+
             }
         });
 
@@ -551,5 +651,38 @@ public class singleGoalView extends AppCompatActivity {
         }
     }
 
+    /**
+     * https://gist.github.com/BrandonSmith/6679223
+     * @param notification
+     * @param time
+     */
+    private void scheduleNotification(Notification notification, long time) {
+
+        Log.d("setRemidnerTime", "scheduleNotification: " + time);
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,time, pendingIntent);
+    }
+
+    /**
+     * https://gist.github.com/BrandonSmith/6679223
+     * @param content
+     * @return
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Are you ready to study " + content);
+        builder.setContentText("Don't forget to set time while studying!");
+        //Circle is greyed out because that is the new android UI style
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setChannelId(notificationChannel.getId());
+        return builder.build();
+    }
 
 }

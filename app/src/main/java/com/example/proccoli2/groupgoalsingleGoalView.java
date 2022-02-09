@@ -580,7 +580,7 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
                     View availableToClaimView = inflater.inflate(R.layout.makeavailable_popup,null);
 
                     //Create the popup window
-                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int width = LinearLayout.LayoutParams.MATCH_PARENT;
                     int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     boolean focusable = true; // lets taps outside the popup also dismiss it
                     final PopupWindow popupWindow = new PopupWindow(availableToClaimView, width, height, focusable);
