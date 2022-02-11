@@ -73,4 +73,18 @@ public class singleGoalView_VC extends AppCompatActivity {
         return (int)unixTime;
     }
 
+    public int dateStrToUnix2(String time) {
+        long unixTime = 0;
+        SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
+       // SimpleDateFormat sf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
+
+        try {
+            unixTime = sf.parse(time).getTime();
+            unixTime = unixTime / 1000;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return (int)unixTime;
+    }
+
 }

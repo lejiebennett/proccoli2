@@ -4,16 +4,13 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,33 +21,27 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -83,6 +74,7 @@ public class singleGoalView extends AppCompatActivity {
     SingleDateAndTimePicker setReminderPicker;
     TextView cancelSetReminderBtn, doneSetReminderBtn, setReminderLabel;
     NotificationChannel notificationChannel;
+    NotificationManager notificationManager;
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -180,82 +172,90 @@ public class singleGoalView extends AppCompatActivity {
                 setReminderLabel.setVisibility(View.INVISIBLE);
 
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
+                    notificationChannel.enableLights(true);
+                    notificationChannel.enableVibration(true);
+                    notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.createNotificationChannel(notificationChannel);
+                }
+
                 notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
                 notificationChannel.enableLights(true);
                 notificationChannel.enableVibration(true);
                 notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.createNotificationChannel(notificationChannel);
 
 
+                /////////////////////////////////////////////////////////////////////////////////////
+                // This creates a notification and when it is tapped the main activity starts
+                //Friday 2:31 USE THIS ONE
+                /*
+                Intent intent = new Intent(singleGoalView.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, 0);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(singleGoalView.this, notificationChannel.getId())
+                        .setSmallIcon(R.drawable.intro_foreground)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        // Set the intent that will fire when the user taps the notification
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getBaseContext());
+                // notificationId is a unique int for each notification that you must define
+                notificationManager.notify(1, builder.build());
+
+                 */
+                /////////////////////////////////////////////////////////////////////////////////////
+
+                /*
+                //Use this way to fire notification right away
                 Calendar currentCalendar = Calendar.getInstance();
                 Calendar calendarNotification = Calendar.getInstance();
                 calendarNotification.setTimeInMillis(controller.dateStrToUnix(setReminderPicker.getDate().toString()));
+
+                Log.d("CalendarNotification", "onClick: " + calendarNotification.getTimeInMillis());
+
                 if(!calendarNotification.before(currentCalendar))
                     scheduleNotification(getNotification(myGoal.getBigGoal()), calendarNotification.getTimeInMillis());
-                else Log.d("notification date check", "onClick: calendarNotification is not before currentCalendar");
+                else{
+                    Log.d("notification date check", "onClick: calendarNotification is not before currentCalendar");
+                    Log.d("Picked", "onClick: " + setReminderPicker.getDate());
 
+                    Log.d("CalendarNotification", "onClick: " + calendarNotification.getTimeInMillis());
+                    Log.d("CalendarNotification", "onClick: " + calendarNotification.toString());
+                    scheduleNotification(getNotification(myGoal.getBigGoal()), calendarNotification.getTimeInMillis());
 
-
-
-                /*
-                    // Create the NotificationChannel, but only on API 26+ because
-                    // the NotificationChannel class is new and not in the support library
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        CharSequence name = "Reminders";
-                        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                        NotificationChannel channel = new NotificationChannel("Proccoli", name, importance);
-                        // Register the channel with the system; you can't change the importance
-                        // or other notification behaviors after this
-                        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-                        notificationManager.createNotificationChannel(channel);
-                    }
-
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext())
-                        .setSmallIcon(R.drawable.intro_foreground)
-                        .setContentTitle("Are you ready to study")
-                        .setT
-                        .setContentText(myGoal.getBigGoal() + "\n Don't forget to set timer while studying!")
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(myGoal.getBigGoal() + "\n Don't forget to set timer while studying!"))
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-                   */
-
-
-
-                /*
-                Intent myIntent = new Intent(singleGoalView.this, SplashScreenActivity.class);
-                AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-                PendingIntent pendingIntent = PendingIntent.getService(getBaseContext(), 0, myIntent, 0);
-
-
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(controller.dateStrToUnix(setReminderPicker.getDate().toString()));
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
-
-                Service NotifyService = new Service() {
-                    @Nullable
-                    @Override
-                    public IBinder onBind(Intent intent) {
-                        return null;
-                    }
-                    @Override
-                    public void onCreate() {
-                        NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-                        Notification notification = new Notification(R.drawable.intro_foreground, "Notify Alarm strart", System.currentTimeMillis());
-                        Intent myIntent = new Intent(singleGoalView.this,SplashScreenActivity.class);
-                        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, myIntent, 0);
-                        notification.setLatestEventInfo(this, "Notify label", "Notify text", contentIntent);
-                        mNM.notify(NOTIFICATION, notification);
-                    }
                 }
-                //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),1000*60*60*24,pendingIntent);
-                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24 , pendingIntent);
 
 
                  */
+
+                //Alarm approach
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(singleGoalView.this, NotificationPublisher.class);
+               // intent.putExtra("any_data",123);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR,setReminderPicker.getDate().getYear());
+                cal.set(Calendar.MONTH,setReminderPicker.getDate().getMonth());
+                cal.set(Calendar.DATE, setReminderPicker.getDate().getDate());
+                cal.set(Calendar.HOUR_OF_DAY, setReminderPicker.getDate().getHours());  // set hour
+                cal.set(Calendar.MINUTE, setReminderPicker.getDate().getMinutes());          // set minute
+                cal.set(Calendar.SECOND, setReminderPicker.getDate().getSeconds());               // set seconds
+
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
+
+
+
+
                 //Alert popup
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Success")
@@ -656,17 +656,26 @@ public class singleGoalView extends AppCompatActivity {
      * @param notification
      * @param time
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void scheduleNotification(Notification notification, long time) {
 
         Log.d("setRemidnerTime", "scheduleNotification: " + time);
 
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        //This correctly starts the activity or at least reloads the current state of main activity
+        //Alarm still not going off at correct time and it is autoamtically doing this wihtout showing the notification
+        Intent notificationIntent = new Intent(this,MainActivity.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,time, pendingIntent);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,time, intent);
+
     }
 
     /**
@@ -675,14 +684,26 @@ public class singleGoalView extends AppCompatActivity {
      * @return
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private Notification getNotification(String content) {
-        Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Are you ready to study " + content);
-        builder.setContentText("Don't forget to set time while studying!");
-        //Circle is greyed out because that is the new android UI style
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setChannelId(notificationChannel.getId());
+    private Notification getNotification(String content){
+
+        // Create an explicit intent for an Activity in your app
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Log.d("building notification", "getNotification: about to build notification");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"12345")
+                //Circle is greyed out because that is the new android UI style
+                .setSmallIcon(R.drawable.intro_foreground)
+                .setContentTitle("Are you ready to study " + content)
+                .setContentText("Don't forget to set time while s")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent);
         return builder.build();
+
     }
 
 }
+
+

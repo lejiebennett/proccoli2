@@ -62,7 +62,12 @@
             ></activity>
         <activity android:name=".notification_fragment_activity"
             android:windowSoftInputMode="adjustNothing"></activity>
-        <receiver android:name=".NotificationPublisher"/>
+        <receiver android:name=".NotificationPublisher"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>></receiver>
 
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_app_notification" />
