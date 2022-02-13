@@ -1,6 +1,10 @@
 package com.example.proccoli2;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +47,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -83,6 +88,8 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
     //Set Reminder
     SingleDateAndTimePicker setReminderPicker;
     TextView cancelSetReminderBtn, doneSetReminderBtn,setReminderLabel;
+    NotificationChannel notificationChannel;
+    NotificationManager notificationManager;
 
     //Available to claim
     String [] subGoalHowLongHours = {"hours",
@@ -220,6 +227,8 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
         setReminderLabel.setVisibility(View.INVISIBLE);
 
 
+
+
         cancelSetReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -232,12 +241,73 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
         });
 
         doneSetReminderBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 Log.d("setReminder", "onClick: I selected this date" + setReminderPicker.getDate().toString());
                 cancelSetReminderBtn.setVisibility(View.INVISIBLE);
                 doneSetReminderBtn.setVisibility(View.INVISIBLE);
                 setReminderPicker.setVisibility(View.INVISIBLE);
+                setReminderLabel.setVisibility(View.INVISIBLE);
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
+                    notificationChannel.enableLights(true);
+                    notificationChannel.enableVibration(true);
+                    notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.createNotificationChannel(notificationChannel);
+                }
+
+
+                notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
+                notificationChannel.enableLights(true);
+                notificationChannel.enableVibration(true);
+                notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+
+
+                //Alarm approach
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(groupgoalsingleGoalView.this, NotificationPublisher.class);
+                intent.putExtra("bigGoal",myGoal.getBigGoal());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                //Get the time of when to set the alarm
+                Calendar cal = Calendar.getInstance();
+                Date picked = setReminderPicker.getDate();
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getYear());
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getMonth());
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getDate());
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getHours());
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getMinutes());
+                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getSeconds());
+
+
+                //Need to had 1900 snce the year returned from setReminder is picked-1900  = year
+                //but in order for the alarm to properly go off, it needs have +1900 to have the actual year
+                int year = setReminderPicker.getDate().getYear();
+                cal.set(Calendar.YEAR,year +1900);
+                cal.set(Calendar.MONTH,setReminderPicker.getDate().getMonth());
+                cal.set(Calendar.DATE, setReminderPicker.getDate().getDate());
+                cal.set(Calendar.HOUR_OF_DAY, setReminderPicker.getDate().getHours());  // set hour
+                cal.set(Calendar.MINUTE, setReminderPicker.getDate().getMinutes());          // set minute
+                cal.set(Calendar.SECOND, setReminderPicker.getDate().getSeconds());               // set seconds
+
+                //Create the alarm
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
+
+
+                //Alert popup
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setTitle("Success")
+                        .setMessage("You have set a reminder")
+                        .setNegativeButton("Ok", null)
+                        .create();
+                dialog.show();
             }
         });
 
