@@ -28,14 +28,15 @@ public class NotificationPublisher extends BroadcastReceiver {
             // reset all alarms
         }
         else{
+            String bigGoal = (String) intent.getExtras().get("bigGoal");
             // perform your scheduled task here (eg. send alarm notification)
             Log.d("RECIEVED REMINDER", "onReceive: I RECIEVED A REMINDER");
-            showNotification(context);
+            showNotification(context, bigGoal);
 
         }
     }
 
-    private void showNotification(Context context) {
+    private void showNotification(Context context,String content) {
         //THIS IS ALL CORRECT and IS PUSHED AND COMMITTED
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -44,8 +45,8 @@ public class NotificationPublisher extends BroadcastReceiver {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"12345")
                 .setSmallIcon(R.drawable.intro_foreground)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
+                .setContentTitle("Are you ready to study " + content)
+                .setContentText("Don't forget to set your timer while studying!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(contentIntent)
