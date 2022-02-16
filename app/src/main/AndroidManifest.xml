@@ -15,6 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:label="@string/app_name">
         </activity>
         <activity android:name=".loginView"></activity>
@@ -28,6 +29,7 @@
             android:windowSoftInputMode="adjustPan">
             ></activity>
         <activity android:name=".timerView"
+            android:launchMode="singleTop"
             ></activity>
         <activity android:name=".goalSettingView"></activity>
         <activity android:name=".subGoalView_goalSetting"></activity>
@@ -63,6 +65,12 @@
         <activity android:name=".notification_fragment_activity"
             android:windowSoftInputMode="adjustNothing"></activity>
         <receiver android:name=".NotificationPublisher"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>></receiver>
+        <receiver android:name=".NotificationPublisherTimer"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
