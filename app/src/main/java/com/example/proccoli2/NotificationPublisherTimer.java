@@ -23,16 +23,18 @@ public class NotificationPublisherTimer extends BroadcastReceiver {
             // perform your scheduled task here (eg. send alarm notification)
             Log.d("RECIEVED REMINDER", "onReceive: I RECIEVED A REMINDER");
             showNotification(context);
-
         }
     }
 
     private void showNotification(Context context) {
-        //THIS IS ALL CORRECT and IS PUSHED AND COMMITTED
-        Intent intent = new Intent(context, smileyFaceSurveyView.class);
-        //Intent intent = new Intent(context, timerView.class);
+        final Intent intent = new Intent(context, smileyFaceSurveyView.class);
+        //Need these intent attributes to be set in order for the back stack to be preserved
+        //And for the smiley face survey view to be able to launch correctly
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

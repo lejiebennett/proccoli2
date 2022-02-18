@@ -28,9 +28,6 @@
         <activity android:name=".singleGoalView"
             android:windowSoftInputMode="adjustPan">
             ></activity>
-        <activity android:name=".timerView"
-            android:launchMode="singleTop"
-            ></activity>
         <activity android:name=".goalSettingView"></activity>
         <activity android:name=".subGoalView_goalSetting"></activity>
         <activity android:name=".subGoalView_goalSetting_edit"></activity>
@@ -43,6 +40,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".timerView">
         </activity>
         <activity android:name=".timeReportView"></activity>
         <activity android:name=".selfreport_activity"

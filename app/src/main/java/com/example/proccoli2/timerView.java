@@ -1,11 +1,13 @@
 package com.example.proccoli2;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -19,10 +21,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.proccoli2.databinding.SmileyfacesurveyViewBinding;
@@ -43,6 +51,26 @@ public class timerView extends AppCompatActivity {
     int desiredCountDownInMillis;
     int displayTime;
     Toolbar toolbar;
+    int smileRating;
+
+    /***
+     * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
+     */
+    ActivityResultLauncher<Intent> activityResultLaunchSmileyRating = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Log.d("onActivityResult", "ActivityResultLaunchSmileyRating: RUNNING");
+                        smileRating = Integer.parseInt(result.getData().getStringExtra("smileRating"));
+                        Log.d("RESULTSFROMsetSmile", String.valueOf(smileRating));
+                        //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
+                        finish();
+                        //recreate();
+                    }
+                }
+            });
 
     //Set Timer
     NotificationChannel notificationChannel;
@@ -52,6 +80,7 @@ public class timerView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_view);
+        Log.d("Created new", "onCreate: Created new");
 
         toolbar = findViewById(R.id.toolbarTimer);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -103,20 +132,18 @@ public class timerView extends AppCompatActivity {
             }
         });
 
-
         startBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 Log.d("startbtn", "onClick: START CLICKED");
-
-
                     stopBtn.setVisibility(View.VISIBLE);
                     timerSlider.setVisibility(View.INVISIBLE);
                     breakBtn.setVisibility(View.VISIBLE);
                     startBtn.setVisibility(View.INVISIBLE);
                     Log.d("timerset", "onClick: " + desiredCountDownInMillis);
 
+                //Build a notification channel
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
                     notificationChannel.enableLights(true);
@@ -137,7 +164,6 @@ public class timerView extends AppCompatActivity {
                 //Alarm approach
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(timerView.this, NotificationPublisherTimer.class);
-
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -167,11 +193,10 @@ public class timerView extends AppCompatActivity {
                 calTimer.set(Calendar.SECOND, calTimer.get(Calendar.SECOND));               // set seconds
 
                 //Create the alarm
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calTimer.getTimeInMillis(),pendingIntent);
                 Toast toast = Toast.makeText(getBaseContext(), "Created an alarm", Toast.LENGTH_LONG);
                 toast.show();
 
-                    timer = new CountDownTimer(desiredCountDownInMillis,1000) {
+                timer = new CountDownTimer(desiredCountDownInMillis,1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             displayTime = desiredCountDownInMillis-counter;
@@ -183,9 +208,14 @@ public class timerView extends AppCompatActivity {
                             Log.d("timer finished", "onFinish: The timer has finished");
                             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),pendingIntent);
                             timerClock.setText("0:00");
+                            stopBtn.setVisibility(View.INVISIBLE);
+                            breakBtn.setVisibility(View.INVISIBLE);
+                            startBtn.setVisibility(View.VISIBLE);
+
+                            Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
+                            activityResultLaunchSmileyRating.launch(i);
                         }
                     }.start();
-
             }
         });
 
@@ -213,7 +243,6 @@ public class timerView extends AppCompatActivity {
                 timer.cancel();
                 resumeBtn.setVisibility(View.VISIBLE);
                 breakBtn.setVisibility(View.INVISIBLE);
-
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent myIntent = new Intent(getApplicationContext(), NotificationPublisherTimer.class);
@@ -250,9 +279,7 @@ public class timerView extends AppCompatActivity {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(timerView.this, NotificationPublisherTimer.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 
                 //Get the time of when to set the alarm
                 Calendar cal = Calendar.getInstance();
@@ -303,11 +330,16 @@ public class timerView extends AppCompatActivity {
                         Log.d("timer finished", "onFinish: The timer has finished");
                         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),pendingIntent);
                         timerClock.setText("0:00");
+                        stopBtn.setVisibility(View.INVISIBLE);
+                        breakBtn.setVisibility(View.INVISIBLE);
+                        startBtn.setVisibility(View.VISIBLE);
+
+                        Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
+                        activityResultLaunchSmileyRating.launch(i);
                     }
                 }.start();
             }
         });
 
     }
-
 }
