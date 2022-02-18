@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#c0000000"
     android:layout_height="match_parent">
 
 
@@ -24,20 +25,25 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <LinearLayout
-            android:layout_width="238dp"
-            android:layout_height="129dp"
+            android:layout_width="239dp"
+            android:layout_height="147dp"
             android:background="@color/grey"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.007">
+            app:layout_constraintVertical_bias="0.25">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="11dp" />
 
             <TextView
                 android:id="@+id/reportProgressSubgoalLabel"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="42dp"
                 android:background="@color/grey"
                 android:textAlignment="center"
                 android:textColor="@color/white" />
@@ -45,12 +51,13 @@
             <TextView
                 android:id="@+id/percentageLabel"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="37dp"
                 android:background="@color/grey"
                 android:textAlignment="center"
                 android:textColor="@color/white" />
 
             <LinearLayout
+                android:id="@+id/reportProgressLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
