@@ -69,12 +69,41 @@ public class singleGoalView extends AppCompatActivity {
     Context context = this;
     Button goalProgressBtn;
     int smileRating;
+    int studiedFromTimer;
 
     //Set Reminder
     SingleDateAndTimePicker setReminderPicker;
     TextView cancelSetReminderBtn, doneSetReminderBtn, setReminderLabel;
     NotificationChannel notificationChannel;
     NotificationManager notificationManager;
+
+    /***
+     * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
+     */
+    ActivityResultLauncher<Intent> activityResultLaunchTimer = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Log.d("onActivityResult", "ActivityResultLaunchSmileyRating: RUNNING");
+                        if(result.getData().getStringExtra("smileRating")!=null){
+                            smileRating = Integer.parseInt(result.getData().getStringExtra("smileRating"));
+                            Log.d("RESULTSFROMTimer", "Smile" + String.valueOf(smileRating));
+                        }
+
+                        studiedFromTimer = Integer.parseInt(result.getData().getStringExtra("studiedTime"));
+                        Log.d("RESULTSFROMTimer", "Studied" + String.valueOf(studiedFromTimer));
+                        //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
+                        Log.d("newItems", "onActivityResult: " + myGoal.getSubGoals());
+                        Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getStudiedTime());
+                        //Need to divide by 60000 since studied time is sent in milliseconds not minutes
+                        myGoal.setStudiedTime(myGoal.getStudiedTime() + (Double.valueOf(studiedFromTimer)/60000));
+                        Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getStudiedTime());
+
+                    }
+                }
+            });
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -314,8 +343,14 @@ public class singleGoalView extends AppCompatActivity {
         startWorking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 Intent i = new Intent(singleGoalView.this, timerView.class);
                 startActivity(i);
+
+                 */
+                Intent i = new Intent(singleGoalView.this, timerView.class);
+                activityResultLaunchTimer.launch(i);
+
             }
         });
 

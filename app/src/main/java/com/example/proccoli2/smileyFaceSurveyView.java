@@ -79,6 +79,9 @@ public class smileyFaceSurveyView extends AppCompatActivity {
      */
     public void setRating(int i){
         Intent myIntent = new Intent(this, singleGoalView.class);
+        //Intent myIntent2 = new Intent(this, timerView.class);
+        //myIntent2.putExtra("smileRating", Integer.toString(i));
+
         myIntent.putExtra("smileRating",Integer.toString(i));
         Log.d("setSmileRating", "smileRating: " + Integer.toString(i));
         setResult(RESULT_OK,myIntent);

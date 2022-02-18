@@ -49,9 +49,11 @@ public class timerView extends AppCompatActivity {
     timer_VC controller = new timer_VC(this);
     CountDownTimer timer;
     int desiredCountDownInMillis;
-    int displayTime;
+    int displayTime; //Time that is displayed on the countdown timer
     Toolbar toolbar;
     int smileRating;
+    int selectedStudiedTime; //Time the user selected for the timer
+    int studiedTime; //Time that the user actually studied. This is sent back to the singleGoalView
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -62,10 +64,16 @@ public class timerView extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
+                        cancelNotification(getBaseContext(),1);
                         Log.d("onActivityResult", "ActivityResultLaunchSmileyRating: RUNNING");
                         smileRating = Integer.parseInt(result.getData().getStringExtra("smileRating"));
                         Log.d("RESULTSFROMsetSmile", String.valueOf(smileRating));
                         //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
+
+                        Intent myIntent = new Intent(timerView.this, singleGoalView.class);
+                        myIntent.putExtra("smileRating",Integer.toString(smileRating));
+                        myIntent.putExtra("studiedTime",Integer.toString(studiedTime));
+                        setResult(RESULT_OK,myIntent);
                         finish();
                         //recreate();
                     }
@@ -86,7 +94,6 @@ public class timerView extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 finish();
             }
         });
@@ -195,6 +202,7 @@ public class timerView extends AppCompatActivity {
                 //Create the alarm
                 Toast toast = Toast.makeText(getBaseContext(), "Created an alarm", Toast.LENGTH_LONG);
                 toast.show();
+                selectedStudiedTime = desiredCountDownInMillis;
 
                 timer = new CountDownTimer(desiredCountDownInMillis,1000) {
                         @Override
@@ -211,6 +219,7 @@ public class timerView extends AppCompatActivity {
                             stopBtn.setVisibility(View.INVISIBLE);
                             breakBtn.setVisibility(View.INVISIBLE);
                             startBtn.setVisibility(View.VISIBLE);
+                            studiedTime = selectedStudiedTime;
 
                             Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
                             activityResultLaunchSmileyRating.launch(i);
@@ -223,6 +232,7 @@ public class timerView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 timer.cancel();
+                //Cancel the alarm
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 Intent myIntent = new Intent(getApplicationContext(), NotificationPublisherTimer.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -230,7 +240,12 @@ public class timerView extends AppCompatActivity {
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
                 alarmManager.cancel(pendingIntent);
-
+                //Get time that they did study
+                studiedTime = selectedStudiedTime - displayTime;
+                Intent myIntent2 = new Intent(timerView.this, singleGoalView.class);
+                myIntent2.putExtra("studiedTime",Integer.toString(studiedTime));
+                Log.d("StopStudyTime", "onClick: Timer stopped, passing studied time " + studiedTime);
+                setResult(RESULT_OK,myIntent2);
                 finish();
             }
         });
@@ -305,7 +320,7 @@ public class timerView extends AppCompatActivity {
                 calTimer.set(Calendar.SECOND, calTimer.get(Calendar.SECOND));               // set seconds
 
                 //Create the alarm
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calTimer.getTimeInMillis(),pendingIntent);
+                //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calTimer.getTimeInMillis(),pendingIntent);
                 Toast toast = Toast.makeText(getBaseContext(), "Created an alarm", Toast.LENGTH_LONG);
                 toast.show();
 
@@ -317,6 +332,8 @@ public class timerView extends AppCompatActivity {
 
 
                 desiredCountDownInMillis =displayTime;
+                selectedStudiedTime = desiredCountDownInMillis;
+
                 counter =0;
                 timer = new CountDownTimer(desiredCountDownInMillis,1000) {
                     @Override
@@ -333,6 +350,8 @@ public class timerView extends AppCompatActivity {
                         stopBtn.setVisibility(View.INVISIBLE);
                         breakBtn.setVisibility(View.INVISIBLE);
                         startBtn.setVisibility(View.VISIBLE);
+                        studiedTime = selectedStudiedTime;
+
 
                         Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
                         activityResultLaunchSmileyRating.launch(i);
@@ -341,5 +360,11 @@ public class timerView extends AppCompatActivity {
             }
         });
 
+    }
+
+    public static void cancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 }
