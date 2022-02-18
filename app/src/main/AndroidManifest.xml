@@ -43,6 +43,8 @@
         </activity>
         <activity android:name=".timerView">
         </activity>
+        <activity android:name=".timerViewGroupGoal">
+        </activity>
         <activity android:name=".timeReportView"></activity>
         <activity android:name=".selfreport_activity"
             android:windowSoftInputMode="adjustNothing">

@@ -73,6 +73,8 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
     ImageView startWorkingCancelBtn;
     startWorkingFullAdapter startAdapter;
     RecyclerView startWorkingRecyclerView; //Recycler view for all popups
+    int smileRating;
+    int studiedFromTimer;
 
     //See Progress
     List<SubGoalModel> seeProgressItems;
@@ -90,6 +92,8 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
     TextView cancelSetReminderBtn, doneSetReminderBtn,setReminderLabel;
     NotificationChannel notificationChannel;
     NotificationManager notificationManager;
+
+
 
     //Available to claim
     String [] subGoalHowLongHours = {"hours",
@@ -113,6 +117,35 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
             "41 minutes", "42 minutes", "43 minutes", "44 minutes", "45 minutes", "46 minutes", "47 minutes", "48 minutes", "49 minutes", "50 minutes",
             "51 minutes", "52 minutes", "53 minutes", "54 minutes", "55 minutes", "56 minutes", "57 minutes", "58 minutes", "59 minutes"
     };
+
+
+    /***
+     * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
+     */
+    ActivityResultLauncher<Intent> activityResultLaunchTimer = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Log.d("onActivityResult", "ActivityResultLaunchSmileyRating: RUNNING");
+                        if(result.getData().getStringExtra("smileRating")!=null){
+                            smileRating = Integer.parseInt(result.getData().getStringExtra("smileRating"));
+                            Log.d("RESULTSFROMTimer", "Smile" + String.valueOf(smileRating));
+                        }
+
+                        studiedFromTimer = Integer.parseInt(result.getData().getStringExtra("studiedTime"));
+                        Log.d("RESULTSFROMTimer", "Studied" + String.valueOf(studiedFromTimer));
+                        //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
+                        Log.d("newItems", "onActivityResult: " + myGoal.getSubGoals());
+                        Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getStudiedTime());
+                        //Need to divide by 60000 since studied time is sent in milliseconds not minutes
+                        myGoal.setStudiedTime(myGoal.getStudiedTime() + (Double.valueOf(studiedFromTimer)/60000));
+                        Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getStudiedTime());
+
+                    }
+                }
+            });
 
 
     //Get subgoals added from clicking admin button in toolbar
@@ -413,6 +446,8 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
                 else{
                     Intent i = new Intent(groupgoalsingleGoalView.this, timerView.class);
                     startActivity(i);
+
+
                 }
 
             }
