@@ -118,4 +118,12 @@ public class SubGoalModel implements Serializable {
     public void setHowLongHours(String howLongHours) {
         this.howLongHours = howLongHours;
     }
+
+    public void setTotalStudyTime(int totalStudyTime){
+        this.totalStudyTime = totalStudyTime;
+    }
+
+    public int getTotalStudyTime(){
+        return this.totalStudyTime;
+    }
 }

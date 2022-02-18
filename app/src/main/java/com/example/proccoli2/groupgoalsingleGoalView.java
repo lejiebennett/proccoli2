@@ -75,6 +75,9 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
     RecyclerView startWorkingRecyclerView; //Recycler view for all popups
     int smileRating;
     int studiedFromTimer;
+    int positionForSingleGoalReport = -1;
+    int positionToUpdateStudiedTime = -1;
+
 
     //See Progress
     List<SubGoalModel> seeProgressItems;
@@ -137,11 +140,11 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
                         studiedFromTimer = Integer.parseInt(result.getData().getStringExtra("studiedTime"));
                         Log.d("RESULTSFROMTimer", "Studied" + String.valueOf(studiedFromTimer));
                         //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
-                        Log.d("newItems", "onActivityResult: " + myGoal.getSubGoals());
-                        Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getStudiedTime());
+                        Log.d("Goal to update", "onActivityResult: " + myGoal.getSubGoals().get(positionToUpdateStudiedTime));
+                        Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getSubGoals().get(positionToUpdateStudiedTime).getTotalStudyTime());
                         //Need to divide by 60000 since studied time is sent in milliseconds not minutes
-                        myGoal.setStudiedTime(myGoal.getStudiedTime() + (Double.valueOf(studiedFromTimer)/60000));
-                        Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getStudiedTime());
+                        myGoal.getSubGoals().get(positionToUpdateStudiedTime).setTotalStudyTime(myGoal.getSubGoals().get(positionToUpdateStudiedTime).getTotalStudyTime() + (Integer.valueOf(studiedFromTimer)/60000));
+                        Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getSubGoals().get(positionToUpdateStudiedTime).getTotalStudyTime());
 
                     }
                 }
@@ -415,7 +418,6 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
 
                 //Determines how many goals need to be added to startWorking (aka what goals in myGoals.getSubgoals are incomplete)
                 int numOfSubGoalsIncomplete = 0;
-                int positionForSingleGoalReport = -1;
                 for(int i = 0; i < myGoal.getSubGoals().size(); i++){
                     if(myGoal.getSubGoals().get(i).getPercentageComplete()!=100){
                         numOfSubGoalsIncomplete = numOfSubGoalsIncomplete + 1;
@@ -444,8 +446,13 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
                 }
                 //1 subgoal: open timer
                 else{
+                    /*
                     Intent i = new Intent(groupgoalsingleGoalView.this, timerView.class);
                     startActivity(i);
+                     */
+                    positionToUpdateStudiedTime = positionForSingleGoalReport;
+                    Intent i = new Intent(groupgoalsingleGoalView.this, timerViewGroupGoal.class);
+                    activityResultLaunchTimer.launch(i);
 
 
                 }
@@ -980,8 +987,13 @@ public class groupgoalsingleGoalView extends AppCompatActivity {
             subGoalText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    /*
                     Intent i = new Intent(groupgoalsingleGoalView.this, timerView.class);
                     startActivity(i);
+                     */
+                    positionToUpdateStudiedTime = myGoal.getSubGoals().indexOf(startAdapter.startWorkingItems.get(subGoalPosition));
+                    Intent i = new Intent(groupgoalsingleGoalView.this, timerViewGroupGoal.class);
+                    activityResultLaunchTimer.launch(i);
                 }
             });
         }
