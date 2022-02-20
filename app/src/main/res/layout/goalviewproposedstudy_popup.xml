@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#c0000000"
     android:layout_width="match_parent"
+    android:background="#c0000000"
     android:layout_height="match_parent">
 
 
@@ -12,35 +12,55 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="219dp"
-            android:layout_height="164dp"
+            android:id="@+id/plannedStudyLayout2"
+            android:layout_width="255dp"
+            android:layout_height="170dp"
             android:background="@color/grey"
             android:orientation="vertical"
+            android:translationZ="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.30">
+            app:layout_constraintVertical_bias="0.25">
 
             <TextView
-                android:id="@+id/assignToSelfLabel"
+                android:id="@+id/plannedStudyTitle2"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
                 android:background="@color/grey"
-                android:text="\nHow long will it take?"
-                android:textAlignment="center"
+                android:layout_height="25dp"
+                android:height="51dp"
+                android:ems="10"
+                android:text="Warning!"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textAlignment="center"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/howLongAssignToSelf"
+                android:id="@+id/plannedStudyLabel2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/boarder"
-                android:hint="e.g 3 hours"
-                android:textAlignment="center"
+                android:background="@color/grey"
+                android:layout_height="65dp"
+                android:height="51dp"
+                android:ems="10"
                 android:textColor="@color/black"
-                android:textColorHint="@color/grey" />
+                android:text="You have not set any subgoals!\nTo proceed without subgoal,\nplease specify the planned study time!"
+                android:textAlignment="center"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/plannedStudyInput2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:height="51dp"
+                android:background="@drawable/boarder"
+                android:ems="10"
+                android:hint="How long will it take?"
+                android:inputType="textPersonName"
+                android:textAlignment="center"
+                android:textSize="15dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,25 +68,16 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/submitAssignToSelfBtn"
-                    android:layout_width="96dp"
-                    android:layout_height="51dp"
-                    android:text="Submit"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
-
-                <Space
-                    android:layout_width="wrap_content"
+                    android:id="@+id/noPlannedStudyBtn2"
+                    android:layout_width="141dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:text="No" />
 
                 <Button
-                    android:id="@+id/cancelAssignToSelfBtn"
-                    android:layout_width="100dp"
-                    android:layout_height="53dp"
-                    android:text="Cancel"
-                    android:textAllCaps="false"
-                    android:textSize="16sp" />
+                    android:id="@+id/yesPlannedStudyBtn2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Yes" />
             </LinearLayout>
 
         </LinearLayout>
@@ -84,14 +95,7 @@
             app:layout_constraintVertical_bias="1.0">
 
             <NumberPicker
-                android:id="@+id/hourPickerAssignToSelf"
-                android:layout_width="210dp"
-                android:layout_height="match_parent"
-                android:background="#e6e8e6"
-                android:divider="@color/black" />
-
-            <NumberPicker
-                android:id="@+id/minutePickerAssignToSelf"
+                android:id="@+id/hourPickerAssignToSelf2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#e6e8e6"

@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,6 +36,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -157,11 +159,14 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         duePicker.setVisibility(View.INVISIBLE);
 
         //Set up planned study views and hide them
+
         plannedStudyPicker = findViewById(R.id.plannedStudyPicker);
         plannedStudyLayout = findViewById(R.id.plannedStudyLayout);
         plannedStudyInput = findViewById(R.id.plannedStudyInput);
         yesPlannedStudyBtn = findViewById(R.id.yesPlannedStudyBtn);
         noPlannedStudyBtn = findViewById(R.id.noPlannedStudyBtn);
+
+
         plannedStudyLayout.setVisibility(View.INVISIBLE);
 
 
@@ -392,11 +397,139 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     Log.d("No subgoals", "onClick: NO SUBGOALS");
                                                     plannedStudyLayout.setVisibility(View.VISIBLE);
 
+                                                    /*
+                                                    //Inflate the layout of the popup window
+                                                    LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                                                    View proposedStudyView = inflater.inflate(R.layout.goalviewproposedstudy_popup,null);
+
+                                                    //Create the popup window
+                                                    int width = LinearLayout.LayoutParams.MATCH_PARENT;
+                                                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                                                    boolean focusable = true; // lets taps outside the popup also dismiss it
+                                                    final PopupWindow popupWindow = new PopupWindow(proposedStudyView, width, height, focusable);
+
+                                                    //Show the popup window
+                                                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                                                    TextView plannedStudyTitle = proposedStudyView.findViewById(R.id.plannedStudyTitle2);
+                                                    TextView plannedStudyLabel = proposedStudyView.findViewById(R.id.plannedStudyLabel2);
+                                                    TextView plannedStudyInput = proposedStudyView.findViewById(R.id.plannedStudyInput2);
+                                                    Button noPlannedStudy = proposedStudyView.findViewById(R.id.noPlannedStudyBtn2);
+                                                    Button yesPlannedStudy = proposedStudyView.findViewById(R.id.yesPlannedStudyBtn2);
+
+                                                    //Set up how long picker
+                                                    final NumberPicker hourPicker = (NumberPicker) proposedStudyView.findViewById(R.id.hourPickerAssignToSelf2);
+                                                    hourPicker.setMinValue(0);
+                                                    hourPicker.setMaxValue(plannedStudyHowLong.length-1);
+                                                    hourPicker.setDisplayedValues(plannedStudyHowLong);
+
+
+                                                    hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                                                        @Override
+                                                        public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                                                            if (plannedStudyHowLong[hourPicker.getValue()].equals("hours") == true) {
+                                                                Toast toast = Toast.makeText(context, "Please select a proposed study time", Toast.LENGTH_LONG);
+                                                                toast.show();
+                                                            }
+                                                            else
+                                                                plannedStudyInput.setText(plannedStudyHowLong[hourPicker.getValue()]);
+                                                        }
+                                                    });
+
+                                                    Button submitHowLongPopupBtn = (Button) proposedStudyView.findViewById(R.id.submitAssignToSelfBtn);
+                                                    submitHowLongPopupBtn.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if(plannedStudyInput.getText().toString().length()>0){
+                                                                //Need to save the how long in the picker
+                                                                myGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.toString()));
+                                                                Log.d("newly updated", "onClick: " + myGoal.getProposedStudyTime());
+                                                                popupWindow.dismiss();
+                                                            }
+                                                            else{
+                                                                Toast toast = Toast.makeText(getBaseContext(), "Please enter a valid time length", Toast.LENGTH_LONG);
+                                                                toast.show();
+                                                                plannedStudyInput.setHintTextColor(Color.RED);
+                                                            }
+                                                        }
+                                                    });
+
+                                                    //Close out of popup when cancel is clicked
+                                                    Button cancelHowLongPopupBtn = (Button) proposedStudyView.findViewById(R.id.cancelAssignToSelfBtn);
+                                                    cancelHowLongPopupBtn.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            popupWindow.dismiss();
+                                                        }
+                                                    });
+
+                                                    noPlannedStudy.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            popupWindow.dismiss();
+                                                        }
+                                                    });
+
+                                                    yesPlannedStudy.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            boolean nullPlanned = false;
+                                                            //Verifies that a proposed time was selected
+                                                            if (nullPlanned = controller.nullFieldCheck(plannedStudyInput.getText().toString(), "Please select a planned study time", context, plannedStudyInput)) {
+                                                                //Proposed time was selected
+                                                                //Recolor field in case errored
+                                                                plannedStudyInput.setHintTextColor(Color.rgb(128, 128, 128));
+                                                                Log.d("proposedStudyTime", "onClick: " + plannedStudyInput.getText().toString());
+
+                                                                //Convert String Dates to unix
+                                                                int uComplete = controller.dateStrToUnix(goalCompleteBy.getText().toString());
+                                                                int uStart = controller.dateStrToUnix(goalStartDate.getText().toString());
+                                                                int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
+                                                                long currentUnix = System.currentTimeMillis() / 1000L;
+
+                                                                //Set all of the attributes of the goal either using commented out constructor or set individually
+                                                                // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
+                                                                myGoal.setBigGoal(bigGoalInput.getText().toString());
+                                                                myGoal.setCompletedBy(uComplete);
+                                                                myGoal.setGoalType(goalType.getText().toString());
+                                                                myGoal.setStartDate(uStart);
+                                                                myGoal.setDeadline(uDue);
+                                                                myGoal.setCreatedAt((int) currentUnix);
+                                                                myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
+                                                                myGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
+                                                                myGoal.setGoalType("individual");
+                                                                String myGoalID = "TESTGOALID";
+                                                                myGoal.setGoalId(myGoalID);
+
+
+
+                                                                Log.d("GoalMade", "onClick: " + myGoal.toString());
+                                                                //  myGoal = new GoalModel();
+
+                                                                //Send goal back to main activity
+                                                                Intent i = new Intent(goalView2.this, MainActivity.class);
+                                                                i.putExtra("bigGoal", myGoal);
+                                                                //  startActivity(i);
+                                                                //  finish();
+                                                                Log.d("putExtras", "onClick: " + myGoal);
+                                                                setResult(RESULT_OK, i);
+                                                                Log.d("setExtras", "onClick: " + myGoal);
+                                                                finish();
+                                                            }
+
+                                                            /////
+                                                        }
+                                                    });
+
+                                                     */
+
+
                                                     noPlannedStudyBtn.setOnClickListener(new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View view) {
                                                             plannedStudyLayout.setVisibility(View.INVISIBLE);
                                                             plannedStudyPicker.setVisibility(View.INVISIBLE);
+
                                                         }
                                                     });
 
@@ -449,6 +582,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                             }
                                                         }
                                                     });
+
 
                                                 }
 
