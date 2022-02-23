@@ -90,7 +90,7 @@ public class GoalModel {
 
     //New constructor for parseSingleGoalData
 
-    public ArrayList<GoalModel> parseGoalsData(QuerySnapshot snapshots){
+    public static ArrayList<GoalModel> parseGoalsData(QuerySnapshot snapshots){
         ArrayList<GoalModel> events = new ArrayList<>();
         if(snapshots==null)
             return null;

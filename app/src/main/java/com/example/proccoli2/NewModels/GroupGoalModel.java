@@ -1,6 +1,7 @@
 package com.example.proccoli2.NewModels;
 
 import com.example.proccoli2.SubGoalModel;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Base64;
 import java.util.HashMap;
 
 public class GroupGoalModel implements Serializable {
+
     String goalId;
     String bigGoal;
     String goalType;

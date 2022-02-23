@@ -1,28 +1,30 @@
 package com.example.proccoli2.NewModels;
 
 import com.example.proccoli2.SubGoalModel;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class IndividualGoalModel {
     private String bigGoal;
-    Date personalDeadline;
-    Date whenIsDue;
+    long personalDeadline;
+    long whenIsDue;
     boolean isCompleted;
     private String goalType;
     private String goalCreaterUid;
-    private Date createdAt;
+    private long createdAt;
     private String taskType;
     String goalId;
     private String goalCreaterEmail;
-    private Date proposedStartDate;
+    long proposedStartDate;
     ArrayList<IndividualSubGoalStructModel> subGoals = new ArrayList<>();
     double proposedStudyTime;
     String relatedCourse;
 
-    public IndividualGoalModel(String bigGoal, Date personalDeadline, String taskType, ArrayList<IndividualSubGoalStructModel> subGoals, String eventCreaterUid, String eventId, Date createdAt, Date proposedStartDate, String eventCreaterEmail, boolean isCompleted, String goalType, Date whenIsDue, String relatedCourse){
+    public IndividualGoalModel(String bigGoal, long personalDeadline, String taskType, ArrayList<IndividualSubGoalStructModel> subGoals, String eventCreaterUid, String eventId, long createdAt, long proposedStartDate, String eventCreaterEmail, boolean isCompleted, String goalType, long whenIsDue, String relatedCourse){
         this.bigGoal = bigGoal;
         this.personalDeadline = personalDeadline;
         this.subGoals = subGoals;
@@ -39,8 +41,8 @@ public class IndividualGoalModel {
     }
 
     public IndividualGoalModel parseData(DocumentSnapshot docSnap){
-        data = docSnap.data();
-        return IndividualGoalModel((String)getValueOrDefault(data[BIG_GOAL_REF],"nil"),(Date)getValueOrDefault(data[PERSONAL_DEADLINE_REF],0),(String)getValueOrDefault(data[TASK_TYPE_REF],""),IndividualSubGoalStructModel.parseData(data: data?[SUB_GOAL_PACK_REF] as? [String : AnyObject]),(String) getValueOrDefault(data[GOAL_CREATER_UID_REF],""), (String)getValueOrDefault(data[GOAL_ID_REF],""),(Date) getValueOrDefault(data[CREATED_AT],0),(Date)getValueOrDefault(data[PROPOSED_START_TIME_REF],0), (String) getValueOrDefault(data[GOAL_CREATER_EMAIL_REF],""), (boolean)getValueOrDefault(data[IS_GOAL_COMPLETED_REF],false), (String) getValueOrDefault(data[GOAL_TYPE_REF],""), (Date) getValueOrDefault(data[WHEN_IS_IT_DUE_REF],0), (String) getValueOrDefault(data[RELATED_COURSE_REF],""));
+        Map<String,Object> data = docSnap.getData();
+        return IndividualGoalModel((String)getValueOrDefault(data[BIG_GOAL_REF],"nil"),(long)getValueOrDefault(data[PERSONAL_DEADLINE_REF],0),(String)getValueOrDefault(data[TASK_TYPE_REF],""),IndividualSubGoalStructModel.parseData(data: data?[SUB_GOAL_PACK_REF] as? [String : AnyObject]),(String) getValueOrDefault(data[GOAL_CREATER_UID_REF],""), (String)getValueOrDefault(data[GOAL_ID_REF],""),(long) getValueOrDefault(data[CREATED_AT],0),(long)getValueOrDefault(data[PROPOSED_START_TIME_REF],0), (String) getValueOrDefault(data[GOAL_CREATER_EMAIL_REF],""), (boolean)getValueOrDefault(data[IS_GOAL_COMPLETED_REF],false), (String) getValueOrDefault(data[GOAL_TYPE_REF],""), (long) getValueOrDefault(data[WHEN_IS_IT_DUE_REF],0), (String) getValueOrDefault(data[RELATED_COURSE_REF],""));
     }
 
     public HashMap<String,Object> jsonFormatterForIndividualEvent(IndividualGoalModel data){
@@ -95,7 +97,7 @@ public class IndividualGoalModel {
         this.goalType = goalType;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
     public void setGoalCreaterUid(String goalCreaterUid){
@@ -109,7 +111,7 @@ public class IndividualGoalModel {
         this.goalCreaterEmail=goalCreaterEmail;
     }
 
-    public void setProposedStartDate(Date proposedStartDate){
+    public void setProposedStartDate(long proposedStartDate){
         this.proposedStartDate=proposedStartDate;
     }
 
@@ -121,7 +123,7 @@ public class IndividualGoalModel {
         return bigGoal;
     }
 
-    public Date getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
@@ -137,7 +139,7 @@ public class IndividualGoalModel {
         return goalCreaterEmail;
     }
 
-    public Date getProposedStartDate() {
+    public long getProposedStartDate() {
         return proposedStartDate;
     }
 }
