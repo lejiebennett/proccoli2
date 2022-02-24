@@ -5,18 +5,18 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class IndividualSubGoalStructModel {
-    private double _deadline;
+    private long _deadline;
     private int _difficultyLevel;
     private String _subGoalName;
     private int _howLongHours;
     private boolean _isDeleted;
-    private double _startDate;
+    private long _startDate;
     private String _subGoalId;
     private int _totalStudyTime;
     boolean _isChecked;
 
     static SingletonStrings ss = new SingletonStrings();
-    public IndividualSubGoalStructModel(String subgoalId, String subGoalName,double deadline, int difficultyLevel,int howLongHours,boolean isDeleted,double startDate, int totalStudyTime,boolean isChecked) {
+    public IndividualSubGoalStructModel(String subgoalId, String subGoalName,long deadline, int difficultyLevel,int howLongHours,boolean isDeleted,long startDate, int totalStudyTime,boolean isChecked) {
             _deadline = deadline;
             _difficultyLevel = difficultyLevel;
             _subGoalName = subGoalName;
@@ -40,7 +40,7 @@ public class IndividualSubGoalStructModel {
                         }
                         else {
                             HashMap<String,Object> subgoalData = (HashMap<String, Object>) data.get(subgoalId);
-                            response.add(new IndividualSubGoalStructModel(subgoalId,(String)getValueOrDefault(subgoalData.get(SUB_GOAL_NAME_REF),"err"), (Date) getValueOrDefault(subgoalData.get(SUB_DEADLINE_REF),0), (int)getValueOrDefault(subgoalData.get(DIFFICULTY_LEVEL_REF),0),(int)getValueOrDefault(subgoalData.get(HOW_LONG_REF),0), (boolean) getValueOrDefault(subgoalData.get(IS_DELETED_REF),false), (Date)getValueOrDefault(subgoalData.get(PROPOSED_START_TIME_REF),0), (int)getValueOrDefault(subgoalData.get(TOTAL_STUDIED_TIME_REF),0), (boolean) getValueOrDefault(subgoalData.get(IS_CHECKED_REF),false)));
+                            response.add(new IndividualSubGoalStructModel(subgoalId,(String)getValueOrDefault(subgoalData.get(ss.SUB_GOAL_NAME_REF),"err"), (long) getValueOrDefault(subgoalData.get(ss.SUB_DEADLINE_REF),0), (int)getValueOrDefault(subgoalData.get(ss.DIFFICULTY_LEVEL_REF),0),(int)getValueOrDefault(subgoalData.get(ss.HOW_LONG_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_DELETED_REF),false), (long)getValueOrDefault(subgoalData.get(ss.PROPOSED_START_TIME_REF),0), (int)getValueOrDefault(subgoalData.get(ss.TOTAL_STUDIED_TIME_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_CHECKED_REF),false)));
 
                         }
 
@@ -78,8 +78,8 @@ public class IndividualSubGoalStructModel {
                 finalData.put(ss.CREATED_AT, System.currentTimeMillis());
                 finalData.put(ss.IS_DELETED_REF, subGoal._isDeleted);
                 finalData.put(ss.PROPOSED_START_TIME_REF, subGoal._startDate);
-                finalData.put(TOTAL_STUDIED_TIME_REF, subGoal._totalStudyTime);
-                finalData.put(IS_CHECKED_REF, subGoal._isChecked);
+                finalData.put(ss.TOTAL_STUDIED_TIME_REF, subGoal._totalStudyTime);
+                finalData.put(ss.IS_CHECKED_REF, subGoal._isChecked);
             }
             return finalData;
 
@@ -90,9 +90,9 @@ public class IndividualSubGoalStructModel {
     public HashMap<String,Object> addNoSubGoal(){
         HashMap<String,Object> hashMap = new HashMap<>();
         HashMap<String,Object> hashMap1 = new HashMap<>();
-        hashMap1.put(SUB_GOAL_NAME_REF,NO_SUB_GOAL_REF);
-        hashMap1.put(CREATED_AT,System.currentTimeMillis());
-        hashMap1.put(TOTAL_STUDIED_TIME_REF, 0);
+        hashMap1.put(ss.SUB_GOAL_NAME_REF,ss.NO_SUB_GOAL_REF);
+        hashMap1.put(ss.CREATED_AT,System.currentTimeMillis());
+        hashMap1.put(ss.TOTAL_STUDIED_TIME_REF, 0);
 
         hashMap.put(getAlphaNumericString(14),hashMap1);
         return hashMap;

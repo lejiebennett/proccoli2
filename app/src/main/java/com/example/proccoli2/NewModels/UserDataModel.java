@@ -135,7 +135,7 @@ public class UserDataModel {
         }
     }
 
-    public void parseData(DocumentSnapshot snapshots){
+    public static void parseData(DocumentSnapshot snapshots){
         if(snapshots== null){
             return;
         }

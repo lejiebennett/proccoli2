@@ -2,14 +2,23 @@ package com.example.proccoli2.NewModels;
 
 
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.common.api.Batch;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firestore.v1.Write;
 
@@ -388,7 +397,7 @@ public class DataServices {
     
     
     private FirebaseAuth Auth;
-    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    static String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
 
@@ -436,6 +445,8 @@ public class DataServices {
     public void savePersonalNote(String goalId, personalNoteModel note) {
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF).update(personalNoteModel.jsonConverter(note));
     }
+
+
 
 
     //public void requestPersonalNotes(String goalId) {
@@ -756,7 +767,7 @@ public class DataServices {
     ///End of individual Wall VC
 
 
-    /*
+
     ///Mark: CreateIndividualGoal VC
     public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data){
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
@@ -772,18 +783,19 @@ public class DataServices {
         DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID);
         DocumentReference individualWallProgressLogDataDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF);
 
-        data.goalId = generalGoalsCollectionRef.documentID;
-        batch.set(IndividualGoalModel.jsonFormatterForIndividualEvent(data), generalGoalsCollectionRef);
+        data.goalId = generalGoalsCollectionRef.getId();
+        batch.set(generalGoalsCollectionRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
         batch.update(createHashmap(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,FieldValue.increment(Int64(1))), userDocRef);
-        batch.set(createHashmap(CREATED_AT,System.currentTimeMillis()), personalNoteDocRef);
-        batch.set(createHashmap(EXIST_REF,true), goalReminderDocRef);
-        batch.set(Goals.jsonFormatterForGoals(IndividualGoalModel.goalsModelConverterForDataWrite(data)), userPersonalGoalsRef);
-        batch.set(createHashmap(EXIST_REF,true), noSubGoalDocReference);
-        batch.set(createHashmap(EXIST_REF,true),  individualWallProgressDocRef);
-        batch.set(createHashmap(EXIST_REF,true),  individualWallProgressLogDataDocRef);
-        if let subGoals = data.subGoals {
-            for subGoal in subGoals {
-                batch.set([EXIST_REF : true], forDocument: studyTimeCollection.document(subGoal._subGoalId))
+        batch.set(personalNoteDocRef,createHashmap(CREATED_AT,System.currentTimeMillis()));
+        batch.set(goalReminderDocRef,createHashmap(EXIST_REF,true));
+        batch.set(userPersonalGoalsRef,Goals.jsonFormatterForGoals(IndividualGoalModel.goalsModelConverterForDataWrite(data)));
+        batch.set(noSubGoalDocReference,createHashmap(EXIST_REF,true));
+        batch.set(individualWallProgressDocRef,createHashmap(EXIST_REF,true));
+        batch.set( individualWallProgressLogDataDocRef,createHashmap(EXIST_REF,true));
+        ArrayList<IndividualSubGoalStructModel> subGoals = data.subGoals;
+        if(subGoals!=null) {
+            for(IndividualSubGoalStructModel subGoal : subGoals){
+                batch.set(studyTimeCollection.document(subGoal._subGoalId),createHashmap(EXIST_REF,true));
             }
         }
 
@@ -791,13 +803,12 @@ public class DataServices {
         return data;
 
     }
-    */
+
     /// End of CreateIndividualVC
 
-    /*
-
     ////Mark: Profile VC funcs
-    public callUserInfo(completion:@escaping(_ status:Bool, _ error:Error?)->()) {
+    /*
+    public void callUserInfo(ResultHandler<Object> handlercompletion:@escaping(_ status:Bool, _ error:Error?)->()) {
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).getDocument { (docSnap, error) in
             guard let err = error else {
                 DatabaseService.checkFCM()
@@ -808,8 +819,30 @@ public class DataServices {
             completion(false, err)
         }
     }
+    */
 
-*/
+    public void callUserInfo(ResultHandler<Object> handler) {
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).get()
+                .addOnCompleteListener(docSnap->{
+                    if(docSnap.isSuccessful()) {
+                        try {
+                            handler.onSuccess(docSnap);
+                        }
+                        catch(Exception e) {
+                            handler.onFailure(e);
+                            //this.checkFCM();
+                            //UserDataModel.parseData(docSnap);
+                            return;
+                        }
+                    }else{
+                            handler.onFailure(docSnap.getException());
+                            return;
+                        }
+                });
+    }
+
+
+
 
     
     public void updateUserInfo(HashMap<String,Object> update) {
@@ -817,11 +850,13 @@ public class DataServices {
     }
 
 
+
+ /*
     public requestPersonalGoals(completion:@escaping(boolean _status,ArrayList<GoalModel> _response, Exception error)->()){
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).getDocuments { (querySnaps, error) in
             guard let err = error else {
                 //query success
-                completion(true, GoalModel.parseGoalsData(querySnaps snapshots), null);
+                completion(true, GoalModel.parseGoalsData(QuerySnapshot snapshots), null);
                 return;
             }
             //query failed
@@ -829,12 +864,33 @@ public class DataServices {
         }
     }
 
+  */
+    public ArrayList<GoalModel> requestPersonalGoals(ResultHandler<Object> handler){
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).get()
+    .addOnCompleteListener(querySnaps->{
+        if(querySnaps.isSuccessful()){
+            try{
+                handler.onSuccess(querySnaps);
+                //completion(true, GoalModel.parseGoalsData(QuerySnapshot snapshots), null);
+                GoalModel.parseGoalsData(QuerySnapshot snapshots);
+                return;
+            }
+            catch(Exception e){
+                handler.onFailure(e);
+            }
+        } else{
+          handler.onFailure(querySnaps.getException());
+            }
+        });
+    }
+
     //End of profileVC funcs
     
 
 
     ////Mark: Edit profile funcs
-    public resetPassword(email:String, completion:@escaping(_ status:Bool, _ error:Error?, _ responseString:String?)->()) {
+    /*
+    public resetPassword(String email, completion:@escaping(_ status:Bool, _ error:Error?, _ responseString:String?)->()) {
         FirebaseAuth.getInstance().sendPasswordReset(withEmail: email) { (error) in
             guard let err = error else {
                 completion(true, nil,  "Password reset email successfully send.\nYou need to go through the password reset link")
@@ -843,21 +899,83 @@ public class DataServices {
             completion(true, err, nil)
         }
     }
+
+     */
+
+    public void resetPassword(String email, ResultHandler<Object> handler) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener(responseString->{
+                    if(responseString.isSuccessful()){
+                        try{
+                            handler.onSuccess(responseString);
+                            //completion(true, null,  "Password reset email successfully send.\nYou need to go through the password reset link");
+
+                        }
+                        catch(Exception e){
+                            handler.onFailure(responseString.getException());
+                        }
+                    }
+                    else{
+                        handler.onFailure(responseString.getException());
+                    }
+                });
+
+    }
     
-    */
-    /*
+
+
     public void signOutUser() {
         FirebaseAuth.getInstance().signOut();
-        do {
             try {
                 FirebaseAuth.getInstance().signOut();
-            } catch signOutError as NSError {
-                System.out.println("Error signing out: %@", signOutError);
+            } catch(Exception e){
+                Log.d("signOutUserError", "signOutUser: " + e);
             }
-        }
     }
-    */
-   
+
+
+    public void loginUser(String email, String pass, ResultHandler<Object> handler) {
+        Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)");
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    //UpdateUI
+                }
+                else{
+                    if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==true){
+                        //Signed in and verified
+                    }
+                    else{
+                        //Signed in but not verified
+                        Log.w("Not Verified", "signInWithEmail:failure", task.getException());
+                    }
+                }
+            }
+        });
+    }
+
+    /*
+    public void loginUser(String email, String pass, ResultHandler<Object> handler) {
+        Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)")
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(user->{
+            if(user.isSuccessful()){
+                handler.onSuccess(user);
+
+            }else{
+                handler.onFailure(user.getException());
+                if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==true){
+                    //signed in and verified
+                }
+                else{
+                    //signed in but no verification
+                    handler.onFailure(user.getException());
+                    //
+                }
+            }
+        });
+    }
 
 
     public loginUser(String email, String pass, completion:@escaping(_ status:Bool, _ error:Error?, _ isLoginVerified:Bool)->()) {
@@ -879,6 +997,30 @@ public class DataServices {
         }
     }
 
+     */
+
+    public void sendVerificationEmail(String email){
+        FirebaseUser currentUser = Auth.getCurrentUser();
+        currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    verificationEmailCheck(false,null);
+                   // completion(true, error, nil)
+
+
+                }
+                else{
+                    verificationEmailCheck(false,task.getException());
+                    Log.d("sendVerificationEmail", "onComplete: " + "Please check your e-mail for a verification email.\nThe email might be in your SPAM filder.\n");
+                    //completion(true, nil, "Please check your e-mail for a verification email.\nThe email might be in your SPAM folder.\n")
+
+                }
+            }
+        });
+    }
+
+    /*
     public sendVerificationEmail(String email, completion:@escaping(_ status:Bool, _ error:Error? , _ responseText:String?)->()){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser.sendEmailVerification { (error) in
@@ -893,7 +1035,9 @@ public class DataServices {
         }
     }
 
-    public verificationEmailCheck(boolean isSuccess, error:Error?) {
+     */
+
+    public void verificationEmailCheck(boolean isSuccess, Exception e) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(isSuccess){
             HashMap<String,Object> hashMap = createHashmap("uid", currentUser.getUid());
@@ -902,17 +1046,17 @@ public class DataServices {
         }
 		else {
 		    HashMap<String,Object> hashMap = createHashmap("uid", currentUser.getUid());
-		    hashMap.put("error" , error);
+		    hashMap.put("error" , e);
             FirebaseFirestore.getInstance().collection("verificationEmail").document(getValueOrDefault(currentUser.getUid(),"uidErr")).set(hashMap);
         }
     }
-
+    /*
     public createNewUserWithAuth(String email,String password,String userName, completion:@escaping(_ status:Bool, _ error:Error?, _ responseMessage:String?)->()) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword( email, password) { (user, error) in
             if( error != null) {
                 completion(true, error, nil);
             }
-			else {
+            else {
                 guard let currentUser = FirebaseAuth.getInstance().currentUser else {
                     completion(true, nil, nil);
                     return;
@@ -926,13 +1070,56 @@ public class DataServices {
                         verificationEmailCheck(false, error);
                         completion(true, error, null);
                     }
-					else {
+                    else {
                         verificationEmailCheck(true, null);
                         completion(true, null, "Please check your e-mail.\nYou can log-in after\nverification process!\nThe email might be in your SPAM folder.\n");
                     }
                 }
             }
         }
+    }
+     */
+    public void createNewUserWithAuth(String email,String password,String userName, ResultHandler<Object> handler) {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(user -> {
+            //Creates new user with email and password
+            if (user.isSuccessful()) {
+                handler.onSuccess(user);
+                return;
+                //Error creating new user with authentication
+            } else {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    return;
+                }
+                UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(email)
+                        .build();
+                currentUser.updateProfile(request)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    createNewUserCollection(currentUser, this.uid, email, userName);
+                                    currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                verificationEmailCheck(true, null);
+                                                handler.onSuccess("Please check your e-mail.\nYou can log-in after\nverification process!\nThe email might be in your SPAM folder");
+                                            } else {
+                                                verificationEmailCheck(false, task.getException());
+                                                handler.onSuccess(task.getException());
+                                            }
+                                        }
+                                    });
+
+                                } else {
+                                    handler.onFailure(task.getException());
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     /*
@@ -942,7 +1129,7 @@ public class DataServices {
         userData.put(EMAIL,email);
         userData.put(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,0);
         userData.put(GROUP_TOTAL_GOAL_NUMBER_REF,0);
-        userData.put(OMPLETED_TOTAL_GOAL_NUMBER_REF,0);
+        userData.put(COMPLETED_TOTAL_GOAL_NUMBER_REF,0);
         userData.put(CREATED_AT,System.currentTimeMillis());
 
         guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
@@ -961,9 +1148,9 @@ public class DataServices {
         checkIfThereIsWaitingGroupGoalInvitation(email,uid);
     }
     */
-    public checkIfThereIsWaitingGroupGoalInvitation(email:String, newUid:String) {
-
-        let tempNotifRef = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF)
+   /*
+    public void checkIfThereIsWaitingGroupGoalInvitation(String email,String newUid) {
+        DocumentReference tempNotifRef = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF);
         tempNotifRef.getDocument { (docSnap, error) in
             if error == nil {
                 guard let snap = docSnap else {return}
@@ -976,7 +1163,7 @@ public class DataServices {
                         return
                     }
                     //there is match
-                    updateTempraryUIDs(tempraryUID: notifCatch.key, goalId: notifCatch.value.invitedGoalId, goalDeadline: notifCatch.value.invitedGoalDeadline, invitedByEmail: notifCatch.value.invitedByEmail, goalName: notifCatch.value.invitedGoalName, taskType: notifCatch.value.invitedGoalTaskType)
+                    updateTempraryUIDs( notifCatch.key, notifCatch.value.invitedGoalId,  notifCatch.value.invitedGoalDeadline,  notifCatch.value.invitedByEmail, notifCatch.value.invitedGoalName, notifCatch.value.invitedGoalTaskType);
 
                 }catch {
                     //err handle here
@@ -984,7 +1171,7 @@ public class DataServices {
             }
         }
     }
-
+*/
     public checkEmailIsInvitedBefore(invitedEmail:String, completion:@escaping(_ isInvited:Bool)->()) {
         FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF).getDocument { (docSnap, error) in
             guard let docSnap = docSnap else {
