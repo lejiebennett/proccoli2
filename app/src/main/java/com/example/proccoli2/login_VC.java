@@ -1,22 +1,28 @@
 package com.example.proccoli2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.ResultHandler;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class login_VC extends AppCompatActivity {
 
     private loginView loginView; //View
     private UserModel model;
+    DataServices dataServices = new DataServices();
 
     public login_VC(loginView loginView){
         this.loginView = loginView;
@@ -47,6 +53,128 @@ public class login_VC extends AppCompatActivity {
 
     public loginView getLoginView() {
         return loginView;
+    }
+
+    public void emailVerificationAlert(String message, String email){
+        //Send alert for email verification
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+        builder1.setMessage("Email Verification " + message);
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "re-send",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        dataServices.sendVerificationEmail(email, new ResultHandler<Object>() {
+
+                            @Override
+                            public void onSuccess(Object data) {
+                                Toast.makeText(loginView.getBaseContext(), "success", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(loginView.getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    public void login(String email, String pass){
+        loginView.displayLoading();
+        dataServices.loginUser(email,pass, new ResultHandler<Object>() {
+            @Override
+            public void onSuccess(Object data) {
+                loginView.hideLoading();
+                HashMap<String,Object> result = (HashMap<String, Object>) data;
+                Exception e = (Exception) result.get("_error");
+                if(e!=null){
+                    //Send alert for email verification
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                    builder1.setMessage(e.getLocalizedMessage());
+                    builder1.setCancelable(true);
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else{
+                    boolean isLoginVerified = (boolean) result.get("isLoginVerified");
+                    if(isLoginVerified==true){
+                        //Email has been verified
+                        //Good to send to profile VC
+
+                    }
+                    else{
+                        //Email has not been verified yet
+                        //resend verification
+                        emailVerificationAlert("This account has not\nbeen verified\nPlease check your e-mail.", email);
+                    }
+                    return;
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
+
+    public void signUp(String email, String password,String userName){
+        loginView.displayLoading();
+        dataServices.createNewUserWithAuth(email, password, userName, new ResultHandler<Object>() {
+
+            @Override
+            public void onSuccess(Object data) {
+                loginView.hideLoading();
+                HashMap<String,Object> result = (HashMap<String, Object>) data;
+                boolean status = (boolean) result.get("_status");
+                if(status==true){
+                    Exception e = (Exception) result.get("_error");
+                    if(e==null){
+                        //Send alert for email verification
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                        builder1.setMessage((String)getValueOrDefault("Success",result.get("_responseMessage")));
+                        builder1.setCancelable(true);
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                        loginView.changeActionBtnAsLogin();
+                    }
+                    else{
+                        //Send alert for email verification
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                        builder1.setMessage(e.getLocalizedMessage());
+                        builder1.setCancelable(true);
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+    }
+
+    public static <T> T getValueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
     }
 
 }

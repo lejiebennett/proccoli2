@@ -4,11 +4,14 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class SurveyDataModel {
+    /*
     ArrayList<questionStruct> questions;
     String surveyId;
     CGFloat contentHeight;
@@ -38,7 +41,7 @@ public class SurveyDataModel {
         HashMap<String,Object> formattedData = new HashMap<>();
         HashMap<String,Object> formatedAnswersData = new HashMap<>();
         formattedData.replace(SURVEY_ID_REF,surveyId);
-        formattedData.replace(FINISH_TIME_REF,Date().timeIntervalSince1970);
+        formattedData.replace(FINISH_TIME_REF,System.currentTimeMillis());
         formattedData.replace((START_TIME_REF),startTime);
         for(questionResult data: answers){
             if(data.result!=null){
@@ -137,6 +140,8 @@ public class SurveyDataModel {
         }
 
 )
+
+     */
 
 
     }

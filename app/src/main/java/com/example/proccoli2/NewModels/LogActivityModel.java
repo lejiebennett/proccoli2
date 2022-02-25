@@ -1,35 +1,38 @@
 package com.example.proccoli2.NewModels;
 
+import android.provider.ContactsContract;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
 public class LogActivityModel implements Serializable {
+    DataServices ss = new DataServices();
     HashMap<String,activityPack> activity;
 
     public LogActivityModel(){
         HashMap<String,activityPack> hashMap = new HashMap<>();
-        hashMap.put(getAlphaNumericString(11),new activityPack(APP_OPEN_REF,Date().timeIntervalSince1970,nil,nil,nil));
+        hashMap.put(getAlphaNumericString(11),new activityPack(ss.APP_OPEN_REF,System.currentTimeMillis(),null,null,null));
         this.activity = hashMap;
     }
 
-    public addActivity(String type){
-        this.activity.put(getAlphaNumericString(11),new activityPack(type,Date.timeIntervalSince1970,null,null,null));
+    public void addActivity(String type){
+        this.activity.put(getAlphaNumericString(11),new activityPack(type,System.currentTimeMillis(),null,null,null));
 
     }
 
-    public addActivityForGoal(String type, String goalId){
-        this.activity.put(getAlphaNumericString(11),new activityPack(type, Date.timeIntervalSince1970,goalId,null,null));
+    public void addActivityForGoal(String type, String goalId){
+        this.activity.put(getAlphaNumericString(11),new activityPack(type, System.currentTimeMillis(),goalId,null,null));
 
     }
 
-    public addActivityForSubGoal(String type, String goalId ,String subgoalId){
-        this.activity.put(getAlphaNumericString(11), new activityPack(type, Date().timeIntervalSince1970,goalId,null,subgoalId));
+    public void addActivityForSubGoal(String type, String goalId ,String subgoalId){
+        this.activity.put(getAlphaNumericString(11), new activityPack(type, System.currentTimeMillis(),goalId,null,subgoalId));
 
     }
 
-    public addSurveyActivity(String type, String surveyId){
-        this.activity.put(getAlphaNumericString(11), new activityPack(type, Date().timeIntervalSince1970,null,surveyId,null));
+    public void addSurveyActivity(String type, String surveyId){
+        this.activity.put(getAlphaNumericString(11), new activityPack(type, System.currentTimeMillis(),null,surveyId,null));
     }
 
     public String getAlphaNumericString(int n)
@@ -63,12 +66,12 @@ public class LogActivityModel implements Serializable {
 
 class activityPack implements Serializable{
     String activityType;
-    Date activityTime;
+    long activityTime;
     String goalId;
     String surveyId;
     String subgoalId;
 
-    public activityPack(String activityType, Date activityTime, String goalId, String surveyId, String subgoalId){
+    public activityPack(String activityType, long activityTime, String goalId, String surveyId, String subgoalId){
         this.activityType = activityType;
         this.activityTime = activityTime;
         this.goalId = goalId;

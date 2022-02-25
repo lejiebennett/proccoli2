@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class NotificationTableDataModel {
+    /*
 
     class notificationsStruct{
         int totalWaitingGoalInvitations;
@@ -120,4 +121,5 @@ public class NotificationTableDataModel {
             }
             return status;
         }
+        */
 }

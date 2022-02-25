@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class GroupChatStatusModel implements Serializable {
+    /*
     HashMap<String,userOnlineStatusFields> = new HashMap<>();
     final String uid;
     final String status;
@@ -15,6 +16,9 @@ public class GroupChatStatusModel implements Serializable {
         this.email = email;
     }
 
+     */
+
+    /*
     public HashMap<String,Object> prepareJsonForWritingCurrentUser(){
         HashMap<String,Object> hashmap = new HashMap<>();
         hashmap.put("UID",DatabaseService.uid);
@@ -26,6 +30,8 @@ public class GroupChatStatusModel implements Serializable {
         hashmap.put(STATUS_REF,ONLINE_REF);
         hashmap.put(EMAIL,DatabaseService.email);
 
-         */
     }
+     */
+
+
 }

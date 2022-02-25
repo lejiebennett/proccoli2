@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class UserDataModel {
+    /*
 
     static UserDataModel sharedInstance = UserDataModel();
     String email;
@@ -62,6 +63,8 @@ public class UserDataModel {
         }
     }
 
+     */
+
     /*
     // completedGoal number bug fix
     // remove this code later
@@ -76,6 +79,7 @@ public class UserDataModel {
         }
     }
      */
+    /*
     public checkCompletedGoalNumber(int finishedGoalCount){
         if((Integer)this.completedGoalTotal == null){
             return;
@@ -91,21 +95,26 @@ public class UserDataModel {
         }
     }
 
-    public HashMap<String,String> setProfileImg(String newValue){
-        HashMap<String,String> hashMap = new HashMap<>();
+     */
+
+
+    //public HashMap<String,String> setProfileImg(String newValue){
+    //    HashMap<String,String> hashMap = new HashMap<>();
         /*
         UpperDashViewForIndividual.sharedInstance.profileImageView.image = UIImage(named: newValue?.keys.first ?? "light0")
         UpperDashViewForIndividual.sharedInstance.profileImageView.changeImageColor(color: UIColor.colorFromHexString(hexCode: newValue?.values.first ?? "#000"))
 
          */
-        String value = UserDashViewForIndividual.sharedInstance.profileImageView.image = getValueOrDefault(newValue.keys.first,"light0");
-        String key = UserDashViewForIndividual.sharedInstance.profileImageView.changeImageColor(UIColor.colorFromHexString(getValueOrDefault(newValue.values.first,"#000"));
-    }
+    //    String value = UserDashViewForIndividual.sharedInstance.profileImageView.image = getValueOrDefault(newValue.keys.first,"light0");
+    //    String key = UserDashViewForIndividual.sharedInstance.profileImageView.changeImageColor(UIColor.colorFromHexString(getValueOrDefault(newValue.values.first,"#000"));
+    //}
+
 
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
     }
 
+    /*
     public void setRawGoalsData(ArrayList<GoalModel> newValue) {
         if(newValue==null){
             return;
@@ -117,7 +126,7 @@ public class UserDataModel {
             ArrayList<GoalModel> finishedGoals;
 
             checkCompletedGoalNumber(finishedGoals.count);
-
+    */
             /*
             let activeGoals = new.filter({$0.personalDeadline > Date().timeIntervalSince1970 && $0.isCompleted == false})
             let expiredGoals = new.filter({$0.personalDeadline <= Date().timeIntervalSince1970 && $0.isCompleted == false})
@@ -132,9 +141,12 @@ public class UserDataModel {
             self.checkCompletedGoalNumber(finishedGoalCount: finishedGoals.count)
 
              */
+    /*
         }
     }
+    */
 
+    /*
     public static void parseData(DocumentSnapshot snapshots){
         if(snapshots== null){
             return;
@@ -158,4 +170,6 @@ public class UserDataModel {
     }
 
     public void refreshLocalActiveData(ArrayList<GoalModel> activePersonal, ArrayList<GoalModel> activeHard, ArrayList<GoalModel> expiredPersonal,ArrayList<GoalModel> expiredHard,)
+
+     */
 }

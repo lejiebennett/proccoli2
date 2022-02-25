@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 public class MainProgressViewDataModel {
+    /*
     ArrayList<ArrayList<singleDataPointForBarChart>> activeChartData = new ArrayList<>();
     ArrayList<ArrayList<singleDataPointForBarChart>> expiredChartData = new ArrayList<>();
     ArrayList<ArrayList<singleDataPointForBarChart>> finishedChartData = new ArrayList<>();
@@ -21,6 +22,8 @@ public class MainProgressViewDataModel {
             dataPrep(data: expiredData, dataType: SEGMENTED_CONTROL_EXPIRED_REF);
         }
     }
+
+     */
 
 
 

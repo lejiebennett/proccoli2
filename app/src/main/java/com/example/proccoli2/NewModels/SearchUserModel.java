@@ -3,6 +3,7 @@ package com.example.proccoli2.NewModels;
 import java.io.Serializable;
 
 public class SearchUserModel implements Serializable {
+    /*
     @DocumentID String uid;
     String email;
     String userName;
@@ -12,6 +13,8 @@ public class SearchUserModel implements Serializable {
         this.email=email;
         this.userName = userName;
     }
+
+     */
 }
 
 /*

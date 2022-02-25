@@ -8,7 +8,8 @@ import java.util.Base64;
 import java.util.HashMap;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class TemporaryNotificationModel extends Base64.Decoder {
+public class TemporaryNotificationModel {
+    /*
     HashMap<String,TemporaryNotificationModelFields> notificationInfo;
     String invitedGoalId;
     String invitedEmail;
@@ -26,5 +27,7 @@ public class TemporaryNotificationModel extends Base64.Decoder {
         this.invitedGoalDeadline =  invitedGoalDeadline;
         this.invitedGoalTaskType =  invitedGoalTaskType;
     }
+
+     */
 
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IndividualGoalModel {
+    /*
     SingletonStrings ss = new SingletonStrings();
     private String bigGoal;
     long personalDeadline;
@@ -127,4 +128,6 @@ public class IndividualGoalModel {
     public long getProposedStartDate() {
         return proposedStartDate;
     }
+
+     */
 }

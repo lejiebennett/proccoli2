@@ -3,6 +3,7 @@ package com.example.proccoli2.NewModels;
 import java.io.Serializable;
 
 public class GroupChatMessageModel implements Serializable {
+    /*
     @DocumentID String messageId;
     final String message;
     final double createdAt;
@@ -17,6 +18,8 @@ public class GroupChatMessageModel implements Serializable {
         this.senderEmail = senderEmail;
     }
 
+
+     */
 
 }
 /*

@@ -9,7 +9,8 @@ import java.util.Base64;
 import java.util.HashMap;
 
 public class GroupGoalModel implements Serializable {
-
+    /*
+    DataServices ss = new DataServices();
     String goalId;
     String bigGoal;
     String goalType;
@@ -24,6 +25,7 @@ public class GroupGoalModel implements Serializable {
 
 }
     class groupMembersPack implements Serializable {
+        DataServices ss = new DataServices();
         String userName;
         String uid;
         String email;
@@ -37,9 +39,9 @@ public class GroupGoalModel implements Serializable {
 
             public HashMap<String, Object> jsonConverter(assignedSubgoalsField data) {
                 HashMap<String, Object> hashmap = new HashMap<>();
-                hashmap.put(SUB_GOAL_NAME_REF, data.subgoalName);
-                hashmap.put(SUB_GOAL_ID_REF, data.subgoalId);
-                hashmap.put(SUBGOAL_STATUS_REF, data.subgoalStatus);
+                hashmap.put(ss.SUB_GOAL_NAME_REF, data.subgoalName);
+                hashmap.put(ss.SUB_GOAL_ID_REF, data.subgoalId);
+                hashmap.put(ss.SUBGOAL_STATUS_REF, data.subgoalStatus);
 
                 return hashmap;
 
@@ -48,11 +50,11 @@ public class GroupGoalModel implements Serializable {
 
         public HashMap<String, Object> jsonConverter(groupMembersPack data) {
             HashMap<String, Object> hashmap = new HashMap<>();
-            hashmap.put(USER_NAME_REF, data.userName);
-            hashmap.put(UID, data.uid);
-            hashmap.put(EMAIL, data.email);
-            hashmap.put(STATUS_REF, data.status);
-            hashmap.put(ASSIGNED_SUBGOAL_REF, data.assignedSubgoals);
+            hashmap.put(ss.USER_NAME_REF, data.userName);
+            hashmap.put(ss.UID, data.uid);
+            hashmap.put(ss.EMAIL, data.email);
+            hashmap.put(ss.STATUS_REF, data.status);
+            hashmap.put(ss.ASSIGNED_SUBGOAL_REF, data.assignedSubgoals);
             return hashmap;
 
         }
@@ -158,4 +160,6 @@ public class GroupGoalModel implements Serializable {
 
         }
     }
+
+     */
 }

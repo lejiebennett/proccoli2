@@ -242,6 +242,8 @@ public class MainActivity extends AppCompatActivity{
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         Log.d("New main", "onCreate: Creating new view");
         super.onCreate(savedInstanceState);
 
@@ -767,6 +769,7 @@ public class MainActivity extends AppCompatActivity{
                 */
 
 
+                /*
                 //Actual edit profile btn code
                 Log.d("I was clicked", "onClick: ");
                 Intent myIntent = new Intent(MainActivity.this, profileView.class);
@@ -779,6 +782,8 @@ public class MainActivity extends AppCompatActivity{
                 myIntent.putExtras(bundle);
                 Log.d("sendToProfile", "onClick: " + Integer.toString(passedAvatar));
                 activityResultLaunchAvatar.launch(myIntent);
+
+                 */
 
             }
         });

@@ -1,11 +1,14 @@
 package com.example.proccoli2.NewModels;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class PersonalNoteModel {
+    /*
     private String note;
     private Date createdAt;
     private String noteId;
@@ -18,8 +21,8 @@ public class PersonalNoteModel {
 
     public ArrayList<PersonalNoteModel> parseData(DocumentSnapshot documentSnap){
         if(documentSnap!=null){
-            DocumentSnap doc = documentSnap;
-            HashMap<String,Object> data = doc.data();
+            DocumentSnapshot doc = documentSnap;
+            HashMap<String,Object> data = (HashMap<String, Object>) doc.getData();
         }
         else
             return null;
@@ -49,5 +52,7 @@ public class PersonalNoteModel {
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
     }
+
+     */
 
 }

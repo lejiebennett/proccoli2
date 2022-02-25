@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SelfTimeReportGoalModel {
+    /*
     class groupGoalStructureForSelfTimeReport {
         String goalId;
         String bigGoal;
@@ -44,5 +45,7 @@ public class SelfTimeReportGoalModel {
         String subGoalId;
 
     }
+
+     */
 
 }

@@ -402,14 +402,24 @@ public class DataServices {
 
 
     ///Mark: Edit Individual goal VC
+
+    /*
     public void classsaveReminder(String goalId, String reminderId, HashMap<String, Object> reminderData) {
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put(reminderId,reminderData);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REMINDERS_COLLECTIONS_REF).document(shapeSize.REMINDERS_DOC_ID).update(hashMap);
     }
 
+     */
+
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
+    }
+
+    public HashMap<String,Object> createHashmap(String key, Object value){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(key,value);
+        return hashMap;
     }
 
     public String getAlphaNumericString(int n)
@@ -439,456 +449,24 @@ public class DataServices {
         return sb.toString();
     }
 
-    
 
-
-    public void savePersonalNote(String goalId, personalNoteModel note) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF).update(personalNoteModel.jsonConverter(note));
-    }
-
-
-
-
-    //public void requestPersonalNotes(String goalId) {
-    public void requestPersonalNotes(String goalId, ResultHandler<Object> handler){
-       // FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF).getDocument { (docSnap, error) in
-        /*
-         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF).getDocument { (docSnap, error) in
-
-
-        guard error != nil else {
-                PersonalNoteViews.sharedInstance.set(personalNotes: personalNoteModel.parseData(documentSnap: docSnap), mainGoalId: goalId)
-                return;
-            }
-        }
-
-         */
-
-         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF).get()
-                        .addOnCompleteListener(docSnap -> {
-                            if (docSnap.isSuccessful()) {
-                                try {
-                                    handler.onSuccess(docSnap);
-                                } catch (Exception e) {
-                                    handler.onFailure(e);
-                                    PersonalNoteViews.sharedInstance.set( personalNoteModel.parseData( docSnap), mainGoalId: goalId);
-                                    return;
-                                }
-                            } else {
-                                handler.onFailure(docSnap.getException());
-                                PersonalNoteViews.sharedInstance.set(personalNoteModel.parseData( docSnap), mainGoalId: goalId);
-                                return;
-                            }
-                        });
-
-    }
-
-
-
-
-
-    public HashMap<String,Object> createHashmap(String key, Object value){
-        HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put(key,value);
-        return hashMap;
-    }
-    public void revisePersonalOrHardDeadline(double newDeadline, double oldDeadline, boolean isPersonalDeadline,String goalId) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference revisionCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REVISION_COLLECTION_REF).document();
-        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        if(isPersonalDeadline == true) {
-
-            batch.update(goalInUserCollection, createHashmap(PERSONAL_DEADLINE_REF,newDeadline));
-            batch.update(goalInGeneralGoalCollection, createHashmap(PERSONAL_DEADLINE_REF, newDeadline));
-            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
-            hashMap.put("revisionType","personalDeadline");
-            hashMap.put("oldPersonalDeadline",oldDeadline);
-            hashMap.put("newPersonalDeadline", newDeadline);
-            batch.set(revisionCollectionRef,hashMap);
-        }
-		else {
-            //update when is due
-            batch.update(goalInUserCollection, createHashmap(WHEN_IS_IT_DUE_REF,newDeadline));
-            batch.update(goalInGeneralGoalCollection, createHashmap(WHEN_IS_IT_DUE_REF, newDeadline));
-            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
-            hashMap.put("revisionType", "hardDeadline");
-            hashMap.put("oldPersonalDeadline", oldDeadline,);
-            hashMap.put( "newPersonalDeadline",newDeadline);
-            batch.set(revisionCollectionRef,hashMap);
-        }
-
-        batch.commit();
-
-    }
-
-
-    public void addNewSubGoal(IndividualSubGoalStructModel data, String goalId) {
-        //
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference generalGoalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference studyTimeDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(data._subGoalId);
-        batch.update(createHashmap(SUB_GOAL_PACK_REF + "." + data._subGoalId,IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(data)), generalGoalDocRef);
-        batch.set(studyTimeDocRef,createHashmap(EXIST_REF,true));
-
-        batch.commit();
-    }
-    public void deleteSubGoal(String subgoalId,String goalId) {
-        HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_DELETED_REF,true);
-        hashMap.put(SUB_GOAL_PACK_REF +"." + subgoalId + "." + SUB_GOAL_DELETE_TIME,System.currentTimeMillis());
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-    }
-
-
-    /*
-    public void saveSubGoalRevisions(HashMap<String,Object> revisionData,String goalId,String subgoalId, HashMap<String,Object> newSubGoaldata) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference revisionCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REVISION_COLLECTION_REF).document();
-        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        batch.set(revisionData, revisionCollectionRef);
-
-        for(String key : newSubGoaldata.keySet()) {
-            batch.update(["\(SUB_GOAL_PACK_REF+ "." + subgoalId+ "." + key)": newSubGoaldata[key] ?? ["err":"err"]], forDocument: goalInGeneralGoalCollection);
-        }
-
-        batch.commit()
-    }
-
-     */
-
-
-    ///End of Edit Individual goal VC
-
-    ///Individual Chart VC log data
-    public void chartOpenBtnClickIndividualWall(String goalId,String clickEventId) {
-        HashMap<String,Object> hashMap1 = createHashmap(CLIK_TIME_REF,System.currentTimeMillis());
-        createHashmap(EXIST_REF,true),
-                hashMap1.put(TIME_ZONE_REF, );
-        HashMap<String,Object> hashMap = createHashmap(CHART_VIEW_BTN_CLICK_REF + "." + clickEventId,hashMap1);
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF).
-                update(hashMap);
-    }
-    public void chartClosedIndividualWall(String goalId,String clickEventId) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF).update(createHashmap(CHART_VIEW_BTN_CLICK_REF + "." + clickEventId + "." + EXIT_TIME_REF, System.currentTimeMillis());
-    }
-
-    public void chartGotoDateLog(String goalId,String gotoDataDate) {
-
-        HashMap<String,Object> hashMap1 = createHashmap(CLIK_TIME_REF,System.currentTimeMillis());
-        hashMap1.put(GO_TO_DATE_REF,gotoDataDate);
-        HashMap<String,Object> hashMap = createHashmap(CHART_VIEW_BTN_CLICK_REF + "." +getAlphaNumericString(11),hashMap1);
-
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF).
-                update(hashMap);
-    }
-
-    public void graphSwitchBtnClick(String goalId,String switchTo) {
-        HashMap<String,Object> hashMap1 = createHashmap(CLIK_TIME_REF,System.currentTimeMillis());
-        hashMap1.put(SWICTH_TO_REF,switchTo);
-        HashMap<String,Object> hashMap = createHashmap(GRAPH_SWICTH_BTN_CLICKED_REF + "." +getAlphaNumericString(11),hashMap1);
-
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF)
-                .update(hashMap);
-
-
-    }
-
-    ///Mark: IndividualWall VC
-   // public requestStudiedTimeDetailsForIndividualWallProgress(String goalId, completion:@escaping(_ status:Bool, _ response:DocumentSnapshot?)->()) {
-
-    public void requestStudiedTimeDetailsForIndividualWallProgress(String goalId,ResultHandler<Object> handler) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).get()
-                .addOnCompleteListener(docSnap -> {
-                    if (docSnap.isSuccessful()) {
-                        try {
-                            //Failable Constructor
-                            //               UserInfo info = new UserInfo(snap.getResult().getId(), snap.getResult().getData());
-                            handler.onSuccess(info);
-                        } catch (Exception e) {
-                            handler.onFailure(e);
-                        }
-                    } else {
-                        handler.onFailure(docSnap.getException());
-                    }
-                });
-    }
-
-
-   // public void requestIndividualGoal(String goalId) {
-    public void requestIndividualGoal(String goalId, ResultHandler<Object> handler){
-           FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).get()
-                   .addOnCompleteListener(docSnap -> {
-                       if (docSnap.isSuccessful()) {
-                           try {
-                               docSnap = docSnap;
-                               //IndividualWallVC.sharedInstance.data = IndividualGoalModel.parseData(docSnap);
-                               handler.onSuccess(docSnap);
-                           } catch (Exception e) {
-                               handler.onFailure(e);
-                           }
-                       } else {
-                           handler.onFailure(docSnap.getException());
-                       }
-                   });
-    }
-
-
-
-    public void completeGoal(String goalId) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
-
-        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF, true);
-        hashMap.put( COMPLETED_DATE_REF,System.currentTimeMillis());
-        batch.update(goalInUserCollection,hashMap);
-
-        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF, true);
-        hashMap.put(COMPLETED_DATE_REF,System.currentTimeMillis());
-
-        batch.update(goalInGeneralGoalCollection,hashMap);
-        batch.update(createHashmap(COMPLETED_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(Int64(1))), userDocRef);
-
-        batch.commit();
-
-    }
-
-
-    public void completeSubGoal(String goalId,String subgoalId, boolean isChecked) {
-        String checkField;
-        if(isChecked) {
-            checkField = SUB_GOAL_CHECK_TIME_REF;
-        }
-		else {
-            checkField = SUB_GOAL_UN_CHECK_TIME_REF;
-        }
-
-		HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_CHECKED_REF,isChecked);
-		hashMap.put(SUB_GOAL_PACK_REF + "." +subgoalId + "." +checkField,System.currentTimeMillis());
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-
-    }
-
-    //timer APIS for individual goal
-
-    public void startTimerIndividualGoal(String goalId, String subgoalId, String studyId,TimerDataModel startData) {
-        //create start
-        // crate nested breake / resume / stop fields later
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId).update(timerDataModel.jsonFormatter(startData));
-
-    }
-
-    public void resumeTimerForIndividualGoal(String goalId,String subgoalId, String studyId,HashMap<String,Object> resumeData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId).update(createHashmap(studyId + "." + RESUMES_REF) + "." + getAlphaNumericString(11),resumeData);
-
-
-    }
-
-    public void breakTimerForIndividualGoal(String goalId, String subgoalId,String studyId,HashMap<String,Object> breakData) {
-
-        HashMap<String,Object> hashMap = createHashmap(studyId + "." + BREAKS_REF + "." + getAlphaNumericString(11),breakData);
-        hashMap.put(studyId+ "." + TOTAL_BREAK_TIMES_REF,FieldValue.increment(Int64(1)));
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId).update(hashMap);
-
-    }
-
-    public void stopTimerForIndividualGoal(String goalId, String subgoalId, String studyId,HashMap<String,Object> stopData, int studiedTime) {
-        //stop means users did not finish the whole time that he proposed to study
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        //update studied collection
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId);
-        //update main goal doc //sub goal field // total stuided time;
-        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        batch.update(createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment(Int64(studiedTime)),  mainGoalDoc));
-
-        HashMap<String,Object> hashMap = createHashmap(studyId + "." + STOP_TIME_REF, stopData);
-        hashMap.put(studyId + "." + STUDIED_TIME_REF,studiedTime);
-        batch.update(studyCollectionRef,hashMap);
-        updateChartDataStuidedTimes( batch, goalId,  subgoalId,  studiedTime);
-
-        batch.commit();
-
-        //TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-
-    private void updateChartDataStuidedTimes(WriteBatch batch, String goalId, String subgoalId,int studiedTime) {
-        //update profile chart data
-        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-
-        batch.update(createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime))), userPersonalGoalRef);
-        //update individual wall progress data
-        DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID);
-        batch.update(createHashmap(Date.dailyBaseTimeInterval(Date()) + "." + subgoalId, FieldValue.increment(Int64(studiedTime)), individualWallProgressDocRef);
-
-    }
-    private void updateChartDataStuidedTimesForTimeReport(WriteBatch batch, String goalId, String subgoalId: int studiedTime, double startTime) {
-        //update profile chart data
-        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        batch.update(createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime))) ,userPersonalGoalRef);
-        //update individual wall progress data
-        DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID);
-        batch.update(createHashmap(Date.dailyBaseTimeInterval(Date(startTime)) + "." +subgoalId,FieldValue.increment(Int64(studiedTime)), individualWallProgressDocRef);
-    }
-
-
-    public void finishTimerForIndividual(String goalId, String subgoalId, String studyId, int studiedTime, HashMap<String,Object> finishData) {
-        //finish means users finished the whole time that he proposed to study
-        //first update the main goal sub pack/subgoal/ total studied Time
-        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        //second update studyCollection/subgoal/studyid
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId);
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        batch.update(createHashmap((SUB_GOAL_PACK_REF + "." + subgoalId+ "." + TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime)), mainGoalDoc);
-        HashMap<String,Object> hashMap = createHashmap(studyId + "." + FINISH_TIME_REF,finishData);
-        hashMap.put(studyId + "." + STUDIED_TIME_REF,studiedTime);
-        hashMap.put(studyId + "." + IS_FINISHED_REF, true);
-        batch.update(studyCollectionRef, hashMap);
-
-        updateChartDataStuidedTimes(batch, goalId,subgoalId, studiedTime);
-
-        batch.commit();
-
-        TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-
-    public void sendEvaluationDataAfterIndividualStudy(String goalId, String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(selectedSubgoalId).update(createHashmap(studyId + "." + SELF_EVALUATION_REF,evaluationData));
-    }
-    public void sendEvaluationDataAfterGroupStudy(String goalId,String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(this.uid +  "." + selectedSubgoalId + "." + studyId + "." + SELF_EVALUATION_REF,evaluationData);
-    }
-    public void sendEvaluationDataAfterIndividialGoalCompletion(String goalId, HashMap<String,Object> evaluationData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(createHashmap(SELF_EVALUATION_REF,evaluationData);
-    }
-
-    //end of timer APIS for individual goal
-
-    ///End of individual Wall VC
-
-
-
-    ///Mark: CreateIndividualGoal VC
-    public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data){
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-
-        DocumentReference generalGoalsCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document();
-        DocumentReference userPersonalGoalsRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID);
-        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
-        DocumentReference personalNoteDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(PERSONAL_NOTE_COLLEECTION_REF).document(shapeSize.PERSONAL_NOTE_DOC_ID_REF);
-        DocumentReference studyTimeCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(STUDY_TIME_REF);
-        DocumentReference noSubGoalDocReference = studyTimeCollection.document(NO_SUB_GOAL_REF);
-        DocumentReference goalReminderDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(REMINDERS_COLLECTIONS_REF).document(shapeSize.REMINDERS_DOC_ID);
-
-        DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID);
-        DocumentReference individualWallProgressLogDataDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.documentID).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID).collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF);
-
-        data.goalId = generalGoalsCollectionRef.getId();
-        batch.set(generalGoalsCollectionRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
-        batch.update(createHashmap(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,FieldValue.increment(Int64(1))), userDocRef);
-        batch.set(personalNoteDocRef,createHashmap(CREATED_AT,System.currentTimeMillis()));
-        batch.set(goalReminderDocRef,createHashmap(EXIST_REF,true));
-        batch.set(userPersonalGoalsRef,Goals.jsonFormatterForGoals(IndividualGoalModel.goalsModelConverterForDataWrite(data)));
-        batch.set(noSubGoalDocReference,createHashmap(EXIST_REF,true));
-        batch.set(individualWallProgressDocRef,createHashmap(EXIST_REF,true));
-        batch.set( individualWallProgressLogDataDocRef,createHashmap(EXIST_REF,true));
-        ArrayList<IndividualSubGoalStructModel> subGoals = data.subGoals;
-        if(subGoals!=null) {
-            for(IndividualSubGoalStructModel subGoal : subGoals){
-                batch.set(studyTimeCollection.document(subGoal._subGoalId),createHashmap(EXIST_REF,true));
-            }
-        }
-
-        batch.commit();
-        return data;
-
-    }
-
-    /// End of CreateIndividualVC
-
-    ////Mark: Profile VC funcs
-    /*
-    public void callUserInfo(ResultHandler<Object> handlercompletion:@escaping(_ status:Bool, _ error:Error?)->()) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).getDocument { (docSnap, error) in
-            guard let err = error else {
-                DatabaseService.checkFCM()
-                UserDataModel.parseData(snapshots: docSnap)
-                completion(true, nil)
-                return
-            }
-            completion(false, err)
-        }
-    }
-    */
-
-    public void callUserInfo(ResultHandler<Object> handler) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).get()
-                .addOnCompleteListener(docSnap->{
-                    if(docSnap.isSuccessful()) {
-                        try {
-                            handler.onSuccess(docSnap);
-                        }
-                        catch(Exception e) {
-                            handler.onFailure(e);
-                            //this.checkFCM();
-                            //UserDataModel.parseData(docSnap);
-                            return;
-                        }
-                    }else{
-                            handler.onFailure(docSnap.getException());
-                            return;
-                        }
-                });
-    }
-
-
-
-
-    
-    public void updateUserInfo(HashMap<String,Object> update) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).update(update);
-    }
-
-
-
- /*
-    public requestPersonalGoals(completion:@escaping(boolean _status,ArrayList<GoalModel> _response, Exception error)->()){
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).getDocuments { (querySnaps, error) in
-            guard let err = error else {
-                //query success
-                completion(true, GoalModel.parseGoalsData(QuerySnapshot snapshots), null);
-                return;
-            }
-            //query failed
-            completion(true, null, err);
-        }
-    }
-
-  */
-    public ArrayList<GoalModel> requestPersonalGoals(ResultHandler<Object> handler){
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).get()
-    .addOnCompleteListener(querySnaps->{
-        if(querySnaps.isSuccessful()){
-            try{
-                handler.onSuccess(querySnaps);
-                //completion(true, GoalModel.parseGoalsData(QuerySnapshot snapshots), null);
-                GoalModel.parseGoalsData(QuerySnapshot snapshots);
-                return;
-            }
-            catch(Exception e){
-                handler.onFailure(e);
-            }
-        } else{
-          handler.onFailure(querySnaps.getException());
+    ////Mark: Edit profile funcs
+    public void resetPassword(String email) {
+        Auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d("resetPassword", "onComplete: " + "Password reset email successfully send.\nYou need to go through the password reset link");
+                }
+                else{
+                    Log.d("resetPasswordFailed", "onComplete: " + task.getException());
+                    //completion(true, err, nil);
+
+                }
             }
         });
     }
 
-    //End of profileVC funcs
-    
-
-
-    ////Mark: Edit profile funcs
     /*
     public resetPassword(String email, completion:@escaping(_ status:Bool, _ error:Error?, _ responseString:String?)->()) {
         FirebaseAuth.getInstance().sendPasswordReset(withEmail: email) { (error) in
@@ -900,7 +478,7 @@ public class DataServices {
         }
     }
 
-     */
+
 
     public void resetPassword(String email, ResultHandler<Object> handler) {
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
@@ -921,6 +499,8 @@ public class DataServices {
                 });
 
     }
+
+     */
     
 
 
@@ -933,24 +513,39 @@ public class DataServices {
             }
     }
 
-
+   // public void loginUser(String email, String pass, ResultHandler<Object> handler) {
     public void loginUser(String email, String pass, ResultHandler<Object> handler) {
-        Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)");
+        Log.d("loginUser", "instance initializer: " + "checking Database statics "+ this.uid + " " + this.email);
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    //UpdateUI
-                }
-                else{
                     if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==true){
                         //Signed in and verified
+                        Log.d("SignedInNotV", "onComplete: singed in, not verified");
+                        HashMap<String,Object> handlerData = new HashMap<>();
+                        handlerData.put("_status",true);
+                        handlerData.put("_error",null);
+                        handlerData.put("isLoginVerified", true);
+                        handler.onSuccess(handlerData);
                     }
                     else{
                         //Signed in but not verified
                         Log.w("Not Verified", "signInWithEmail:failure", task.getException());
+                        HashMap<String,Object> handlerData = new HashMap<>();
+                        handlerData.put("_status",true);
+                        handlerData.put("_error",null);
+                        handlerData.put("isLoginVerified", false);
+                        handler.onSuccess(handlerData);
                     }
+                    return;
+                }
+                else{
+                    HashMap<String,Object> handlerData = new HashMap<>();
+                    handlerData.put("_status",true);
+                    handlerData.put("_error",task.getException());
+                    handlerData.put("isLoginVerified", false);
+                    handler.onSuccess(handlerData);
                 }
             }
         });
@@ -999,7 +594,7 @@ public class DataServices {
 
      */
 
-    public void sendVerificationEmail(String email){
+    public void sendVerificationEmail(String email,ResultHandler<Object> handler){
         FirebaseUser currentUser = Auth.getCurrentUser();
         currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -1007,6 +602,7 @@ public class DataServices {
                 if(task.isSuccessful()){
                     verificationEmailCheck(false,null);
                    // completion(true, error, nil)
+                    handler.onSuccess(task.getResult());
 
 
                 }
@@ -1014,7 +610,7 @@ public class DataServices {
                     verificationEmailCheck(false,task.getException());
                     Log.d("sendVerificationEmail", "onComplete: " + "Please check your e-mail for a verification email.\nThe email might be in your SPAM filder.\n");
                     //completion(true, nil, "Please check your e-mail for a verification email.\nThe email might be in your SPAM folder.\n")
-
+                    handler.onFailure(task.getException());
                 }
             }
         });
@@ -1050,6 +646,75 @@ public class DataServices {
             FirebaseFirestore.getInstance().collection("verificationEmail").document(getValueOrDefault(currentUser.getUid(),"uidErr")).set(hashMap);
         }
     }
+
+    public void createNewUserWithAuth(String email,String password,String userName, ResultHandler<Object> handler) {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword( email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    //Sign in success
+                    Log.d("CreateNewUser", "onComplete: " + "sign in success");
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    //completion(true, nil, nil);
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(email)
+                            .build();
+
+                    currentUser.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("userProfileUpdated", "User profile updated.");
+                                        //createNewUserCollection(currentUser.getUid(),email,userName);
+                                        currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    verificationEmailCheck(true,null);
+                                                   // completion(true, nil, "Please check your e-mail.\nYou can log-in after\nverification process!\nThe email might be in your SPAM folder.\n")
+                                                    HashMap<String,Object> handlerData = new HashMap<>();
+                                                    handlerData.put("_status",true);
+                                                    handlerData.put("_error", task.getException());
+                                                    handlerData.put("_responseMessage","Please check your e-mail.\nYou can log-in after\nverification process!\nThe email might be in your SPAM folder.\n");
+                                                    handler.onSuccess(handlerData);
+                                                }
+                                                else {
+                                                    verificationEmailCheck(false, task.getException());
+                                                    //completion(true, error, nil)
+                                                    HashMap<String,Object> handlerData = new HashMap<>();
+                                                    handlerData.put("_status",true);
+                                                    handlerData.put("_error", task.getException());
+                                                    handlerData.put("_responseMessage",null);
+                                                    handler.onSuccess(handlerData);
+                                                }
+                                        }
+                                    });
+                                    } else {
+                                        Log.d("UserProfiledNotUpdated", "onComplete: Failed to update user profile" + task.getException());
+                                        //completion(true, error, nil)
+                                        HashMap<String,Object> handlerData = new HashMap<>();
+                                        handlerData.put("_status",true);
+                                        handlerData.put("_error", task.getException());
+                                        handlerData.put("_responseMessage","User profile failed to update");
+                                        handler.onSuccess(handlerData);
+                                    }
+                                }
+                            });
+                }
+                else{
+                   // completion(true, error, nil)
+                    Log.d("FailredCreateUser", "onComplete: " + task.getException());
+                    HashMap<String,Object> handlerData = new HashMap<>();
+                    handlerData.put("_status",true);
+                    handlerData.put("_error", task.getException());
+                    handlerData.put("_responseMessage",null);
+                    handler.onSuccess(handlerData);
+                }
+            }
+        });
+    }
+
     /*
     public createNewUserWithAuth(String email,String password,String userName, completion:@escaping(_ status:Bool, _ error:Error?, _ responseMessage:String?)->()) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword( email, password) { (user, error) in
@@ -1079,6 +744,7 @@ public class DataServices {
         }
     }
      */
+    /*
     public void createNewUserWithAuth(String email,String password,String userName, ResultHandler<Object> handler) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(user -> {
             //Creates new user with email and password
@@ -1121,6 +787,8 @@ public class DataServices {
             }
         });
     }
+
+     */
 
     /*
     private void createNewUserCollection(String uid, String email, String userName) {
@@ -1172,6 +840,8 @@ public class DataServices {
         }
     }
 */
+
+    /*
     public checkEmailIsInvitedBefore(invitedEmail:String, completion:@escaping(_ isInvited:Bool)->()) {
         FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF).getDocument { (docSnap, error) in
             guard let docSnap = docSnap else {
@@ -1196,867 +866,9 @@ public class DataServices {
         }
     }
 
+     */
+
     ///End of Edit profile funcs
 
-    //pushNotification
-    public getDeviceTOkens(uid:String, completion:@escaping(_ status:Bool, _ result:String)->()) {
-        let ref = FirebaseFirestore.getInstance().collection(TOKENS_TABLE_REF).document(uid)
-        ref.getDocument { (documentSnap, error) in
-            if error == nil {
-                guard let data = documentSnap?.data() else {
-                    //first time token doc creation here
-                    DatabaseService.sendTokens()
-                    return}
-                let token = data[FCT_REF] as? String ?? "getDeviceTOkens err"
-                completion(true, token)
-            }
-        }
-
-    }
-
-    /*
-    public checkFCM() {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
-        DatabaseService.getDeviceTOkens(uid: this.uid) { (status, result) in
-            if status {
-                if result != delegate.sharedTokenData[FCT_REF] && delegate.sharedTokenData[FCT_REF] != "" {
-                    //refresh the fcm here
-                    DatabaseService.sendTokens()
-                }
-            }
-        }
-    }
-
-    public sendTokens() {
-        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
-        let ref = FirebaseFirestore.getInstance().collection(TOKENS_TABLE_REF).document(this.uid)
-        ref.set([
-                DEVICE_TOKEN_REF: delegate.sharedTokenData[DEVICE_TOKEN_REF] as Any,
-        FCT_REF: delegate.sharedTokenData[FCT_REF] as Any
-			   ])
-    }
-
-
-    public notificationCallWithListener() {
-        notificationListener  =  FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid).addSnapshotListener({ (docSnap, error) in
-
-        do {
-            NotificationTable.sharedInstance.data = try docSnap?.data(as: notificationsStruct.self)
-        }
-			catch let error{
-            //handle err here
-            print("notif listener err database services \(error.localizedDescription)")
-        }
-		})
-    }
-    public surveyNotificationCheckForNotificationComing(eventKey:String, completion:@escaping(_ status:Bool, _ error: Error?)->()) {
-        FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid).getDocument { (docSnap, error) in
-            if error != nil {
-                //handle err here
-                completion(false, error)
-                return
-            }
-			else {
-                do {
-                    let data = try docSnap?.data(as: notificationsStruct.self)
-                    guard let waitingSurveyEventIds = data?.waitingSurveyEventIds else {
-                        completion(false, "No waiting survey!" as? Error)
-                        return
-                    }
-                    var events = [waitingSurveyEventIdsFields.parsedSurveyEventsStruct]()
-                    if waitingSurveyEventIds.count == 0 {
-                        completion(false, "No waiting survey!" as? Error)
-                        return
-                    }
-                    for key in waitingSurveyEventIds.keys {
-                        guard let value = waitingSurveyEventIds[key] else {
-                            completion(false, "No waiting survey!" as? Error)
-                            return}
-                        events.append(waitingSurveyEventIdsFields.parsedSurveyEventsStruct(key: key, waitingSurveyEventIdAfterKey: value))
-                    }
-                    print("beklenen keyler \(events)")
-                    print("aranan key \(eventKey)")
-                    completion(((events.filter({$0.eventId == eventKey}).first) != nil), nil)
-                    return
-                }
-				catch let error{
-                    //handle err here
-                    completion(false, error)
-                    return
-                }
-            }
-        }
-    }
-    //end push notif
-    */
-
-    //survey Apis
-//	public pushGenericProcrastinationSurveyToYourself(surveyDispalyName:String, surveyEventId:String, goalId:String) {
-//		let data:[String:Any] = [
-//			 "surveyId" : shapeSize.genericProcrastinationSurveyID,
-//			 "surveyDisplayName" : surveyDispalyName,
-//			 "deadline" : 00.0
-//		]
-//		WriteBatch batch = FirebaseFirestore.getInstance().batch()
-//		let notifTableRef = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(uid)
-//		let surveyResultRef = notifTableRef.collection(SURVEY_RESULTS_REF).document(surveyEventId)
-//
-//		batch.update([
-//			TOTAL_WAITING_SURVEY_REF : FieldValue.increment(Int64(1)),
-//			"\(WAITING_SURVEY_EVENT_IDS_AND_NAMES_REF+ "." + surveyEventId)" : data
-//		], forDocument: notifTableRef)
-//		batch.set([
-//			"deadline" : 00.0,
-//			"selfTriggeredSurvey" : System.currentTimeMillis(),
-//			"relatedGoalId" : goalId
-//		], forDocument: surveyResultRef)
-//
-//		batch.commit()
-//	}
-//
-    public void deleteExpiredSurvey(String surveyEventId) {
-        DocumentReference ref = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(uid).collection(SURVEY_RESULTS_REF).document(surveyEventId);
-        ref.update(createHashmap("status","expired"));
-        DocumentReference ref2 = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid);
-
-        HashMap<String,Object> hashMap = createHashmap(TOTAL_WAITING_SURVEY_REF,FieldValue.increment(Int64(-1)));
-        hashMap.put(WAITING_SURVEY_EVENT_IDS_AND_NAMES_REF + "." + surveyEventId ,FieldValue.delete());
-        ref2.update(hashMap);
-    }
-
-    /*
-    public requestSurveyQuestions(surveyId:String, completion:@escaping(_ status:Bool, _ error:Error?, _ response:SurveyDataModel?)->()) {
-        let ref = FirebaseFirestore.getInstance().collection(SURVEY_POOL_REF).document(surveyId)
-        ref.getDocument { (documentSnap, error) in
-            if let err = error {
-                completion(true, err, nil)
-            }
-			else {
-                guard let snap = documentSnap else {
-                    completion(true, "err" as? Error, nil)
-                    return}
-                let response = SurveyDataModel.parseData(snap:snap)
-                completion(true , nil , response)
-            }
-        }
-
-    }
-    */
-
-    public void sendSurveyResults(String surveyEventId,HashMap<String,Object> results) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference ref = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(uid).collection(SURVEY_RESULTS_REF).document(surveyEventId);
-        DocumentReference ref2 = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid);
-
-        batch.update(ref,results);
-        HashMap<String,Object> hashMap = createHashmap(TOTAL_WAITING_SURVEY_REF,FieldValue.increment(Int64(-1)));
-        hashMap.put(WAITING_SURVEY_EVENT_IDS_AND_NAMES_REF + "." + surveyEventId,FieldValue.delete());
-        batch.update(ref2,hashMap);
-        batch.commit();
-
-    }
-
-
-    //end survey
-
-    ////Mark:  SelfReport VC
-    public void sendGradeReportData(String grade, String goalId) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId)
-                .update(createHashmap(IS_GRADED_REF,grade));
-
-        activityChain.addActivityForGoal(SELF_GRADE_REPORT_SUBMIT_REF, goalId);
-    }
-
-    /*
-    public requestIndividualGoalForSubGoalCheck(goalId:String, completion:@escaping(_ status:Bool, _ response:individualGoalStructForSelfTimeReport?, _ error:Error?)->()) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).getDocument { (docSnap, error) in
-            guard let err = error else {
-                do {
-                    let data = try docSnap?.data(as: individualGoalStructForSelfTimeReport.self)
-                    completion(true, data, nil)
-                }catch let err{
-                    completion(true,nil, err)
-                }
-
-
-                return
-            }
-            completion(true,nil, err)
-        }
-    }
-
-    public requestGroupGoalForSubGoalCheck(goalId:String, completion:@escaping(_ status:Bool, _ response: groupGoalStructureForSelfTimeReport?, _ error:Error?)->()) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).getDocument { (docSnap, error) in
-            guard let err = error else {
-                do {
-                    let data = try docSnap?.data(as: groupGoalStructureForSelfTimeReport.self)
-                    completion(true, data, nil)
-                }catch let err{
-                    completion(true,nil, err)
-                }
-                return
-            }
-            completion(true,nil, err)
-        }
-    }
-    */
-
-    public void sendSelfTimeReportForIndividual(String goalId, String subgoalId, int studiedTime,double startDate,double finishDate) {
-        String studyId = getAlphaNumericString(11);
-         HashMap<String,Object> timerStartData = TimerDataModel.jsonFormatterForSelfTimeReportForStartTimerIndividual(studyId, startDate, finishDate,  studiedTime);
-
-        //first update the main goal sub pack/subgoal/ total studied Time
-        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        //second update studyCollection/subgoal/studyid
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId)
-        //third studyStart for timer page
-        DocumentReference studyStartRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId)
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        batch.update(studyStartRef,timerStartData);
-        batch.update(mainGoalDoc,createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime))));
-        HashMap<String,Object> hashMap1 = createHashmap(CREATED_AT,System.currentTimeMillis());
-        hashMap1.put(reportedFinishTime, finishDate);
-        hashMap1.put(reportedStartTime,startDate);
-        hashMap1.put( FINISH_LOCATION_REF,NO_LOCATION_REF);
-        HashMap<String,Object> hashMap = createHashmap(studyId + "." + FINISH_TIME_REF,hashMap1);
-        hashMap.put(studyId + "." + STUDIED_TIME_REF, studiedTime);
-        hashMap.put(studyId + "." + IS_FINISHED_REF, true);
-        batch.update(studyCollectionRef,hashMap);
-        
-        batch.update(studyCollectionRef,hashMap);
-        updateChartDataStuidedTimesForTimeReport( batch,  goalId, subgoalId, studiedTime,  startDate);
-        batch.commit();
-
-        TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-    public void sendSelfTimeReportForGroupGoal(String goalId, String subgoalId, int studiedTime, double startDate,double finishDate) {
-        String studyId = getAlphaNumericString(11);
-        HashMap<String,Object> timerStartData = TimerDataModel.jsonFormatterForSelfTimeReportForStartTimerGroup(this.uid,  subgoalId,studyId, startDate,  finishDate, studiedTime);
-
-        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
-        DocumentReference studyStartRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        batch.update(studyStartRef,timerStartData);
-        batch.update(createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime))),  mainGoalDoc);
-
-        HashMap<String,Object> hashMap1 = createHashmap(CREATED_AT,System.currentTimeMillis());
-        hashMap1.put(reportedFinishTime,finishDate);
-        hashMap1.put(reportedStartTime,startDate);
-        hashMap1.put(FINISH_LOCATION_REF ,NO_LOCATION_REF]);
-        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyIdFINISH_TIME_REF,hashMap1);
-        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + STUDIED_TIME_REF,studiedTime);
-        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + IS_FINISHED_REF,true);
-
-        batch.update(studyCollectionRef,hashMap);
-
-        DoucmentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        batch.update(userPersonalGoalRef,createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(studiedTime))));
-
-
-        batch.commit();
-
-        TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-    ////end SelfReport
-
-    //GROUP WALL PAGE
-    public void finishTimerForGroupGoal(String goalId,String subgoalId,String studyId, int studiedTime,HashMap<String,Object> finishData) {
-        //finish means users finished the whole time that he proposed to study
-        //first update the main goal sub pack/subgoal/ total studied Time
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        //second update studyCollection/subgoal/studyid
-        batch.update( mainGoalDoc,createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment(Int64(studiedTime))));
-
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
-
-        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + FINISH_TIME_REF,finishData);
-        hashMap.put(this.uid+ "." + subgoalId+"."+studyId +"." + STUDIED_TIME_REF,studiedTime);
-        hashMap.put(this.uid + "." + subgoalId "." + studyId + "." + IS_FINISHED_REF,true);
-        batch.update(studyCollectionRef,hashMap);
-
-        DocumentReference personalCollectionGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        batch.update(personalCollectionGoalRef,createHashmap(TOTAL_STUDIED_TIME_REF ,FieldValue.increment(Int64(studiedTime)));
-
-        batch.commit();
-
-        TabbarVC.sharedInstance?.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-    public void resumeTimerForGroupGoal(String goalId, String subgoalId,String studyId,HashMap<String,Object> resumeData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + RESUMES_REF + "." + getAlphaNumericString(11), resumeData));
-
-
-    }
-    public void breakTimerForGroupGoal(String goalId, String subgoalId, String studyId, HashMap<String,Object> breakData) {
-        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + BREAKS_REF + "." + getAlphaNumericString(11) ,breakData);
-        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + TOTAL_BREAK_TIMES_REF,FieldValue.increment(Int64(1)));
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).
-                update(hashMap);
-
-    }
-
-    public void startTimerForGroupGoal(String goalId, String subgoalId, String studyId, Date proposedStudyTime) {
-        TimerDataModel startData = TimerDataModel(studyId,  System.currentTimeMillis(),  0,  false, proposedStudyTime);
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(timerDataModel.jsonFormatterForGroupGoal(this.uid, subgoalId, startData));
-    }
-    public void sendTotalStudiedTimeForGroupGoalStopTimer(String goalId,String subgoalId,double totalStudiedTime,HashMap<String,Object> stopData,String studyId) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference personalCollectionGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
-        batch.update(goalRef,createHashmap(SUB_GOAL_PACK_REF +"." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment(Int64(totalStudiedTime))));
-        batch.update(personalCollectionGoalRef,createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment(Int64(totalStudiedTime))));
-
-        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + STOP_TIME_REF, stopData);
-        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + STUDIED_TIME_REF,totalStudiedTime);
-        batch.update(studyCollectionRef,hashMap);
-
-        batch.commit();
-
-        TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
-    }
-
-    /*
-    public createGroupGoal(bigGoal: String, goalType:String, isGoalCompleted: Bool, taskType: String, goalCreaterUid: String, groupMembers: [String:groupMembersPack], relatedCourse: String, whenIsItDue: Double, createdAt: Double, completion:@escaping(_ success:Bool, _ response:groupGoalModel?, _ error:Error?)->()) {
-        do {
-            WriteBatch batch = FirebaseFirestore.getInstance().batch()
-            let docForGoal = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document()
-            let groupGoal = groupGoalModel(goalId: docForGoal.documentID, bigGoal: bigGoal, goalType: goalType, isGoalCompleted: isGoalCompleted, taskType: taskType, goalCreaterUid: goalCreaterUid, groupMembers: groupMembers, relatedCourse: relatedCourse, whenIsItDue: whenIsItDue, createdAt: createdAt, subGoalPack: nil)
-            //let chatDocRef = docForGoal.collection(GROUP_CHAT_COLLECTION_REF).document(shapeSize.groupChatDocID)
-            let studyTimerREf = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(docForGoal.documentID).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF)
-            let chatOnlineOfflineRef = docForGoal.collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document(shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF)
-            let reminderDocRef = docForGoal.collection(REMINDERS_COLLECTIONS_REF).document(shapeSize.REMINDERS_DOC_ID)
-
-            let userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid)
-            let personalCollectionRef = userDocRef.collection(PERSONAL_GOALS_COLLECTION_REF).document(docForGoal.documentID)
-            let dataForPersonalCollection = groupGoalForPersonalCollection(goalId: docForGoal.documentID, bigGoal: groupGoal.bigGoal, goalType: groupGoal.goalType, isGoalCompleted: groupGoal.isGoalCompleted, taskType: groupGoal.taskType, goalCreaterUid: groupGoal.goalCreaterUid, whenIsItDue: groupGoal.whenIsItDue, createdAt: groupGoal.createdAt, totalProposedStudyTime: 0.0, totalStudiedTime: 0.0, personalDeadline: groupGoal.whenIsItDue)
-
-            try batch.set(from: groupGoal, forDocument: docForGoal)
-            try batch.set(from: dataForPersonalCollection, forDocument: personalCollectionRef)
-            batch.update([GROUP_TOTAL_GOAL_NUMBER_REF: FieldValue.increment(Int64(1))], forDocument: userDocRef)
-            //batch.set(["exist":true], forDocument: chatDocRef)
-            batch.set(["exist":true], forDocument: reminderDocRef)
-            batch.set([ONLINE_STATUS_DIC_REF:[this.uid:userOnlineStatus.prepareJsonForWritingCurrentUser()]], forDocument: chatOnlineOfflineRef)
-            batch.set(["exist":true], forDocument: studyTimerREf)
-            batch.commit()
-            completion(true, groupGoal, nil)
-        }
-		catch {
-            completion(false, nil, error)
-        }
-    }
-    */
-    public void completeGroupGoal(String goalId, ArrayList<String> uids){
-        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF,true);
-        hashMap.put(COMPLETED_DATE_REF,System.currentTimeMillis());
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-        for(String  uid : uids) {
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
-            batch.update(FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(uid),createHashmap(COMPLETED_GOAL_NUMBERS_REF,FieldValue.increment(Int64(1))));
-            batch.update(FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId),createHashmap( IS_GOAL_COMPLETED_REF , true));
-            batch.commit();
-        }
-    }
-    /*
-    public void requestGroupGoalDataWithListener(String goalId) {
-        //secure current listeners temp bug solution
-        removeGroupWallRelatedListeners(false);
-        this.turnGroupChatStatusOfflineOrOnline(goalId, ONLINE_REF);
-        groupGoalWallListener = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).addSnapshotListener { (docSnap, error) in
-            guard let docSnap = docSnap else {return}
-            do {
-                GroupWallVC.sharedInstance?.data = try docSnap.data(as: groupGoalModel.self)
-            }catch let error{
-                //will handle date fetch error here
-                GroupWallVC.sharedInstance?.alertB(title: "Data fetch Err", message: error.localizedDescription)
-            }
-        }
-        groupChatUserOnlineStatusListener = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document(shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF).addSnapshotListener { (docSnap, error) in
-            guard let docSnap = docSnap else {return}
-            do {
-                GroupWallVC.sharedInstance?.userOnlineStatusData = try docSnap.data(as: userOnlineStatus.self)
-            }catch let error{
-                //will handle date fetch error here
-                GroupWallVC.sharedInstance?.alertB(title: "Data fetch Err", message: error.localizedDescription)
-            }
-        }
-        //request chat data
-        let chatCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(GROUP_CHAT_COLLECTION_REF).order(by: CREATED_AT, descending: true)
-        chatCollectionRef.getDocuments { (querSnap, error) in
-            guard let docs = querSnap?.documents else {return}
-            do {
-                GroupChatViews.sharedInstance.dataDispatcher = try docs.compactMap({ (snaps) -> groupChatMessageModel? in
-                return try snaps.data(as: groupChatMessageModel.self)
-				})
-            }catch let error {
-                GroupWallVC.sharedInstance?.alertB(title: "Data fecth err", message: error.localizedDescription)
-                print(error)
-            }
-        }
-
-        //add listener chat data
-        groupChatMessagesListener = chatCollectionRef
-                .whereField(CREATED_AT, isGreaterThan: System.currentTimeMillis())
-			.addSnapshotListener({ (querySnap, error) in
-        guard let querySnap = querySnap else {return}
-        querySnap.documentChanges.reversed().forEach({ (change) in
-                switch change.type {
-        case .added:
-        do {
-            guard let parsedData = try change.document.data(as: groupChatMessageModel.self) else {return}
-            GroupChatViews.sharedInstance.chatData.insert(parsedData, at: 0)
-            GroupWallVC.sharedInstance?.insertDataChatTable()
-        }catch let error {
-            GroupWallVC.sharedInstance?.alertB(title: "Data fetch Err", message: error.localizedDescription)
-        }
-        case .modified:
-        print("modified")
-        case .removed:
-        print("removed")
-					}
-				})
-		})
-    }
-    */
-    public void saveGroupSubgoal(String goalId, String subgoalName, double deadline, boolean selfAssigned, double howLong) {
-        String subGoalID = getAlphaNumericString(14);
-
-        if(selfAssigned) {
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
-            groupSubgoalPack.groupSubGoalFields subgoalData = new groupSubgoalPack.groupSubGoalFields(TAKEN_SUB_GOAL_REF, false, false, deadline,  subgoalName,0, (String) getValueOrDefault(UserDataModel.sharedInstance.userName,"unknown2"),  this.uid,subGoalID,  0);
-            let assignedSubgoalData = groupMembersPack.assignedSubgoalsField( subgoalName, subGoalID, IN_PROGRESS_GROUP_SUBGOAL_REF);
-
-            DocumentReference ref1 = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-            HashMap<String,Object> hashMap = createHashmap(GROUP_MEMBERS_REF + "." + this.uid + "." + ASSIGNED_SUBGOAL_REF + "." + subGoalID,groupMembersPack.assignedSubgoalsField.jsonConverter(assignedSubgoalData));
-            hashMap.put(SUB_GOAL_PACK_REF + "." + subGoalID, groupSubgoalPack.groupSubGoalFields.jsonConverter(subgoalData));
-            batch.update( ref1,hashMap);
-            DocumentReference ref2 = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId)
-            batch.update(ref2,createHashmap(TOTAL_PROPOSED_STUDY_TIME_REF,FieldValue.increment((double)howLong)));
-            batch.commit();
-        }
-		else {
-            groupSubgoalPack.groupSubGoalFields subgoalData  = new groupSubgoalPack.groupSubGoalFields(AVAILABLE_SUB_GOAL_REF, false,  false, deadline,subgoalName,  0,  null,  null,  subGoalID,  0);
-            FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(createHashmap(SUB_GOAL_PACK_REF + "." + subGoalID, groupSubgoalPack.groupSubGoalFields.jsonConverter(subgoalData)));
-        }
-        //log actiivty
-        activityChain.addActivityForSubGoal(SUBGOAL_ADDED_GROUP_WALL_REF,goalId, subGoalID);
-        // log activity end
-
-    }
-    public void claimGroupSubgoal(String goalId, groupSubgoalPack.groupSubGoalFields subgoalData, double howLong) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        groupSubgoalPack.groupSubGoalFields assignedSubgoalData = groupMembersPack.assignedSubgoalsField(subgoalData.subgoalName,subgoalData.subgoalId, IN_PROGRESS_GROUP_SUBGOAL_REF);
-        DocumentReference ref2 = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        batch.update(ref2,createHashmap(TOTAL_PROPOSED_STUDY_TIME_REF,FieldValue.increment((double)howLong)));
-
-        HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalData.subgoalId + "." +ASSIGNED_TO_EMAIL_REF,this.email);
-        hashMap.put(SUB_GOAL_PACK_REF + "." + subgoalData.subgoalId + "." + ASSIGNED_TO_UID_REF,this.uid);
-        hashMap.put(SUB_GOAL_PACK_REF + "." + subgoalData.subgoalId + STATUS_REF,TAKEN_SUB_GOAL_REF);
-        hashMap.put(SUB_GOAL_PACK_REF + "." + subgoalData.subgoalId + "." + ASSIGNED_TO_USER_NAME_REF,(String) getValueOrDefault(UserDataModel.sharedInstance.userName,"nil"));
-        hashMap.put(GROUP_MEMBERS_REF + "." + this.uid+ "." + ASSIGNED_SUBGOAL_REF+ "." + subgoalData.subgoalId,groupMembersPack.assignedSubgoalsField.jsonConverter(assignedSubgoalData);
-
-        batch.update(goalDocRef,hashMap);
-        batch.commit();
-    }
-    /*
-    public void searchUserForGroupGoalInvitation(String searchEmail) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).whereField(EMAIL, isGreaterThanOrEqualTo: searchEmail.lowercased()).limit(to: 7).getDocuments { (querySnap, error) in
-            guard let snaps = querySnap?.documents else {
-                //err handle here
-                return
-            }
-            let rawSearchData = snaps.compactMap { (querySnap) -> searchUserModel? in
-                return try? querySnap.data(as: searchUserModel.self)
-            }
-            rawSearchData.forEach { (s) in
-                print(s.email)
-            }
-            guard let alreadyInvitedMembers = GroupWallVC.sharedInstance?.data?.groupMembers else {return}
-            let members = alreadyInvitedMembers.filter({$0.value.status != DECLINED_REF})
-            InviteUserGropWallViews.sharedInstance?.searchUserData = rawSearchData.filter({!members.keys.contains($0.uid ?? "nil")})
-        }
-    }
-    public isUserEmailExistInTheDataBaseForEmailInvitation(searchEmail:String, completion:@escaping(_ result:Bool)->()) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).whereField(EMAIL, isEqualTo:searchEmail.lowercased()).limit(to: 1).getDocuments { (querySnap, error) in
-            guard let snaps = querySnap?.documents else {
-                //err handle here
-                completion(false)
-                return
-            }
-            let rawSearchData = snaps.compactMap { (querySnap) -> searchUserModel? in
-                return try? querySnap.data(as: searchUserModel.self)
-            }
-            if rawSearchData.count > 0 {
-                guard let alreadyInvitedMembers = GroupWallVC.sharedInstance?.data?.groupMembers else {
-                    completion(false)
-                    return}
-                if alreadyInvitedMembers.filter({$0.value.email == searchEmail}).first == nil {
-                    InviteUserGropWallViews.sharedInstance?.searchUserData = rawSearchData
-                }
-                completion(true)
-            }
-			else {
-                completion(false)
-            }
-        }
-    }
-
-*/
-    public void inviteUserForGroupGoal(searchUserModel userData,String goalId,double goalDeadline,String goalName,String taskType) {
-        //update goal doc
-        if(userData.uid == null) {
-            return;
-        }
-        String invitedUserUid = userData.uid;
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        groupMembersPack memberData = new groupMembersPack(userData.userName, invitedUserUid, userData.email, WAITING_REF, null);
-        //update user notif table
-        DocumentReference notifTableRef = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(invitedUserUid);
-        DocumentReference invitationLogDataRef = goalDocRef.collection(IN_APP_INVITATION_LOG_REF).document();
-
-        batch.update(createHashmap(GROUP_MEMBERS_REF+ "." + invitedUserUid,groupMembersPack.jsonConverter(memberData)),goalDocRef);
-
-        HashMap<String,Object> hashMap1 = createHashmap(INVITED_GOAL_ID_REF,goalId);
-        hashMap1.put(INVITED_GOAL_DEADLINE_REF, goalDeadline);
-        hashMap1.put(INVITED_BY_EMAIL_REF, this.email);
-        hashMap1.put(CREATED_AT , System.currentTimeMillis());
-        hashMap1.put( INVITED_GOAL_NAME_REF ,goalName);
-        hashMap1.put(GOAL_CREATER_UID_REF ,this.uid);
-        hashMap1.put(TASK_TYPE_REF ,taskType);
-
-)
-
-
-        HashMap<String,Object> hashMap = createHashmap(TOTAL_WAITING_GOAL_INVITATIONS_REF,FieldValue.increment(Int64(1));
-        hashMap.put(GOAL_INVITATION_PACKS_REF+ "." + goalId,hashMap1);
-        batch.update(notifTableRef,hashMap);
-
-        HashMap<String,Object> hashMap2 = createHashmap(INVITED_BY_EMAIL_REF ,this.email);
-        hashMap2.put(INVITATION_TIME_REF , System.currentTimeMillis());
-        hashMap2.put(INVITED_USER_UIDS_REF : invitedUserUid);
-        hashMap2.put(LOG_TYPE_REF,IN_APP_INVITATION_REF);
-
-        batch.set( invitationLogDataRef,hashMap2);
-        batch.commit();
-
-        //send push notif here
-        callhttpsNotification(goalId, goalDeadline, invitedUserUid, goalName);
-    }
-    /*
-    public void callhttpsNotification(String goalId,double deadline,String invitedUid,String goalName) {
-        HashMap<String,Object> data = createHashmap("invitedUid",invitedUid);
-        data.put("title", "Group Project Invitation");
-        data.put("body",DatabaseService.email + " is invited to you to work together on " + goalName + ". The goal deadline is " + Date.convertDateToString(date: Date(timeIntervalSince1970: deadline))).",
-
-                GOAL_ID_REF : goalId
-				]
-        DatabaseService.functions.httpsCallable("groupMemberInvitationNotification").call(["data": data]) { (result, error) in
-            if error != nil {
-                //handle err here
-            }
-        }
-    }
-    */
-
-    public void updateTempraryUIDs(String tempraryUID,String goalId, double goalDeadline,String invitedByEmail,String goalName, String taskType) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference tempNotif = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF);
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference notifTableRef = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid);
-        groupMembersPack memberData = new groupMembersPack(UserDataModel.sharedInstance.userName, this.uid,email, WAITING_REF, null);
-        HashMap<String,Object> hashMap = createHashmap(GROUP_MEMBERS_REF+ "." + this.uid, groupMembersPack.jsonConverter(memberData));
-        hashMap.put(GROUP_MEMBERS_REF+ "." + tempraryUID, FieldValue.delete());
-        batch.update(goalDocRef,hashMap);
-
-        HashMap<String,Object> hashMap = createHashmap(TOTAL_WAITING_GOAL_INVITATIONS_REF,FieldValue.increment(Int64(1)));
-        HashMap<String, Object> hashMap2 = createHashmap(INVITED_GOAL_ID_REF , goalId);
-        hashMap2.put(INVITED_GOAL_DEADLINE_REF, goalDeadline);
-        hashMap2.put(INVITED_BY_EMAIL_REF , invitedByEmail);
-        hashMap2.put(CREATED_AT , System.currentTimeMillis());
-        hashMap2.put(INVITED_GOAL_NAME_REF,goalName);
-        hashMap2.put(GOAL_CREATER_UID_REF , "nil");
-        hashMap2.put(TASK_TYPE_REF ,taskType);
-        hashMap.put(GOAL_INVITATION_PACKS_REF+ "." + goalId,hashMap2);
-
-        batch.update(notifTableRef,hashMap);
-        batch.update(createHashmap(TEMP_NOTIF_INFO_REF+ "." + tempraryUID,FieldValue.delete(),tempNotif);
-        batch.commit();
-    }
-    public void deleteEmailInvitation(String tempUId, String goalId) {
-        DocumentReference tempNotif = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF);
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        WriteBatch batch = FirebaseFirestore.getInstance().batch()
-        batch.update(tempNotif,createHashmap(TEMP_NOTIF_INFO_REF+ "." + tempUId,FieldValue.delete()));
-        batch.update(goalDocRef,createHashmap(GROUP_MEMBERS_REF+ "." + tempUId, FieldValue.delete()));
-        batch.commit();
-    }
-
-    public void sendSignInMail(goal:groupGoalModel?,email:String) {
-        guard let goal = goal else {return}
-        //get links first
-        FirebaseFirestore.getInstance().collection(LINKS_COLLECTION_REF).document(LINK_DOC_ID).getDocument { (docSnap, error) in
-            guard let doc = docSnap?.data() else {return}
-            let googleForm = doc[GOOGLE_FORM_REF] ?? "nil"
-            let appLink = doc[APP_STORE_FIREBASE_REF] ?? "nil"
-            let tempraryUID = "temp" + String.randomString(length: 24)
-            WriteBatch batch = FirebaseFirestore.getInstance().batch()
-            let mailRef = FirebaseFirestore.getInstance().collection(MAIL_COLLECTION_REF).document()
-            let tempNotif = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF)
-            let mailData:[String:Any] = [
-            "to" : email,
-                    "message": [
-            "subject" : "Invitation to work on group project",
-                    "html" : "Hello,<br><br>You are invited by \(DatabaseService.email) to work on \(goal.bigGoal) group project using Proccoli app.<br><br><strong>[IF YOU ARE A UAlbany Student]</strong> First, please click on this link to view the Consent form for a research study conducted by a UAlbany research team at the School of Education. The purpose of this project is to learn about the processes behind academic procrastination and ways to avoid putting off academic work. Please note that you will be <strong>compensated $50 at the end of this semester</strong> for taking part in our study. Please see the consent form for more information.<br><br><a>\(googleForm)</a><br><br>As the next step, please click on this link to download Proccoli from Apple App Store on your iPhone or iPad.<br><a>\(appLink)</a><br><br>Best of luck,<br>Proccoli Research Team"
-				],
-            INVITED_GOAL_ID_REF : goal.goalId,
-                    INVITED_BY_UID_REF : this.uid
-			]
-            let goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goal.goalId)
-            let invitationLogDataRef = goalDocRef.collection(IN_APP_INVITATION_LOG_REF).document()
-            let memberData = groupMembersPack(userName: nil, uid: tempraryUID, email: email, status: WAITING_FOR_EMAIL_RESPONSE_REF, assignedSubgoals: nil)
-            //update user notif table
-            batch.update([
-                    "\(GROUP_MEMBERS_REF+ "." + tempraryUID)" : groupMembersPack.jsonConverter(data: memberData)
-			], forDocument: goalDocRef)
-            batch.set([
-                    INVITED_EMAIL_REF : email,
-                    INVITED_BY_EMAIL_REF : DatabaseService.email,
-                    INVITATION_TIME_REF : System.currentTimeMillis(),
-                    "temp_" + "\(INVITED_USER_UIDS_REF)" : tempraryUID,
-                    LOG_TYPE_REF : "email invitation"
-			], forDocument: invitationLogDataRef)
-            batch.set(mailData, forDocument: mailRef)
-            batch.update([
-                    "\(TEMP_NOTIF_INFO_REF+ "." + tempraryUID)" : [
-            INVITED_EMAIL_REF : email,
-                    INVITED_GOAL_ID_REF: goal.goalId,
-                    INVITED_GOAL_NAME_REF: goal.bigGoal,
-                    INVITED_GOAL_DEADLINE_REF: goal.whenIsItDue,
-                    INVITED_GOAl_TASK_TYPE: goal.taskType,
-                    INVITED_BY_EMAIL_REF : DatabaseService.email
-				]
-			], forDocument: tempNotif)
-            batch.commit()
-        }
-
-
-
-
-
-
-//		let action = ActionCodeSettings.init()
-//		action.handleCodeInApp = true
-//		action.url = URL.init(string: "https://proccoli.page.link/bjYi")
-//		FirebaseAuth.getInstance().sendSignInLink(toEmail: email, actionCodeSettings: action) { (error) in
-//			completion(true, error)
-//			//save log data here
-//			
-//		}
-    }
-
-    public void groupSubgoalPercentageUpdate(String goalId, String subgoalId, int newPercentage) {
-        if(newPercentage == 100) {
-            HashMap<String, Object> hashMap = createHashmap(SUB_GOAL_PACK_REF+ "." + subgoalId+ "." + IS_CHECKED_REF, true);
-            hashMap.put(SUB_GOAL_PACK_REF+ "." + subgoalId+ "." + PROGRESS_PERCENTAGE_REF,newPercentage);
-            hashMap.put(GROUP_MEMBERS_REF+ "." + this.uid+ "." + ASSIGNED_SUBGOAL_REF+ "." + subgoalId+ "." + SUBGOAL_STATUS_REF,COMPLETED_GROUP_SUBGOAL_REF);
-            FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-
-        } else if( newPercentage > 100){
-            Log.d("groupSubgoalPercentageUpdate", "groupSubgoalPercentageUpdate: " + "something went wrong!");
-        }else {
-            FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(createHashmap(SUB_GOAL_PACK_REF+ "." + subgoalId+ "." + PROGRESS_PERCENTAGE_REF, newPercentage));
-        }
-
-    }
-
-    public void sendProgressViewTimeSpend(String goalId,double timeSpend, String goalType) {
-
-        HashMap<String,Object> hashMap = createHashmap(GOAL_ID_REF,goalId);
-        hashMap.put(TIME_SPEND_REF,timeSpend);
-        hashMap.put(CREATED_AT,System.currentTimeMillis());
-        hashMap.put(GOAL_TYPE_REF , goalType);
-        //			LOCATION_REF : Locator.sharedInstance?.getCurrentLocation() as Any
-
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(CHARTS_TIME_SPEND_REF).document().set(hashMap);
-    }
-    public void sendMainProgressViewTimeSpend(double timeSpend) {
-        HashMap<String,Object> hashMap = createHashmap(TIME_SPEND_REF,timeSpend);
-        hashMap.put(CREATED_AT,System.currentTimeMillis());
-        hashMap.put(GOAL_TYPE_REF , MAIN_PROGRESS_REF);
-
-//			LOCATION_REF : Locator.sharedInstance?.getCurrentLocation() as Any
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(CHARTS_TIME_SPEND_REF).document().set(hashMap);
-    }
-    //END GROUP WALL PAGE
-    //Group invitation Page
-    public void groupInvitationDecline(NotificationTableDataModel.goalInvitationFields data) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(data.invitedGoalId);
-        DocumentReference notificationDocRef = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid);
-        DocumentReference invitationLogDataRef = goalDocRef.collection(IN_APP_INVITATION_LOG_REF).document();
-
-
-        batch.update(createHashmap(GROUP_MEMBERS_REF+ "." + this.uid+ "." + STATUS_REF, DECLINED_REF), goalDocRef);
-
-        HashMap<String,Object> hashMap = createHashmap(LOG_TYPE_REF, STATUS_SELECTION_REF);
-        hashMap.put(SELECTION_TIME_REF ,System.currentTimeMillis());
-        hashMap.put(INVITED_USER_UIDS_REF , this.uid);
-        hashMap.put(STATUS_REF , DECLINED_REF);
-        batch.set( invitationLogDataRef, hashMap);
-
-        HashMap<String, Object> hashMap = createHashmap(TOTAL_WAITING_GOAL_INVITATIONS_REF,FieldValue.increment(Int64(-1)));
-        hashMap.put(GOAL_INVITATION_PACKS_REF+ "." + data.invitedGoalId,FieldValue.delete());
-        batch.update( notificationDocRef, hashMap);
-        batch.commit();
-
-        //might need to send notification other group member later here
-    }
-
-
-    public void groupInvitationAccepted(NotificationTableDataModel.goalInvitationFields data) {
-        WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(data.invitedGoalId);
-        DocumentReference notificationDocRef = FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(this.uid);
-        DocumentReference invitationLogDataRef = goalDocRef.collection(IN_APP_INVITATION_LOG_REF).document();
-
-        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
-        DocumentReference personalCollectionRef = userDocRef.collection(PERSONAL_GOALS_COLLECTION_REF).document(data.invitedGoalId);
-        DocumentReference dataForPersonalCollection = groupGoalForPersonalCollection( data.invitedGoalId,  data.invitedGoalName, GROUP_REF, false,  data.taskType, data.goalCreaterUid,  data.invitedGoalDeadline, System.currentTimeMillis(),  0.0, 0.0, data.invitedGoalDeadline);
-        DocumentReference chatOnlineOfflineRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(data.invitedGoalId).collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document(shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF);
-
-        do {
-            try {
-                batch.set(dataForPersonalCollection, personalCollectionRef);
-                batch.update(userDocRef, createHashmap(GROUP_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(Int64(1))));
-                batch.update(goalDocRef, createHashmap(GROUP_MEMBERS_REF + "." + this.uid + "." + STATUS_REF, ACCEPTED_REF));
-
-                HashMap<String, Object> hashMap = createHashmap(LOG_TYPE_REF, STATUS_SELECTION_REF);
-                hashMap.put(SELECTION_TIME_REF, System.currentTimeMillis());
-                hashMap.put(INVITED_USER_UIDS_REF, this.uid);
-                hashMap.put(STATUS_REF, ACCEPTED_REF);
-                batch.set(invitationLogDataRef, hashMap);
-                HashMap<String, Object> hashMap = createHashmap(TOTAL_WAITING_GOAL_INVITATIONS_REF, FieldValue.increment(Int64(-1)));
-                hashMap.put(GOAL_INVITATION_PACKS_REF + "." + data.invitedGoalId, FieldValue.delete());
-                batch.update(notificationDocRef, hashMap);
-                batch.update(createHashmap(ONLINE_STATUS_DIC_REF + "." + this.uid, userOnlineStatus.prepareJsonForWritingCurrentUser()), chatOnlineOfflineRef);
-
-                batch.commit();
-                //local update
-                //update userdata model here
-                UserDataModel.sharedInstance.groupGoalTotal = (int) getValueOrDefault(UserDataModel.sharedInstance.groupGoalTotal, 0) + 1;
-                GoalModel newGoal = new GoalModel(data.invitedGoalName, data.invitedGoalDeadline, data.taskType, data.invitedGoalId, System.currentTimeMillis(), data.invitedByEmail, false, GROUP_REF, data.invitedGoalDeadline, data.goalCreaterUid, 0, 0, false);
-                if (UserDataModel.sharedInstance.rawGoalsData != null) {
-                    UserDataModel.sharedInstance.rawGoalsData.add(newGoal);
-                } else {
-                    ArrayList<GoalModel> newGoalList = new ArrayList<>();
-                    newGoalList.add(newGoal);
-                    UserDataModel.sharedInstance.rawGoalsData = newGoalList;
-                }
-
-                //might need to send notification other group member later here
-            } catch (let error) {
-                //err handle here
-                DispatchQueue.main.async {
-                    TabbarVC.sharedInstance.invitationVCInstance.alertView(error.localizedDescription, alertColor);
-                }
-            }
-        }
-    }
-
-
-    public void groupSubgoalCheckUpdate(String goalId,String subGoalId,boolean isChecked) {
-        if(isChecked){
-            HashMap<String,Object> hashMap = createHashmap(GROUP_MEMBERS_REF+ "." + this.uid+ "." + ASSIGNED_SUBGOAL_REF+ "." + subGoalId+ "." + SUBGOAL_STATUS_REF,COMPLETED_GROUP_SUBGOAL_REF);
-            hashMap.put(SUB_GOAL_PACK_REF+ "." + subGoalId+ "." + SUB_GOAL_CHECK_TIME_REF,System.currentTimeMillis());
-            hashMap.put(SUB_GOAL_PACK_REF+ "." + subGoalId+ "." + IS_CHECKED_REF,isChecked);
-            FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-        }
-		else {
-		    HashMap<String,Object> hashMap = createHashmap(GROUP_MEMBERS_REF+ "." + this.uid+ "." + ASSIGNED_SUBGOAL_REF+ "." + subGoalId+ "." + SUBGOAL_STATUS_REF,IN_PROGRESS_GROUP_SUBGOAL_REF);
-            hashMap.put(SUB_GOAL_PACK_REF+ "." + subGoalId+ "." + SUB_GOAL_CHECK_TIME_REF,FieldValue.delete());
-            hashMap.put(SUB_GOAL_PACK_REF+ "." + subGoalId+ "." + IS_CHECKED_REF,isChecked);
-		    FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
-        }
-    }
-    public void turnGroupChatStatusOfflineOrOnline(String goalId,String status) {
-        DocumentReference chatOnlineOfflineRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document(shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF);
-        chatOnlineOfflineRef.update(createHashmap(ONLINE_STATUS_DIC_REF+ "." + this.uid+ "." + STATUS_REF,status);
-    }
-
-    public void sendMessageToGroupChat(String goalName, String goalId, String message, ArrayList<String> offlineUids) {
-        GroupChatMessageModel messagePAck = new GroupChatMessageModel(null,message,  System.currentTimeMillis(),  this.uid, DatabaseService.email);
-         try{
-             FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(GROUP_CHAT_COLLECTION_REF).document().set( messagePAck);
-            if(offlineUids==null) {
-                return;
-            }
-            else {
-                ArrayList<String> offlineuids = offlineUids;
-                if (offlineuids.size() > 0) {
-                    this.callhttpsForChatNotification(offlineuids, goalName, message, goalId);
-                }
-            }
-        }catch(Exception e){
-            //err handle here
-            GroupWallVC.sharedInstance.alertB("Message Send Error",  error.localizedDescription);
-        }
-
-    }
-
-
-    public void callhttpsForChatNotification(ArrayList<String> uids, String goalName,String message, String goalId) {
-        let data:[String:Any] = [
-        "memberUids":uids,
-                "title": "\(goalName) - \(String(DatabaseService.email.split(separator: "@").first ?? ""))",
-                "body" : message,
-                GOAL_ID_REF : goalId
-				]
-        DatabaseService.functions.httpsCallable("groupChatNotificationTrigger").call(["data": data]) { (result, error) in
-            if error != nil {
-                //callhttpsNotification(goalId: goalId, deadline: deadline, invitedUid: invitedUid)
-            }
-        }
-    }
-
-
-    ///end of Group invitation Page
-    //Activity Log Data Start
-
-    public void saveActivityLogData() {
-        activityChain.addActivity(APP_CLOSE_REF);
-        guard let activityLog = activityChain else {
-            print("log data write nil de kaldi")
-            return}
-
-        do {
-            try FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(LOG_ACTIVITY_COLLECTION_REF).document().set(from: activityLog, encoder: Firestore.Encoder(), completion: { (error) in
-                if error == nil {
-                    activityChain = nil
-                }
-            })
-
-        }
-		catch {
-            print("err in catch")
-        }
-    }
-
-
-    //Activity Log Data End
-
-    //bug fix APIs
-
-    public void fixCompletedGoalNumber(int number) {
-        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).update(createHashmap(COMPLETED_GOAL_NUMBERS_REF,number);
-    }
-
 }
 
- interface ResultHandler<T> {
-    void onSuccess(T data);
-    void onFailure(Exception e);
-}
