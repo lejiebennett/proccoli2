@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711972027254",
+    "project_id": "proccoli2022",
+    "storage_bucket": "proccoli2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711972027254:android:adf917d1cfbbcfbd41d857",
+        "android_client_info": {
+          "package_name": "com.example.proccoli2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711972027254-n7gbuet62krtev2ou936kc05jijoi6uv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGVEAvWDgyek27ia_h51CVuGFReC412OE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711972027254-n7gbuet62krtev2ou936kc05jijoi6uv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

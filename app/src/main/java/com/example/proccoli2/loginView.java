@@ -7,29 +7,48 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.ResultHandler;
 import com.google.android.material.textfield.TextInputEditText;
 
 
 public class loginView extends AppCompatActivity {
+    DataServices dataServices = new DataServices();
     TextInputEditText emailInput, passwordInput;
-    Button signUpBtn, forgotPasswordBtn, loginBtn;
+    Button signUpShowBtn, signUpBtn, forgotPasswordBtn, loginBtn,loginShowBtn;
+    ProgressBar loading;
+
 
     login_VC login_VC = new login_VC(this);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        Log.d("loginView", "onCreate: " + "Login page");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_view);
 
         emailInput = findViewById(R.id.newEmailInput);
         passwordInput = findViewById(R.id.newPasswordInput);
+        loading = findViewById(R.id.loading);
 
-        signUpBtn = findViewById(R.id.signUpBtn);
+        signUpShowBtn = findViewById(R.id.signUpBtn);
+        signUpShowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signUpShowBtn.setVisibility(View.INVISIBLE);
+                loginBtn.setVisibility(View.INVISIBLE);
+                signUpBtn.setVisibility(View.VISIBLE);
+                loginShowBtn.setVisibility(View.VISIBLE);
+            }
+        });
+
+        signUpBtn = findViewById(R.id.signUpActionBtn);
         signUpBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -38,7 +57,7 @@ public class loginView extends AppCompatActivity {
 
                 while(checkFields(emailText,passwordText)==false)
                     Log.d("Clicked Signup", "onClick: I clicked Signup Button w email: " + emailText + " and password: " + passwordText);
-
+                login_VC.signUp(emailInput.toString(),passwordInput.toString(),emailInput.toString());
             }
         });
 
@@ -48,17 +67,42 @@ public class loginView extends AppCompatActivity {
             public void onClick(View view){
                 Log.d("Clicked forgotPassword", "onClick: I clicked forgotPassword Button");
              //   login_VC.forgotPassword();
+                dataServices.resetPassword(emailInput.toString());
             }
         });
 
-        loginBtn = findViewById(R.id.loginBtn);
+
+        loginBtn = findViewById(R.id.loginActionBtn);
         loginBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Log.d("Clicked login", "onClick: I clicked loginBtn");
-             //   login_VC.loginAgain();
+                login_VC.login(emailInput.toString(),passwordInput.toString());
             }
         });
+        loginShowBtn = findViewById(R.id.loginBtn);
+        loginShowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeActionBtnAsLogin();
+            }
+        });
+    }
+
+    public void displayLoading(){
+        loading.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoading(){
+        loading.setVisibility(View.INVISIBLE);
+    }
+
+    public void changeActionBtnAsLogin(){
+        loginBtn.setVisibility(View.VISIBLE);
+        signUpBtn.setVisibility(View.INVISIBLE);
+        signUpShowBtn.setVisibility(View.VISIBLE);
+        loginShowBtn.setVisibility(View.INVISIBLE);
+
     }
 
     public boolean checkFields(String email, String password){
