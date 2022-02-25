@@ -57,7 +57,7 @@ public class login_VC extends AppCompatActivity {
 
     public void emailVerificationAlert(String message, String email){
         //Send alert for email verification
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView);
         builder1.setMessage("Email Verification " + message);
         builder1.setCancelable(true);
 
@@ -104,7 +104,7 @@ public class login_VC extends AppCompatActivity {
                 Exception e = (Exception) result.get("_error");
                 if(e!=null){
                     //Send alert for email verification
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView);
                     builder1.setMessage(e.getLocalizedMessage());
                     builder1.setCancelable(true);
                     AlertDialog alert11 = builder1.create();
@@ -115,6 +115,10 @@ public class login_VC extends AppCompatActivity {
                     if(isLoginVerified==true){
                         //Email has been verified
                         //Good to send to profile VC
+                        //Send alert for email verification
+                        Log.d("userloggedinV", "onSuccess: ");
+                        loginView.finish();
+                        finish();
 
                     }
                     else{
@@ -137,6 +141,7 @@ public class login_VC extends AppCompatActivity {
 
     public void signUp(String email, String password,String userName){
         loginView.displayLoading();
+        Log.d("poop", "signUp: " + email +  password + userName);
         dataServices.createNewUserWithAuth(email, password, userName, new ResultHandler<Object>() {
 
             @Override
@@ -148,7 +153,7 @@ public class login_VC extends AppCompatActivity {
                     Exception e = (Exception) result.get("_error");
                     if(e==null){
                         //Send alert for email verification
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView);
                         builder1.setMessage((String)getValueOrDefault("Success",result.get("_responseMessage")));
                         builder1.setCancelable(true);
                         AlertDialog alert11 = builder1.create();
@@ -157,7 +162,8 @@ public class login_VC extends AppCompatActivity {
                     }
                     else{
                         //Send alert for email verification
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView.getApplicationContext());
+                        Log.d("error", "onSuccess: " + e);
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(loginView);
                         builder1.setMessage(e.getLocalizedMessage());
                         builder1.setCancelable(true);
                         AlertDialog alert11 = builder1.create();

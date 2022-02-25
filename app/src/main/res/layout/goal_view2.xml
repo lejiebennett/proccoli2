@@ -162,10 +162,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout7"
-        android:layout_width="407dp"
+        android:layout_width="match_parent"
         android:layout_height="246dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearlayoutgoalsbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -236,7 +236,7 @@
 
     <NumberPicker
         android:id="@+id/goalTypePicker"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="194dp"
         android:background="#e6e8e6"
         android:divider="@color/black"
@@ -319,7 +319,7 @@
 
     <NumberPicker
         android:id="@+id/plannedStudyPicker"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="194dp"
         android:background="#e6e8e6"
         android:divider="@color/black"
@@ -333,13 +333,12 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
+        android:id="@+id/linearlayoutgoalsbtn"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:orientation="horizontal"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.632"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout22"
         tools:layout_editor_absoluteX="0dp">
 
         <Space

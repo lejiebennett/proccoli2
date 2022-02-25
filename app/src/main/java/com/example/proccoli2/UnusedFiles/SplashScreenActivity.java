@@ -1,9 +1,11 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.proccoli2.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
     @Override

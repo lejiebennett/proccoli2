@@ -1,11 +1,13 @@
 package com.example.proccoli2.NewModels;
 
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.proccoli2.MainActivity;
 import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 public class DataServices {
+
 
 
     //colelction references
@@ -396,9 +399,12 @@ public class DataServices {
     
     
     
-    private FirebaseAuth Auth;
-    static String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    static String uid;
+    String email;
+
+ //   static String uid = auth.getCurrentUser().getUid();
+ //   String email = auth.getCurrentUser().getEmail();
 
 
     ///Mark: Edit Individual goal VC
@@ -411,6 +417,11 @@ public class DataServices {
     }
 
      */
+    private static final DataServices sharedInstance = new DataServices();
+    public static DataServices getInstance() {
+        return sharedInstance;
+    }
+
 
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
@@ -452,7 +463,7 @@ public class DataServices {
 
     ////Mark: Edit profile funcs
     public void resetPassword(String email) {
-        Auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
@@ -469,7 +480,7 @@ public class DataServices {
 
     /*
     public resetPassword(String email, completion:@escaping(_ status:Bool, _ error:Error?, _ responseString:String?)->()) {
-        FirebaseAuth.getInstance().sendPasswordReset(withEmail: email) { (error) in
+        auth.sendPasswordReset(withEmail: email) { (error) in
             guard let err = error else {
                 completion(true, nil,  "Password reset email successfully send.\nYou need to go through the password reset link")
                 return
@@ -481,7 +492,7 @@ public class DataServices {
 
 
     public void resetPassword(String email, ResultHandler<Object> handler) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+        auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(responseString->{
                     if(responseString.isSuccessful()){
                         try{
@@ -505,9 +516,9 @@ public class DataServices {
 
 
     public void signOutUser() {
-        FirebaseAuth.getInstance().signOut();
+        auth.signOut();
             try {
-                FirebaseAuth.getInstance().signOut();
+                auth.signOut();
             } catch(Exception e){
                 Log.d("signOutUserError", "signOutUser: " + e);
             }
@@ -516,11 +527,11 @@ public class DataServices {
    // public void loginUser(String email, String pass, ResultHandler<Object> handler) {
     public void loginUser(String email, String pass, ResultHandler<Object> handler) {
         Log.d("loginUser", "instance initializer: " + "checking Database statics "+ this.uid + " " + this.email);
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==true){
+                    if(auth.getCurrentUser().isEmailVerified()==true){
                         //Signed in and verified
                         Log.d("SignedInNotV", "onComplete: singed in, not verified");
                         HashMap<String,Object> handlerData = new HashMap<>();
@@ -554,13 +565,13 @@ public class DataServices {
     /*
     public void loginUser(String email, String pass, ResultHandler<Object> handler) {
         Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)")
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,pass).addOnCompleteListener(user->{
+        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(user->{
             if(user.isSuccessful()){
                 handler.onSuccess(user);
 
             }else{
                 handler.onFailure(user.getException());
-                if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==true){
+                if(auth.getCurrentUser().isEmailVerified()==true){
                     //signed in and verified
                 }
                 else{
@@ -575,12 +586,12 @@ public class DataServices {
 
     public loginUser(String email, String pass, completion:@escaping(_ status:Bool, _ error:Error?, _ isLoginVerified:Bool)->()) {
         Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)")
-        FirebaseAuth.getInstance().signIn(email, pass) { (user, error) in
+        auth.signIn(email, pass) { (user, error) in
             if( error != null) {
                 completion(true, error, false);
             }
 			else {
-                if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified() == true) {
+                if(auth.getCurrentUser().isEmailVerified() == true) {
                     //signed in and verified
                     completion(true, null, true);
                 }
@@ -595,7 +606,7 @@ public class DataServices {
      */
 
     public void sendVerificationEmail(String email,ResultHandler<Object> handler){
-        FirebaseUser currentUser = Auth.getCurrentUser();
+        FirebaseUser currentUser = auth.getCurrentUser();
         currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -618,7 +629,7 @@ public class DataServices {
 
     /*
     public sendVerificationEmail(String email, completion:@escaping(_ status:Bool, _ error:Error? , _ responseText:String?)->()){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = auth.getCurrentUser();
         currentUser.sendEmailVerification { (error) in
             if(error != null){
                 verificationEmailCheck(false, error);
@@ -634,7 +645,7 @@ public class DataServices {
      */
 
     public void verificationEmailCheck(boolean isSuccess, Exception e) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = auth.getCurrentUser();
         if(isSuccess){
             HashMap<String,Object> hashMap = createHashmap("uid", currentUser.getUid());
             hashMap.put("status", "success");
@@ -648,13 +659,13 @@ public class DataServices {
     }
 
     public void createNewUserWithAuth(String email,String password,String userName, ResultHandler<Object> handler) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword( email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword( email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     //Sign in success
                     Log.d("CreateNewUser", "onComplete: " + "sign in success");
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    FirebaseUser currentUser = auth.getCurrentUser();
                     //completion(true, nil, nil);
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(email)
@@ -709,6 +720,7 @@ public class DataServices {
                     handlerData.put("_status",true);
                     handlerData.put("_error", task.getException());
                     handlerData.put("_responseMessage",null);
+                    Log.d("here", "onComplete: " + handlerData);
                     handler.onSuccess(handlerData);
                 }
             }
@@ -717,12 +729,12 @@ public class DataServices {
 
     /*
     public createNewUserWithAuth(String email,String password,String userName, completion:@escaping(_ status:Bool, _ error:Error?, _ responseMessage:String?)->()) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword( email, password) { (user, error) in
+        auth.createUserWithEmailAndPassword( email, password) { (user, error) in
             if( error != null) {
                 completion(true, error, nil);
             }
             else {
-                guard let currentUser = FirebaseAuth.getInstance().currentUser else {
+                guard let currentUser = auth.currentUser else {
                     completion(true, nil, nil);
                     return;
                 }
@@ -746,14 +758,14 @@ public class DataServices {
      */
     /*
     public void createNewUserWithAuth(String email,String password,String userName, ResultHandler<Object> handler) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(user -> {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(user -> {
             //Creates new user with email and password
             if (user.isSuccessful()) {
                 handler.onSuccess(user);
                 return;
                 //Error creating new user with authentication
             } else {
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseUser currentUser = auth.getCurrentUser();
                 if (currentUser == null) {
                     return;
                 }

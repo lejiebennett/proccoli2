@@ -57,7 +57,7 @@ public class loginView extends AppCompatActivity {
 
                 while(checkFields(emailText,passwordText)==false)
                     Log.d("Clicked Signup", "onClick: I clicked Signup Button w email: " + emailText + " and password: " + passwordText);
-                login_VC.signUp(emailInput.toString(),passwordInput.toString(),emailInput.toString());
+                login_VC.signUp(emailInput.getText().toString(),passwordInput.getText().toString(),emailInput.getText().toString());
             }
         });
 
@@ -77,7 +77,7 @@ public class loginView extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Log.d("Clicked login", "onClick: I clicked loginBtn");
-                login_VC.login(emailInput.toString(),passwordInput.toString());
+                login_VC.login(emailInput.getText().toString(),passwordInput.getText().toString());
             }
         });
         loginShowBtn = findViewById(R.id.loginBtn);

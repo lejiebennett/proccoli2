@@ -29,6 +29,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.ui.dashboard.DashboardFragment;
 import com.example.proccoli2.ui.home.HomeFragment;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
@@ -55,6 +56,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.proccoli2.databinding.ActivityMainBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.api.Distribution;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity{
     String colorCode;
     int passedAvatar = 6;
 
+    private static final MainActivity sharedInstance = new MainActivity();
+    public static MainActivity getInstance() {
+        return sharedInstance;
+    }
 
     ArrayList<GoalModel> goalList = new ArrayList<>(); //List used to keep track of all Users' goals
     ArrayList<GoalModel> recyclerList = new ArrayList<>(); //List that as a container to display the goals in all of the recycler views
@@ -239,9 +245,26 @@ public class MainActivity extends AppCompatActivity{
     androidx.fragment.app.Fragment activeFragment = homeFragment;
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null || firebaseAuth.getCurrentUser().isEmailVerified()==false){
+                    firebaseAuth.removeAuthStateListener(this);
+                    Intent intent = new Intent(MainActivity.this,loginView.class);
+                    startActivity(intent);
+                }
+                else{
+                    Log.d("UserLoggedINV", "onAuthStateChanged: load data for main" );
+                }
+            }
+        });
+
+
 
 
         Log.d("New main", "onCreate: Creating new view");
@@ -1024,4 +1047,5 @@ public class MainActivity extends AppCompatActivity{
             }
         }
     }
+
 }
