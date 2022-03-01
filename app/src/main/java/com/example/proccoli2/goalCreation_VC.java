@@ -8,10 +8,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.GoalModel;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
+import com.example.proccoli2.NewModels.UserDataModel;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.auth.User;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -173,6 +180,37 @@ public class goalCreation_VC extends AppCompatActivity {
         double time = Double.parseDouble(substring[0]);
         Log.d("plannedStudyTime", "strToDoubleProposedTime: " + time);
         return time;
+    }
+
+    public void saveIndividualGoal(IndividualGoalModel data) {
+        IndividualGoalModel returnData = DataServices.getInstance().saveIndividualGoal(data);
+        //self.removeCreateGoalVC()
+        //self.gotoIndividualVCAfterIndividualGoalCreation(data: returnData)
+        //PersonalNoteViews.sharedInstance.removeExistingDataForNewEventCreatation(goalId: returnData.goalId)
+        //update userdata model here
+        UserDataModel.sharedInstance.setIndividualGoalTotal((int)getValueOrDefault(UserDataModel.sharedInstance.getIndividualGoalTotal(),0) + 1);
+        GoalModel newGoal = IndividualGoalModel.goalsModelConverterForDataWrite(data);
+        if(UserDataModel.sharedInstance.getRawGoalsData() != null) {
+            UserDataModel.sharedInstance.getRawGoalsData().add(newGoal);
+        }else {
+            ArrayList<GoalModel> newGoals = new ArrayList<>();
+            newGoals.add(newGoal);
+            UserDataModel.sharedInstance.setRawGoalsData(newGoals);
+        }
+
+        //log activity
+        //activityChain?.addActivityForGoal(type: INDIVIDUAL_GOAL_CREATED_REF, goalId: returnData.goalId)
+    }
+
+    public void individualDataSend(IndividualGoalModel data) {
+        //save individual goal data here
+        saveIndividualGoal(data);
+
+    }
+
+
+    public static <T> T getValueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
     }
 
 }

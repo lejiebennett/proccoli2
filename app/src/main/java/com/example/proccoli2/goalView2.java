@@ -57,9 +57,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -622,6 +626,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     Log.d("putExtras", "onClick: " + myGoal);
                                                     setResult(RESULT_OK, i);
                                                     Log.d("setExtras", "onClick: " + myGoal);
+
                                                     finish();
                                                 }
 

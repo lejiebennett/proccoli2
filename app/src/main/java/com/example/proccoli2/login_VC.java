@@ -148,6 +148,7 @@ public class login_VC extends AppCompatActivity {
             public void onSuccess(Object data) {
                 loginView.hideLoading();
                 HashMap<String,Object> result = (HashMap<String, Object>) data;
+                Log.d("loginHashmap", "onSuccess: " + result);
                 boolean status = (boolean) result.get("_status");
                 if(status==true){
                     Exception e = (Exception) result.get("_error");

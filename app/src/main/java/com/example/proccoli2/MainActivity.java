@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.NewModels.UserDataModel;
 import com.example.proccoli2.ui.dashboard.DashboardFragment;
 import com.example.proccoli2.ui.home.HomeFragment;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
@@ -57,11 +59,14 @@ import com.example.proccoli2.databinding.ActivityMainBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.AuthenticationHandler;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
@@ -74,6 +79,9 @@ public class MainActivity extends AppCompatActivity{
     int completedCount = 0;
     String colorCode;
     int passedAvatar = 6;
+    DataServices ss = DataServices.getInstance();
+    FirebaseAuth auth;
+
 
     private static final MainActivity sharedInstance = new MainActivity();
     public static MainActivity getInstance() {
@@ -249,7 +257,13 @@ public class MainActivity extends AppCompatActivity{
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        auth= FirebaseAuth.getInstance();
+        if(auth.getCurrentUser()==null || auth.getCurrentUser().isEmailVerified()==false){
+            Intent intent = new Intent(MainActivity.this,loginView.class);
+            startActivity(intent);
+        }
 
+        /*
         FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -260,11 +274,43 @@ public class MainActivity extends AppCompatActivity{
                 }
                 else{
                     Log.d("UserLoggedINV", "onAuthStateChanged: load data for main" );
+                    ss.callUserInfo(new ResultHandler<Object>() {
+                        @Override
+                        public void onSuccess(Object data) {
+                            HashMap<String,Object> results = (HashMap<String, Object>) data;
+                            if((boolean) results.get("_status")==true){
+                               // this.addAppStatusNotifications();
+                                ss.requestPersonalGoals(new ResultHandler<Object>() {
+                                    @Override
+                                    public void onSuccess(Object data) {
+                                        HashMap<String,Object> results = (HashMap<String, Object>) data;
+                                        if( results.get("_response")!=null){
+                                            ArrayList<com.example.proccoli2.NewModels.GoalModel> rawData = (ArrayList<com.example.proccoli2.NewModels.GoalModel>) results.get("_response");
+                                            UserDataModel.sharedInstance.setRawGoalsData(rawData);
+                                           // ss.notificationCallWithListener();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            //problem with fecthin data
+                            //self.alertView(message: error?.localizedDescription ?? "connection err", colorPereferences: alertColor)
+                            Toast.makeText(getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    });
                 }
             }
         });
 
-
+        */
 
 
         Log.d("New main", "onCreate: Creating new view");
@@ -395,6 +441,7 @@ public class MainActivity extends AppCompatActivity{
             public boolean onMenuItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if(itemId == R.id.logoutBtn){
+                    ss.signOutUser();
                     Intent intent = new Intent(MainActivity.this,loginView.class);
                     startActivity(intent);
                     finish();

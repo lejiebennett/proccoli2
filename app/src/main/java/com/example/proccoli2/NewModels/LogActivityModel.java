@@ -6,9 +6,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
-public class LogActivityModel implements Serializable {
+
+public class LogActivityModel {
+    LogActivityModel activityChain= new LogActivityModel();
     DataServices ss = new DataServices();
     HashMap<String,activityPack> activity;
+
+
 
     public LogActivityModel(){
         HashMap<String,activityPack> hashMap = new HashMap<>();
@@ -64,7 +68,7 @@ public class LogActivityModel implements Serializable {
 
 }
 
-class activityPack implements Serializable{
+class activityPack{
     String activityType;
     long activityTime;
     String goalId;

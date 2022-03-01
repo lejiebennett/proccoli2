@@ -16,7 +16,72 @@ public class IndividualSubGoalStructModel {
     boolean _isChecked;
 
     static SingletonStrings ss = new SingletonStrings();
-    public IndividualSubGoalStructModel(String subgoalId, String subGoalName,long deadline, int difficultyLevel,int howLongHours,boolean isDeleted,long startDate, int totalStudyTime,boolean isChecked) {
+
+    public void set_deadline(long _deadline) {
+        this._deadline = _deadline;
+    }
+
+    public void set_difficultyLevel(int _difficultyLevel) {
+        this._difficultyLevel = _difficultyLevel;
+    }
+
+    public void set_subGoalName(String _subGoalName) {
+        this._subGoalName = _subGoalName;
+    }
+
+    public void set_howLongHours(int _howLongHours) {
+        this._howLongHours = _howLongHours;
+    }
+
+    public void set_isDeleted(boolean _isDeleted) {
+        this._isDeleted = _isDeleted;
+    }
+
+    public void set_startDate(long _startDate) {
+        this._startDate = _startDate;
+    }
+
+    public void set_subGoalId(String _subGoalId) {
+        this._subGoalId = _subGoalId;
+    }
+
+    public boolean is_isChecked() {
+        return _isChecked;
+    }
+
+    public long get_deadline() {
+        return _deadline;
+    }
+
+    public int get_difficultyLevel() {
+        return _difficultyLevel;
+    }
+
+    public String get_subGoalName() {
+        return _subGoalName;
+    }
+
+    public int get_howLongHours() {
+        return _howLongHours;
+    }
+
+    public boolean is_isDeleted() {
+        return _isDeleted;
+    }
+
+    public long get_startDate() {
+        return _startDate;
+    }
+
+    public String get_subGoalId() {
+        return _subGoalId;
+    }
+
+    public int get_totalStudyTime() {
+        return _totalStudyTime;
+    }
+
+    public IndividualSubGoalStructModel(String subgoalId, String subGoalName, long deadline, int difficultyLevel, int howLongHours, boolean isDeleted, long startDate, int totalStudyTime, boolean isChecked) {
             _deadline = deadline;
             _difficultyLevel = difficultyLevel;
             _subGoalName = subGoalName;
@@ -27,7 +92,7 @@ public class IndividualSubGoalStructModel {
             _totalStudyTime = totalStudyTime;
             _isChecked = isChecked;
         }
-        public ArrayList<IndividualSubGoalStructModel> parseData(HashMap<String,Object> data){
+        public static ArrayList<IndividualSubGoalStructModel> parseData(HashMap<String, Object> data){
             if(data==null){
                 return null;
             }

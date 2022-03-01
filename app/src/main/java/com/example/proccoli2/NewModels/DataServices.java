@@ -1,37 +1,32 @@
 package com.example.proccoli2.NewModels;
 
 
-import android.provider.ContactsContract;
+import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.proccoli2.MainActivity;
-import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firestore.v1.Write;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.TimeZone;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class DataServices {
-
-
 
     //colelction references
     final String USER_COLLECTION_REF = "users";
@@ -399,8 +394,8 @@ public class DataServices {
     
     
     
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
-    static String uid;
+    private static FirebaseAuth auth = FirebaseAuth.getInstance();
+    static String uid = auth.getCurrentUser().getUid();
     String email;
 
  //   static String uid = auth.getCurrentUser().getUid();
@@ -677,7 +672,7 @@ public class DataServices {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Log.d("userProfileUpdated", "User profile updated.");
-                                        //createNewUserCollection(currentUser.getUid(),email,userName);
+                                        createNewUserCollection(currentUser.getUid(),email,userName);
                                         currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -802,6 +797,35 @@ public class DataServices {
 
      */
 
+    public void createNewUserCollection(String uid,String email,String userName) {
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(USER_NAME_REF,userName);
+        hashMap.put( EMAIL, email);
+        hashMap.put(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,0);
+        hashMap.put(GROUP_TOTAL_GOAL_NUMBER_REF,0);
+        hashMap.put(COMPLETED_TOTAL_GOAL_NUMBER_REF ,0);
+        hashMap.put(CREATED_AT, System.currentTimeMillis());
+
+
+        //guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
+        Log.d("createNewUser", "createNewUserCollection: " + TOKENS_TABLE_REF + "uid: " + this.uid);
+        DocumentReference refForToken = FirebaseFirestore.getInstance().collection(TOKENS_TABLE_REF).document(this.uid);
+        Log.d("createNewUser", "createNewUserCollection: passed");
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        batch.set(FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(uid),hashMap);
+        Log.d("createNewUser", "createNewUserCollection: set passed");
+
+        HashMap<String,Object> hashMap1 = createHashmap(TOTAL_WAITING_SURVEY_REF , 0);
+        hashMap1.put(TOTAL_WAITING_GOAL_INVITATIONS_REF , 0);
+        batch.set(FirebaseFirestore.getInstance().collection(NOTIFICATION_TABLE_REF).document(uid),hashMap1);
+        HashMap<String,Object> hashMap2 = createHashmap(DEVICE_TOKEN_REF,"delegate.sharedTokenData[DEVICE_TOKEN_REF]");
+        hashMap2.put(FCT_REF, "delegate.sharedTokenData[FCT_REF]");
+        batch.set(refForToken,hashMap2);
+        batch.commit();
+        UserDataModel.sharedInstance.userName = userName;
+      //  checkIfThereIsWaitingGroupGoalInvitation(email, uid);
+    }
+
     /*
     private void createNewUserCollection(String uid, String email, String userName) {
         HashMap<String,Object> userData = new HashMap<>();
@@ -828,30 +852,52 @@ public class DataServices {
         checkIfThereIsWaitingGroupGoalInvitation(email,uid);
     }
     */
-   /*
+
+    /*
+    static <K, V> HashMap<String, Object> filterByValue(Map<K, V> map, Predicate<V> predicate) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return map.entrySet()
+                    .stream().filter(entry -> predicate.test(entry.getValue()))
+                    .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+        }
+        return null;
+    }
+
+     */
+
+    /*
     public void checkIfThereIsWaitingGroupGoalInvitation(String email,String newUid) {
         DocumentReference tempNotifRef = FirebaseFirestore.getInstance().collection(TEMPRORARY_NOTIFICATION_COLLECTION_REF).document(shapeSize.TEMP_NOTIFICATION_DOC_ID_REF);
-        tempNotifRef.getDocument { (docSnap, error) in
-            if error == nil {
-                guard let snap = docSnap else {return}
-                do {
-                    let data = try snap.data(as: temporaryNotificationModel.self)
-                    guard let notifs = data?.notificationInfo else {return}
-                    let check = notifs.filter({$0.value.invitedEmail == email}).first
-                    guard let notifCatch = check else {
-                        print("there no match on  waiting temp notif")
-                        return
-                    }
-                    //there is match
-                    updateTempraryUIDs( notifCatch.key, notifCatch.value.invitedGoalId,  notifCatch.value.invitedGoalDeadline,  notifCatch.value.invitedByEmail, notifCatch.value.invitedGoalName, notifCatch.value.invitedGoalTaskType);
 
-                }catch {
-                    //err handle here
+        tempNotifRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getException()==null){
+                    DocumentSnapshot snap = task.getResult();
+                    TemporaryNotificationModel data = (TemporaryNotificationModel) snap.getData();
+                    HashMap<String, TemporaryNotificationModel.temporaryNotificationModelFields> notifs = data.notificationInfo;
+                    if(notifs==null)
+                        return;
+                    HashMap<String,Object> check = filterByValue(notifs, value -> value.equals(email));
+                    HashMap<String,Object> notifCatch = check;
+                    if(notifCatch==null){
+                        Log.d("checkIfGGInvite", "onComplete: " + "there no match on  waiting temp notif");
+                        return;
+                    }
+                    else{
+                        updateTempraryUIDs(notifCatch.keySet().toString(), notifCatch.get(notifCatch.keySet().toString()).invitedGoalId, notifCatch.value.invitedGoalDeadline, notifCatch.value.invitedByEmail, notifCatch.value.invitedGoalName, notifCatch.value.invitedGoalTaskType);
+                    }
+
+                }
+                else{
+                    return;
                 }
             }
-        }
+        });
     }
-*/
+
+
+     */
 
     /*
     public checkEmailIsInvitedBefore(invitedEmail:String, completion:@escaping(_ isInvited:Bool)->()) {
@@ -880,7 +926,112 @@ public class DataServices {
 
      */
 
+    /*
+    public void checkFCM() {
+        guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
+        this.getDeviceTokens(this.uid) { (status, result) in
+            if status {
+                if result != delegate.sharedTokenData[FCT_REF] && delegate.sharedTokenData[FCT_REF] != "" {
+                    //refresh the fcm here
+                    this.sendTokens();
+                }
+            }
+        }
+    }
+    */
+
+    ////Mark: Profile VC funcs
+    public void callUserInfo(ResultHandler<Object> handler) {
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot docSnap = task.getResult();
+                   // this.checkFCM();
+                    UserDataModel.parseData(docSnap);
+                    HashMap<String, Object> hashMapHandler = new HashMap<>();
+                    hashMapHandler.put("_status", true);
+                    hashMapHandler.put("_error", null);
+                    handler.onSuccess(hashMapHandler);
+                    return;
+
+                } else {
+                    handler.onFailure(task.getException());
+                }
+            }
+        });
+    }
+
     ///End of Edit profile funcs
+
+    public void requestPersonalGoals(ResultHandler<Object> handler){
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    if(task.getException()==null) {
+                        HashMap<String,Object> handlerHashmap = new HashMap<>();
+                        handlerHashmap.put("_status", true);
+                        handlerHashmap.put("_response",GoalModel.parseGoalsData((QuerySnapshot)task.getResult()));
+                        handlerHashmap.put("_error",null);
+                        handler.onSuccess(handlerHashmap);
+                        return;
+                    }
+                    else{
+                        HashMap<String,Object> handlerHashmap = new HashMap<>();
+                        handlerHashmap.put("_status", true);
+                        handlerHashmap.put("_response",null);
+                        handlerHashmap.put("_error",task.getException());
+                        handler.onSuccess(handlerHashmap);
+                    }
+                }
+            }
+        });
+    }
+
+    ///Mark: CreateIndividualGoal VC
+    public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data){
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+        DocumentReference generalGoalsCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document();
+        DocumentReference userPersonalGoalsRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId());
+        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
+        DocumentReference personalNoteDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId()).collection(PERSONAL_NOTE_COLLEECTION_REF).document("shapeSize.PERSONAL_NOTE_DOC_ID_REF");
+        CollectionReference studyTimeCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId()).collection(STUDY_TIME_REF);
+        DocumentReference noSubGoalDocReference = studyTimeCollection.document(NO_SUB_GOAL_REF);
+        DocumentReference goalReminderDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId()).collection(REMINDERS_COLLECTIONS_REF).document("shapeSize.REMINDERS_DOC_ID");
+
+        DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId()).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
+        DocumentReference individualWallProgressLogDataDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId()).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID").collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF);
+
+        data.goalId = generalGoalsCollectionRef.getId();
+        batch.set(generalGoalsCollectionRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
+        batch.update(userDocRef, createHashmap(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
+        batch.set(personalNoteDocRef,createHashmap(CREATED_AT,System.currentTimeMillis()));
+        batch.set(goalReminderDocRef,createHashmap(EXIST_REF,true));
+        batch.set(userPersonalGoalsRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
+        batch.set(noSubGoalDocReference,createHashmap(EXIST_REF,true));
+        batch.set(individualWallProgressDocRef,createHashmap(EXIST_REF,true));
+        batch.set( individualWallProgressLogDataDocRef,createHashmap(EXIST_REF,true));
+        ArrayList<IndividualSubGoalStructModel> subGoals = data.subGoals;
+        if(subGoals!=null) {
+            for(IndividualSubGoalStructModel subGoal : subGoals){
+                batch.set(studyTimeCollection.document(subGoal.get_subGoalId()),createHashmap(EXIST_REF,true));
+            }
+        }
+
+        batch.commit();
+        return data;
+
+    }
+
+    /// End of CreateIndividualVC
+
+
+
+    public void fixCompletedGoalNumber(int number) {
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).update(createHashmap(COMPLETED_GOAL_NUMBERS_REF,number));
+    }
 
 }
 

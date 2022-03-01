@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IndividualGoalModel {
-    /*
+
     SingletonStrings ss = new SingletonStrings();
     private String bigGoal;
     long personalDeadline;
@@ -44,10 +44,12 @@ public class IndividualGoalModel {
 
     public IndividualGoalModel parseData(DocumentSnapshot docSnap){
         Map<String,Object> data = docSnap.getData();
-        return IndividualGoalModel((String)getValueOrDefault(data.get(ss.BIG_GOAL_REF),"nil"),(long)getValueOrDefault(data.get(ss.PERSONAL_DEADLINE_REF),0),(String)getValueOrDefault(data.get(ss.TASK_TYPE_REF),""),IndividualSubGoalStructModel.parseData(data: data?[ss.SUB_GOAL_PACK_REF] as? [String : AnyObject]),(String) getValueOrDefault(data.get(ss.GOAL_CREATER_UID_REF),""), (String)getValueOrDefault(data.get(ss.GOAL_ID_REF),""),(long) getValueOrDefault(data.get(ss.CREATED_AT),0),(long)getValueOrDefault(data.get(ss.PROPOSED_START_TIME_REF),0), (String) getValueOrDefault(data.get(ss.GOAL_CREATER_EMAIL_REF),""), (boolean)getValueOrDefault(data.get(ss.IS_GOAL_COMPLETED_REF),false), (String) getValueOrDefault(data.get(ss.GOAL_TYPE_REF),""), (long) getValueOrDefault(data.get(ss.WHEN_IS_IT_DUE_REF),0), (String) getValueOrDefault(data.get(ss.RELATED_COURSE_REF),""));
+        HashMap<String,Object> parsedSubgoals = (HashMap<String,Object>)getValueOrDefault(data.get(ss.SUB_GOAL_PACK_REF),new HashMap<String,Object>());
+        return new IndividualGoalModel((String)getValueOrDefault(data.get(ss.BIG_GOAL_REF),"nil"),(long)getValueOrDefault(data.get(ss.PERSONAL_DEADLINE_REF),0),(String)getValueOrDefault(data.get(ss.TASK_TYPE_REF),""),IndividualSubGoalStructModel.parseData(parsedSubgoals),(String) getValueOrDefault(data.get(ss.GOAL_CREATER_UID_REF),""), (String)getValueOrDefault(data.get(ss.GOAL_ID_REF),""),(long) getValueOrDefault(data.get(ss.CREATED_AT),0),(long)getValueOrDefault(data.get(ss.PROPOSED_START_TIME_REF),0), (String) getValueOrDefault(data.get(ss.GOAL_CREATER_EMAIL_REF),""), (boolean)getValueOrDefault(data.get(ss.IS_GOAL_COMPLETED_REF),false), (String) getValueOrDefault(data.get(ss.GOAL_TYPE_REF),""), (long) getValueOrDefault(data.get(ss.WHEN_IS_IT_DUE_REF),0), (String) getValueOrDefault(data.get(ss.RELATED_COURSE_REF),""));
     }
 
     public static HashMap<String,Object> jsonFormatterForIndividualEvent(IndividualGoalModel data){
+        SingletonStrings ss = new SingletonStrings();
         HashMap<String,Object> hashmap = new HashMap<>();
         hashmap.put(ss.IS_GOAL_COMPLETED_REF,data.isCompleted);
         hashmap.put(ss.GOAL_CREATER_UID_REF,DataServices.uid);
@@ -67,9 +69,11 @@ public class IndividualGoalModel {
     }
 
     public static GoalModel goalsModelConverterForDataWrite(IndividualGoalModel data){
-        return new GoalModel(data.bigGoal,data.personalDeadline, data.taskType, data.goalId, data.createdAt, data.goalCreaterEmail, data.isCompleted, data.goalType, data.whenIsDue, data.goalCreaterEmail, (double)getValueOrDefault(proposedStudyTime,0.0), 0.0, false);
+        return new GoalModel(data.bigGoal,data.personalDeadline, data.taskType, data.goalId, data.createdAt, data.goalCreaterEmail, data.isCompleted, data.goalType, data.whenIsDue, data.goalCreaterEmail, (double)getValueOrDefault(data.proposedStudyTime, 0.0), 0.0, false);
 
     }
+
+
 
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
@@ -129,5 +133,5 @@ public class IndividualGoalModel {
         return proposedStartDate;
     }
 
-     */
+
 }

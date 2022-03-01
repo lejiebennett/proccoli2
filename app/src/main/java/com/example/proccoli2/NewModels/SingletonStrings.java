@@ -363,4 +363,9 @@ public class SingletonStrings {
 
     final String NO_LOCATION_REF = "no_location";
 
+    SingletonStrings sharedInstance = new SingletonStrings();
+    public SingletonStrings(){
+
+    }
+
 }
