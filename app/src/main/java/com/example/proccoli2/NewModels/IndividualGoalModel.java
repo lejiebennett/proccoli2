@@ -1,14 +1,17 @@
 package com.example.proccoli2.NewModels;
 
+import android.util.Log;
+
 import com.example.proccoli2.SubGoalModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndividualGoalModel {
+public class IndividualGoalModel implements Serializable {
 
     SingletonStrings ss = new SingletonStrings();
     private String bigGoal;
@@ -25,6 +28,10 @@ public class IndividualGoalModel {
     ArrayList<IndividualSubGoalStructModel> subGoals = new ArrayList<>();
     double proposedStudyTime;
     String relatedCourse;
+
+    public IndividualGoalModel(){
+
+    }
 
     public IndividualGoalModel(String bigGoal, long personalDeadline, String taskType, ArrayList<IndividualSubGoalStructModel> subGoals, String eventCreaterUid, String eventId, long createdAt, long proposedStartDate, String eventCreaterEmail, boolean isCompleted, String goalType, long whenIsDue, String relatedCourse){
         this.bigGoal = bigGoal;
@@ -68,10 +75,13 @@ public class IndividualGoalModel {
         return hashmap;
     }
 
+
     public static GoalModel goalsModelConverterForDataWrite(IndividualGoalModel data){
         return new GoalModel(data.bigGoal,data.personalDeadline, data.taskType, data.goalId, data.createdAt, data.goalCreaterEmail, data.isCompleted, data.goalType, data.whenIsDue, data.goalCreaterEmail, (double)getValueOrDefault(data.proposedStudyTime, 0.0), 0.0, false);
 
     }
+
+
 
 
 
@@ -133,5 +143,33 @@ public class IndividualGoalModel {
         return proposedStartDate;
     }
 
+    public ArrayList<IndividualSubGoalStructModel> getSubGoals() {
+        return subGoals;
+    }
 
+    public void setSubGoals(ArrayList<IndividualSubGoalStructModel> subGoals) {
+        this.subGoals = subGoals;
+    }
+
+    public void setProposedStudyTime(double proposedStudyTime) {
+        this.proposedStudyTime = proposedStudyTime;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public long getPersonalDeadline() {
+        return personalDeadline;
+    }
+
+    public long getWhenIsDue() {
+        return whenIsDue;
+    }
+
+    public boolean goalsEqual(IndividualGoalModel goal){
+        Log.d("goalsEqualTest", "goalsEqual: " + this.goalId + " and " + goal.goalId);
+        Log.d("GoalsEqualREsult", "goalsEqual: " + String.valueOf(this.goalId.equals(goal.goalId)));
+        return this.goalId.equals(goal.goalId);
+    }
 }

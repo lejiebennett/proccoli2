@@ -1,10 +1,11 @@
 package com.example.proccoli2.NewModels;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class IndividualSubGoalStructModel {
+public class IndividualSubGoalStructModel implements Serializable {
     private long _deadline;
     private int _difficultyLevel;
     private String _subGoalName;

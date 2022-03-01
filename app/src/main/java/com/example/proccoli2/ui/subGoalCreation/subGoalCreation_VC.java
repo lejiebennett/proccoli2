@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.subGoalCreation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.ui.subGoalCreation.subGoalView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
@@ -16,7 +17,7 @@ import java.util.Date;
 
 public class subGoalCreation_VC extends AppCompatActivity {
 
-    private subGoalView subGoalView;
+    private com.example.proccoli2.ui.subGoalCreation.subGoalView subGoalView;
 
     public subGoalCreation_VC(subGoalView subGoalView){
         this.subGoalView = subGoalView;

@@ -1,30 +1,27 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.subGoalCreation;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.R;
+import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
@@ -231,7 +228,7 @@ public class subGoalView extends AppCompatActivity implements AdapterView.OnItem
                                             int formatedLevel = Integer.parseInt(subGoalLevel.getText().toString());
 
                                             //Formats how long into string
-                                            String formatedHowLong = subGoalHowLong.getText().toString();
+                                            long formatedHowLong = Long.parseLong(subGoalHowLong.getText().toString().split("")[0]);
 
                                             //Gets current Unix time to save for goalCreatedAt
                                             long currentUnix = System.currentTimeMillis() / 1000L;
@@ -239,13 +236,12 @@ public class subGoalView extends AppCompatActivity implements AdapterView.OnItem
                                             Log.d("Dates confirmed", "onClick: Passed all date conversions");
 
                                             //Creates Subgoal model with data from fields
-                                         //   SubGoalModel subgoal = new SubGoalModel(subGoalID, subGoalGoal.getText().toString(), uComplete, formatedLevel,formatedHowLong,uStart,currentUnix;
-                                            SubGoalModel subgoal = new SubGoalModel(subGoalGoal.getText().toString(), uComplete, formatedLevel,formatedHowLong,uStart, (int) currentUnix);
+                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel("subgoalId", subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
 
                                             Log.d("SubMade", "onClick: " + subgoal.toString());
 
                                             //Gets the passedGoal and adds to it the newley created subgoal
-                                            GoalModel passedGoal = (GoalModel) getIntent().getSerializableExtra("bigGoal");
+                                            IndividualGoalModel passedGoal = (IndividualGoalModel) getIntent().getSerializableExtra("bigGoal");
                                             passedGoal.getSubGoals().add(subgoal);
 
                                             //Passes the goal with the new subgoal back to the main goal creation page

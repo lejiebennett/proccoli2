@@ -4,11 +4,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.okhttp.internal.DiskLruCache;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class GoalModel {
+public class GoalModel implements Serializable {
     static SingletonStrings ss = new SingletonStrings();
     //common varibles
     private String bigGoal;

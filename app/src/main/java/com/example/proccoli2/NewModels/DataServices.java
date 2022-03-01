@@ -798,6 +798,7 @@ public class DataServices {
      */
 
     public void createNewUserCollection(String uid,String email,String userName) {
+        Log.d("createNewUser", "createNewUserCollection: start" );
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put(USER_NAME_REF,userName);
         hashMap.put( EMAIL, email);
@@ -805,8 +806,7 @@ public class DataServices {
         hashMap.put(GROUP_TOTAL_GOAL_NUMBER_REF,0);
         hashMap.put(COMPLETED_TOTAL_GOAL_NUMBER_REF ,0);
         hashMap.put(CREATED_AT, System.currentTimeMillis());
-
-
+        Log.d("createNewUser", "createNewUserCollection: USER DATA" + hashMap);
         //guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
         Log.d("createNewUser", "createNewUserCollection: " + TOKENS_TABLE_REF + "uid: " + this.uid);
         DocumentReference refForToken = FirebaseFirestore.getInstance().collection(TOKENS_TABLE_REF).document(this.uid);

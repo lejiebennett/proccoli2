@@ -1,6 +1,8 @@
 package com.example.proccoli2.NewModels;
 
-public class SingletonStrings {
+import java.io.Serializable;
+
+public class SingletonStrings implements Serializable {
     //colelction references
     final String USER_COLLECTION_REF = "users";
     final String GOALS_COLLECTION_REF  = "goals";
@@ -363,7 +365,6 @@ public class SingletonStrings {
 
     final String NO_LOCATION_REF = "no_location";
 
-    SingletonStrings sharedInstance = new SingletonStrings();
     public SingletonStrings(){
 
     }

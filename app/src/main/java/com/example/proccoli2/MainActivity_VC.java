@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,23 +32,23 @@ public class MainActivity_VC extends AppCompatActivity{
         return String.valueOf(Duration.between(now,unixConverted).toDays());
     }
 
-    public int countCompletedGoals(ArrayList<GoalModel> goalList){
+    public int countCompletedGoals(ArrayList<IndividualGoalModel> goalList){
         int counter = 0;
         for(int i = 0; i<goalList.size();i++) {
-            if (goalList.get(i).getIsCompleted() == true)
+            if (goalList.get(i).isCompleted() == true)
                 counter++;
         }
         return counter;
     }
 
-    public void assignGoal(GoalModel goal){
+    public void assignGoal(IndividualGoalModel goal){
         long todayUnixDateTime = System.currentTimeMillis() / 1000L;
-        int goalPersonal = goal.getCompletedBy();
-        int goalDue = goal.getDeadline();
-        boolean goalComplete =goal.getIsCompleted();
+        int goalPersonal = (int) goal.getPersonalDeadline();
+        int goalDue = (int) goal.getWhenIsDue();
+        boolean goalComplete =goal.isCompleted();
 
         Log.d("todayCurrently", "assignGoal: UNIX TIME CURRENT" + todayUnixDateTime);
-        Log.d("CompleteBy", "assignGoal: " + goal.getIsCompleted());
+        Log.d("CompleteBy", "assignGoal: " + goal.isCompleted());
 
 
         if((int)todayUnixDateTime-goalPersonal < 0 && goalComplete == false){
@@ -97,21 +99,21 @@ public class MainActivity_VC extends AppCompatActivity{
     }
 
 
-    Comparator<GoalModel> compareByDeadline = new Comparator<GoalModel>() {
+    Comparator<IndividualGoalModel> compareByDeadline = new Comparator<IndividualGoalModel>() {
         @Override
-        public int compare(GoalModel goal1, GoalModel goal2) {
-            return Integer.compare(goal1.getDeadline(),goal2.getDeadline());
+        public int compare(IndividualGoalModel goal1, IndividualGoalModel goal2) {
+            return Long.compare(goal1.getWhenIsDue(),goal2.getWhenIsDue());
         }
     };
 
-    Comparator<GoalModel> compareByPersonal = new Comparator<GoalModel>() {
+    Comparator<IndividualGoalModel> compareByPersonal = new Comparator<IndividualGoalModel>() {
         @Override
-        public int compare(GoalModel goal1 , GoalModel goal2) {
-            return Integer.compare(goal1.getCompletedBy(),goal2.getCompletedBy());
+        public int compare(IndividualGoalModel goal1 , IndividualGoalModel goal2) {
+            return Long.compare(goal1.getPersonalDeadline(),goal2.getPersonalDeadline());
         }
     };
 
-    public ArrayList<GoalModel> setRecyclerViewList2(MainActivity mainActivity){
+    public ArrayList<IndividualGoalModel> setRecyclerViewList2(MainActivity mainActivity){
         boolean personalEnabled = mainActivity.personalSelected;
         boolean dueEnabled = mainActivity.dueDateSelected;
         int checkedBtn = mainActivity.toggleGroup.getCheckedButtonId();
@@ -201,12 +203,12 @@ public class MainActivity_VC extends AppCompatActivity{
 
 
 
-    public void removeGoalFromList(int goalSelected,ArrayList<GoalModel> arrayList){
+    public void removeGoalFromList(int goalSelected,ArrayList<IndividualGoalModel> arrayList){
 
         arrayList.remove(goalSelected);
     }
 
-    public void findOldAndRemoveFromRecyclers(GoalModel updatedGoal){
+    public void findOldAndRemoveFromRecyclers(IndividualGoalModel updatedGoal){
         int index;
         Log.d("findOldandRemove", "started");
 
@@ -240,7 +242,7 @@ public class MainActivity_VC extends AppCompatActivity{
         }
     }
 
-    public int searchArray(ArrayList<GoalModel> goalList, GoalModel updatedGoal){
+    public int searchArray(ArrayList<IndividualGoalModel> goalList, IndividualGoalModel updatedGoal){
         int index = -1;
 
         for(int i = 0; i<goalList.size(); i++){
@@ -261,18 +263,18 @@ public class MainActivity_VC extends AppCompatActivity{
      * @param finishedDue
      * @return A single list of all of the goals
      */
-    public ArrayList<GoalModel> combineArraysForCount(ArrayList<GoalModel> activeDue, ArrayList<GoalModel> expiredDue, ArrayList<GoalModel> finishedDue){
-        ArrayList<GoalModel> countSubGoalList = new ArrayList<>();
+    public ArrayList<IndividualGoalModel> combineArraysForCount(ArrayList<IndividualGoalModel> activeDue, ArrayList<IndividualGoalModel> expiredDue, ArrayList<IndividualGoalModel> finishedDue){
+        ArrayList<IndividualGoalModel> countSubGoalList = new ArrayList<>();
 
-        for (GoalModel value : activeDue) {
+        for (IndividualGoalModel value : activeDue) {
             countSubGoalList.add(value);
         }
 
-        for (GoalModel value : expiredDue) {
+        for (IndividualGoalModel value : expiredDue) {
             countSubGoalList.add(value);
         }
 
-        for (GoalModel value : finishedDue) {
+        for (IndividualGoalModel value : finishedDue) {
             countSubGoalList.add(value);
         }
         Log.d("countSubGoalList", "combineArraysForCount: " + countSubGoalList);

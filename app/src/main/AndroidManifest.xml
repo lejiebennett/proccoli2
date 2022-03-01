@@ -20,10 +20,10 @@
         </activity>
         <activity android:name=".loginView"></activity>
         <activity android:name=".profileView"></activity>
-        <activity android:name=".goalView2"
+        <activity android:name=".ui.individualGoalCreation.goalView2"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
-        <activity android:name=".subGoalView"></activity>
+        <activity android:name=".ui.subGoalCreation.subGoalView"></activity>
         <activity android:name=".avatarView"></activity>
         <activity android:name=".singleGoalView"
             android:windowSoftInputMode="adjustPan">

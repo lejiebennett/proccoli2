@@ -2,13 +2,10 @@ package com.example.proccoli2;
 
 import static android.graphics.Color.*;
 import static com.example.proccoli2.R.drawable.avatar_background;
-import static com.example.proccoli2.R.drawable.groupgoal;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -24,16 +21,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.proccoli2.NewModels.DataServices;
-import com.example.proccoli2.NewModels.ResultHandler;
-import com.example.proccoli2.NewModels.UserDataModel;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.ui.dashboard.DashboardFragment;
 import com.example.proccoli2.ui.home.HomeFragment;
+import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -46,7 +40,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -57,16 +50,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proccoli2.databinding.ActivityMainBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.AuthenticationHandler;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
@@ -87,17 +74,16 @@ public class MainActivity extends AppCompatActivity{
     public static MainActivity getInstance() {
         return sharedInstance;
     }
-
-    ArrayList<GoalModel> goalList = new ArrayList<>(); //List used to keep track of all Users' goals
-    ArrayList<GoalModel> recyclerList = new ArrayList<>(); //List that as a container to display the goals in all of the recycler views
+    ArrayList<IndividualGoalModel> goalList = new ArrayList<>(); //List used to keep track of all Users' goals
+    ArrayList<IndividualGoalModel> recyclerList = new ArrayList<>(); //List that as a container to display the goals in all of the recycler views
 
     //Used to sort and order the goals in each respective category
-    ArrayList<GoalModel> activePersonal = new ArrayList<>();
-    ArrayList<GoalModel> activeDue = new ArrayList<>();
-    ArrayList<GoalModel> expiredPersonal = new ArrayList<>();
-    ArrayList<GoalModel> expiredDue = new ArrayList<>();
-    ArrayList<GoalModel> finishedPersonal = new ArrayList<>();
-    ArrayList<GoalModel> finishedDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> activePersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> activeDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> expiredPersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> expiredDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> finishedPersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> finishedDue = new ArrayList<>();
 
 
     MainActivity_VC controller = new MainActivity_VC(this);
@@ -110,7 +96,7 @@ public class MainActivity extends AppCompatActivity{
     MaterialButtonToggleGroup toggleGroup;
 
     //Collect goal from goal creation pages (both indivudal and grou goals)
-    GoalModel passedGoal;
+    IndividualGoalModel passedGoal;
     Button mainProgressBtn;
     TextView texthome; //Default text created by android studio
     Toolbar toolbar;
@@ -150,9 +136,12 @@ public class MainActivity extends AppCompatActivity{
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
-                        passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                        passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
+                        /*
                         Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
                         Log.d("HERE PassedGoal", String.valueOf(passedGoal));
+
+                         */
 
                         //Get rid of the goal that was just selected from the goal list and update it with the newly passed updated goal
                         controller.removeGoalFromList(goalSelected,goalList);
@@ -227,7 +216,7 @@ public class MainActivity extends AppCompatActivity{
 
                         //Update goal board counts
                         //Used to get a list of all of the group goals, individual goals to get counts
-                        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                        ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                         int sumindividualCount = 0;
                         int sumgroupCount = 0;
                         for(int i=0; i<sumArray.size();i++){
@@ -653,7 +642,7 @@ public class MainActivity extends AppCompatActivity{
                             recyclerView.setVisibility(View.VISIBLE);
 
                             Log.d("Result_OK", "onActivityResult: HERE");
-                            GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                            IndividualGoalModel passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
                             goalList.add(passedGoal);
@@ -716,7 +705,7 @@ public class MainActivity extends AppCompatActivity{
                             Log.d("SIX", "onActivityResult: " + finishedDue);
                             Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
-                            ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                            ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                             int sumindividualCount = 0;
                             int sumgroupCount = 0;
                             for(int i=0; i<sumArray.size();i++){
@@ -867,7 +856,7 @@ public class MainActivity extends AppCompatActivity{
         Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
         //Get Counts of group goal and individual goals
-        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+        ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
         int sumindividualCount = 0;
         int sumgroupCount = 0;
         for(int i=0; i<sumArray.size();i++){
@@ -908,7 +897,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     class CustomGoalAdapter extends RecyclerView.Adapter {
-        List<GoalModel> items;
+        List<IndividualGoalModel> items;
 
 
         public CustomGoalAdapter() {
@@ -937,12 +926,12 @@ public class MainActivity extends AppCompatActivity{
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
             GoalViewHolder viewHolder = (GoalViewHolder) holder;
-            final GoalModel item = items.get(position);
+            final IndividualGoalModel item = items.get(position);
             viewHolder.goalModel = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
             viewHolder.goalText.setText(items.get(position).getBigGoal());
-            viewHolder.countDownDueDate.setText(controller.calculateDaysLeft(items.get(position).getDeadline()) + "  Days Left");
-            viewHolder.countDownPersonal.setText(controller.calculateDaysLeft(items.get(position).getCompletedBy()) + " Days Left");
+            viewHolder.countDownDueDate.setText(controller.calculateDaysLeft((int)items.get(position).getWhenIsDue()) + "  Days Left");
+            viewHolder.countDownPersonal.setText(controller.calculateDaysLeft((int)items.get(position).getPersonalDeadline()) + " Days Left");
             if(items.get(position).getGoalType().equals("individual"))
                 viewHolder.avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
             else
@@ -980,7 +969,7 @@ public class MainActivity extends AppCompatActivity{
         TextView countDownDueDate;
         TextView countDownPersonal;
         ImageView avatarGoal;
-        GoalModel goalModel;
+        IndividualGoalModel goalModel;
 
         public GoalViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.goalitem_view, parent, false));

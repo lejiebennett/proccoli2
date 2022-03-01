@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.proccoli2.goalView2;
-import com.example.proccoli2.timeReportView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;

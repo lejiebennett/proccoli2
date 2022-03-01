@@ -1,44 +1,24 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.individualGoalCreation;
 
-import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.InputType;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowId;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,25 +28,24 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.R;
+import com.example.proccoli2.ui.subGoalCreation.subGoalView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,14 +60,14 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
             "Exam (Other)", "Group Project", "Project (Individual)", "Studying (Reading)", "Studying (Watching Videos)",
             "Studying (Other)", "Other"};
 
-    GoalModel myGoal = new GoalModel(); //Used to store the input fields and send back to mainActivity
+    IndividualGoalModel myGoal = new IndividualGoalModel(); //Used to store the input fields and send back to mainActivity
     TextInputEditText bigGoalInput, courseNumberInput;
     Button createSubGoalBtn, createGoalBtn;
     TextView goalCompleteBy, goalStartDate, goalDueDate, goalType,displaySubGoals;
     Context context = this;
     RecyclerView subGoalRecyclerView;
     goalCreation_VC controller = new goalCreation_VC(this);
-    GoalModel passedGoal;
+    IndividualGoalModel passedGoal;
     Toolbar toolbar;
 
     //Pickers used to get input
@@ -214,7 +193,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
-                            passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                            passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
                            /* for (int i = 0; i < passedGoal.getSubGoals().size(); i++) {
@@ -249,7 +228,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                     bundle.putString("completeBy", goalCompleteBy.getText().toString());
                     i.putExtras(bundle);
                     //Passes bigGoal info to keep working list of subgoals
-                    i.putExtra("bigGoal", myGoal);
+                    i.putExtra("bigGoal", (Serializable) myGoal);
                   //  startActivity(i);
                     activityResultLaunch.launch(i);
                 }
@@ -556,32 +535,20 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                                 long currentUnix = System.currentTimeMillis() / 1000L;
 
                                                                 //Set all of the attributes of the goal either using commented out constructor or set individually
-                                                                // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
-                                                                myGoal.setBigGoal(bigGoalInput.getText().toString());
-                                                                myGoal.setCompletedBy(uComplete);
-                                                                myGoal.setGoalType(goalType.getText().toString());
-                                                                myGoal.setStartDate(uStart);
-                                                                myGoal.setDeadline(uDue);
-                                                                myGoal.setCreatedAt((int) currentUnix);
-                                                                myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
-                                                                myGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
-                                                                myGoal.setGoalType("individual");
-                                                                String myGoalID = "TESTGOALID";
-                                                                myGoal.setGoalId(myGoalID);
 
+                                                                IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,"taskType",myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
+                                                                newGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
 
-
-                                                                Log.d("GoalMade", "onClick: " + myGoal.toString());
-                                                                //  myGoal = new GoalModel();
+                                                                Log.d("GoalMade", "onClick: " + newGoal.toString());
 
                                                                 //Send goal back to main activity
                                                                 Intent i = new Intent(goalView2.this, MainActivity.class);
-                                                                i.putExtra("bigGoal", myGoal);
+                                                                i.putExtra("bigGoal", newGoal);
                                                                 //  startActivity(i);
                                                                 //  finish();
-                                                                Log.d("putExtras", "onClick: " + myGoal);
+                                                                Log.d("putExtras", "onClick: " + newGoal);
                                                                 setResult(RESULT_OK, i);
-                                                                Log.d("setExtras", "onClick: " + myGoal);
+                                                                Log.d("setExtras", "onClick: " + newGoal);
                                                                 finish();
                                                             }
                                                         }
@@ -600,33 +567,19 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     long currentUnix = System.currentTimeMillis() / 1000L;
 
                                                     //Set all of the attributes of the goal either using commented out constructor or set individually
-                                                    // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
-                                                    myGoal.setBigGoal(bigGoalInput.getText().toString());
-                                                    myGoal.setCompletedBy(uComplete);
-                                                    myGoal.setGoalType(goalType.getText().toString());
-                                                    myGoal.setStartDate(uStart);
-                                                    myGoal.setDeadline(uDue);
-                                                    myGoal.setCreatedAt((int) currentUnix);
-                                                    myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
-                                                    myGoal.setGoalType("individual");
-                                                    String myGoalID = "TESTGOALID";
-                                                    myGoal.setGoalId(myGoalID);
+                                                    IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,"taskType",myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
 
-
-
-                                                    Log.d("GoalMade", "onClick: " + myGoal.toString());
-                                                    //  myGoal = new GoalModel();
-
+                                                    Log.d("GoalMade", "onClick: " + newGoal.toString());
 
                                                     //Send goal to MainActivity
                                                     Intent i = new Intent(goalView2.this, MainActivity.class);
-                                                    i.putExtra("bigGoal", myGoal);
+                                                    i.putExtra("bigGoal", newGoal);
                                                     //  startActivity(i);
                                                     //  finish();
-                                                    Log.d("putExtras", "onClick: " + myGoal);
+                                                    Log.d("putExtras", "onClick: " + newGoal);
                                                     setResult(RESULT_OK, i);
-                                                    Log.d("setExtras", "onClick: " + myGoal);
-
+                                                    Log.d("setExtras", "onClick: " + newGoal);
+                                                    controller.saveIndividualGoal(newGoal);
                                                     finish();
                                                 }
 
@@ -909,8 +862,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
         private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
 
-        List<SubGoalModel> items;
-        List<SubGoalModel> itemsPendingRemoval;
+        List<IndividualSubGoalStructModel> items;
+        List<IndividualSubGoalStructModel> itemsPendingRemoval;
         int lastInsertedIndex; // so we can add some more items for testing purposes
         boolean undoOn; // is undo on, you can turn it on from the toolbar menu
 
@@ -948,7 +901,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             TestViewHolder viewHolder = (TestViewHolder)holder;
-            final SubGoalModel item = items.get(position);
+            final IndividualSubGoalStructModel item = items.get(position);
 
             if (itemsPendingRemoval.contains(item)) {
                 // we need to show the "undo" state of the row
@@ -959,7 +912,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                 // we need to show the "normal" state
                 viewHolder.itemView.setBackgroundColor(Color.WHITE);
                 viewHolder.titleTextView.setVisibility(View.VISIBLE);
-                viewHolder.titleTextView.setText("\n" + item.getSubGoalName());
+                viewHolder.titleTextView.setText("\n" + item.get_subGoalName());
             }
         }
 
@@ -978,7 +931,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         }
 
         public void remove(int position) {
-            SubGoalModel item = items.get(position);
+            IndividualSubGoalStructModel item = items.get(position);
             if (itemsPendingRemoval.contains(item)) {
                 itemsPendingRemoval.remove(item);
             }
@@ -989,7 +942,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
         }
 
         public boolean isPendingRemoval(int position) {
-            SubGoalModel item = items.get(position);
+            IndividualSubGoalStructModel item = items.get(position);
             return itemsPendingRemoval.contains(item);
         }
     }

@@ -6,8 +6,6 @@ import static android.graphics.Color.parseColor;
 
 import static com.example.proccoli2.R.drawable.avatar_background;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -39,13 +37,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.proccoli2.GoalModel;
-import com.example.proccoli2.MainActivity;
-import com.example.proccoli2.MainActivity_VC;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.R;
-import com.example.proccoli2.databinding.ActivityMainBinding;
 import com.example.proccoli2.databinding.FragmentHomeBinding;
-import com.example.proccoli2.goalView2;
+import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.example.proccoli2.groupgoalView;
 import com.example.proccoli2.groupgoalsingleGoalView;
 import com.example.proccoli2.loginView;
@@ -71,21 +66,21 @@ public class HomeFragment extends Fragment{
     int completedCount = 0;
     String colorCode;
     int passedAvatar = 6;
-    ArrayList<GoalModel> goalList = new ArrayList<>();
-    ArrayList<GoalModel> recyclerList = new ArrayList<>();
-    ArrayList<GoalModel> activePersonal = new ArrayList<>();
-    ArrayList<GoalModel> activeDue = new ArrayList<>();
-    ArrayList<GoalModel> expiredPersonal = new ArrayList<>();
-    ArrayList<GoalModel> expiredDue = new ArrayList<>();
-    ArrayList<GoalModel> finishedPersonal = new ArrayList<>();
-    ArrayList<GoalModel> finishedDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> goalList = new ArrayList<>();
+    ArrayList<IndividualGoalModel> recyclerList = new ArrayList<>();
+    ArrayList<IndividualGoalModel> activePersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> activeDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> expiredPersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> expiredDue = new ArrayList<>();
+    ArrayList<IndividualGoalModel> finishedPersonal = new ArrayList<>();
+    ArrayList<IndividualGoalModel> finishedDue = new ArrayList<>();
     HomeFragment_VC controller = new HomeFragment_VC(this);
     ImageButton personalDeadlineBtn, dueDateBtn;
     Button activeBtn, expiredBtn, finishedBtn;
     boolean personalSelected = true;
     boolean dueDateSelected = false;
     MaterialButtonToggleGroup toggleGroup;
-    GoalModel passedGoal;
+    IndividualGoalModel passedGoal;
     Button mainProgressBtn;
     TextView texthome;
     Toolbar toolbar;
@@ -121,9 +116,12 @@ public class HomeFragment extends Fragment{
 
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
-                        passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                        passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
+                        /*
                         Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
                         Log.d("HERE PassedGoal", String.valueOf(passedGoal));
+
+                         */
 
                         controller.removeGoalFromList(goalSelected,goalList);
                         goalList.add(passedGoal);
@@ -191,7 +189,7 @@ public class HomeFragment extends Fragment{
 
 
                         //Used to get a list of all of the group goals, individual goals to get counts
-                        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                        ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                         int sumindividualCount = 0;
                         int sumgroupCount = 0;
                         for(int i=0; i<sumArray.size();i++){
@@ -452,7 +450,7 @@ public class HomeFragment extends Fragment{
                             recyclerView.setVisibility(View.VISIBLE);
 
                             Log.d("Result_OK", "onActivityResult: HERE");
-                            GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                            IndividualGoalModel passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
                             goalList.add(passedGoal);
@@ -515,7 +513,7 @@ public class HomeFragment extends Fragment{
                             Log.d("SIX", "onActivityResult: " + finishedDue);
                             Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
-                            ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                            ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                             int sumindividualCount = 0;
                             int sumgroupCount = 0;
                             for(int i=0; i<sumArray.size();i++){
@@ -659,7 +657,7 @@ public class HomeFragment extends Fragment{
         Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
         //Get Counts of group goal and individual goals
-        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+        ArrayList<IndividualGoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
         int sumindividualCount = 0;
         int sumgroupCount = 0;
         for(int i=0; i<sumArray.size();i++){
@@ -707,7 +705,7 @@ public class HomeFragment extends Fragment{
 
 
     class CustomGoalAdapter extends RecyclerView.Adapter {
-        List<GoalModel> items;
+        List<IndividualGoalModel> items;
 
 
         public CustomGoalAdapter() {
@@ -736,12 +734,12 @@ public class HomeFragment extends Fragment{
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
             GoalViewHolder viewHolder = (GoalViewHolder) holder;
-            final GoalModel item = items.get(position);
+            final IndividualGoalModel item = items.get(position);
             viewHolder.goalModel = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
             viewHolder.goalText.setText(items.get(position).getBigGoal());
-            viewHolder.countDownDueDate.setText(controller.calculateDaysLeft(items.get(position).getDeadline()) + "  Days Left");
-            viewHolder.countDownPersonal.setText(controller.calculateDaysLeft(items.get(position).getCompletedBy()) + " Days Left");
+            viewHolder.countDownDueDate.setText(controller.calculateDaysLeft((int)items.get(position).getWhenIsDue()) + "  Days Left");
+            viewHolder.countDownPersonal.setText(controller.calculateDaysLeft((int)items.get(position).getPersonalDeadline()) + " Days Left");
             if(items.get(position).getGoalType().equals("individual"))
                 viewHolder.avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
             else
@@ -779,7 +777,7 @@ public class HomeFragment extends Fragment{
         TextView countDownDueDate;
         TextView countDownPersonal;
         ImageView avatarGoal;
-        GoalModel goalModel;
+        IndividualGoalModel goalModel;
 
         public GoalViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.goalitem_view, parent, false));

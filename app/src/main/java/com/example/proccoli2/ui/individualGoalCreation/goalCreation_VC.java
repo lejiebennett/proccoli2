@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.individualGoalCreation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,15 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
-import com.example.proccoli2.NewModels.LogActivityModel;
 import com.example.proccoli2.NewModels.UserDataModel;
+import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.auth.User;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -28,7 +26,7 @@ import java.util.Date;
  */
 
 public class goalCreation_VC extends AppCompatActivity {
-    private goalView2 goalView2;
+    private com.example.proccoli2.ui.individualGoalCreation.goalView2 goalView2;
 
     public goalCreation_VC(goalView2 goalView2){
         this.goalView2= goalView2;
