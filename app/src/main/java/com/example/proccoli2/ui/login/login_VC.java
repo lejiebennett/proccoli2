@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.login;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,11 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.UserModel;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 public class login_VC extends AppCompatActivity {

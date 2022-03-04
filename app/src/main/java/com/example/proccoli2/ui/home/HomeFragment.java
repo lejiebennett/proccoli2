@@ -43,9 +43,9 @@ import com.example.proccoli2.databinding.FragmentHomeBinding;
 import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.example.proccoli2.groupgoalView;
 import com.example.proccoli2.groupgoalsingleGoalView;
-import com.example.proccoli2.loginView;
+import com.example.proccoli2.ui.login.loginView;
 import com.example.proccoli2.mainProgressView;
-import com.example.proccoli2.profileView;
+import com.example.proccoli2.ui.profile.profileView;
 import com.example.proccoli2.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class TimerDataModel {
-    SingletonStrings ss = new SingletonStrings();
+    static SingletonStrings ss = new SingletonStrings();
     //study location will handle in DatabaseServices
     private String studyId;
     private long startDateTime;
@@ -74,7 +74,7 @@ public class TimerDataModel {
 
     }
 
-    public HashMap<String, Object> jsonFormatterForGroupGoal(String uid, String subgoalId, TimerDataModel data){
+    public static HashMap<String, Object> jsonFormatterForGroupGoal(String uid, String subgoalId, TimerDataModel data){
         HashMap<String,Object> hashMap1 = new HashMap<>();
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap1.put(ss.CREATED_AT, data.startDateTime);

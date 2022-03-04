@@ -31,7 +31,7 @@
         <com.google.android.material.textfield.TextInputEditText
 
             android:id="@+id/fullNameInput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="full name"
@@ -40,7 +40,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/occupationInput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="occupation"
@@ -49,7 +49,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/highestEducationInput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="highest education"
@@ -75,17 +75,16 @@
 
     <Button
         android:id="@+id/avatarBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
         android:text="Avatar"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@+id/saveBtn"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/avatar"
+        app:layout_constraintEnd_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@+id/avatar"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"/>
 
     <ImageView
         android:id="@+id/avatar"

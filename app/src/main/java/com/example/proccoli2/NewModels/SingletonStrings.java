@@ -42,11 +42,11 @@ public class SingletonStrings implements Serializable {
     final String GOAL_CREATER_UID_REF = "goalCreaterUid";
     final String SUB_GOALS_REF = "subGoals";
     final String SUB_GOAL_NAME_REF = "subgoalName";
-    final String POFILE_IMG_WITH_COLOR_REF = "profileImgWithHex";
-    final String FULL_NAME_REF = "fullName";
-    final String OCCUPATION_REF = "occupation";
-    final String HIGHEST_LEVEL_OF_EDUCATION_REF = "highestLevelOfEducation";
-    final String BIRTHDAY_REF = "birthday";
+    public final String POFILE_IMG_WITH_COLOR_REF = "profileImgWithHex";
+    public final String FULL_NAME_REF = "fullName";
+    public final String OCCUPATION_REF = "occupation";
+    public final String HIGHEST_LEVEL_OF_EDUCATION_REF = "highestLevelOfEducation";
+    public final String BIRTHDAY_REF = "birthday";
     final String DIFFICULTY_LEVEL_REF = "difficultyLevel";
     final String HOW_LONG_REF = "howLong";
     final String SUB_DEADLINE_REF = "subDeadline";

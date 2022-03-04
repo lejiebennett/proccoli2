@@ -28,6 +28,7 @@ import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.ui.dashboard.DashboardFragment;
 import com.example.proccoli2.ui.home.HomeFragment;
 import com.example.proccoli2.ui.individualGoalCreation.goalView2;
+import com.example.proccoli2.ui.login.loginView;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         auth= FirebaseAuth.getInstance();
         if(auth.getCurrentUser()==null || auth.getCurrentUser().isEmailVerified()==false){
-            Intent intent = new Intent(MainActivity.this,loginView.class);
+            Intent intent = new Intent(MainActivity.this, loginView.class);
             startActivity(intent);
         }
 

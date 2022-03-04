@@ -1,5 +1,7 @@
 package com.example.proccoli2.NewModels;
 
+import android.util.Log;
+
 import com.example.proccoli2.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -22,6 +24,38 @@ public class UserDataModel {
     int completedGoalTotal;
     HashMap<String,String> profileImg;
     ArrayList<GoalModel> rawGoalsData;
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public void setHighestLevelOfEducation(String highestLevelOfEducation) {
+        this.highestLevelOfEducation = highestLevelOfEducation;
+    }
+
+    public void setBirthday(long birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setProfileImg(HashMap<String, String> profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public HashMap<String, String> getProfileImg() {
+        return profileImg;
+    }
 
     public String getEmail() {
         return email;
@@ -184,8 +218,11 @@ public class UserDataModel {
             return;
         }
         else{
+            Log.d("UserDataModelParse", "parseData: parsingData");
             DocumentSnapshot snaps = snapshots;
-            DocumentSnapshot data = (DocumentSnapshot) snaps.getData();
+          //  DocumentSnapshot data = (DocumentSnapshot) snaps.getData();
+            HashMap<String,Object> data = (HashMap<String, Object>) snaps.getData();
+
             UserDataModel.sharedInstance.email = DataServices.getInstance().email;
             UserDataModel.sharedInstance.userName = (String) getValueOrDefault(data.get(DataServices.getInstance().USER_NAME_REF),"unknownUser");
             UserDataModel.sharedInstance.fullName = (String) data.get(DataServices.getInstance().FULL_NAME_REF);
@@ -194,10 +231,12 @@ public class UserDataModel {
             UserDataModel.sharedInstance.profileImg = (HashMap<String, String>) getValueOrDefault(data.get(DataServices.getInstance().POFILE_IMG_WITH_COLOR_REF),profileImgDefault);
             UserDataModel.sharedInstance.occupation = (String) data.get(DataServices.getInstance().OCCUPATION_REF);
             UserDataModel.sharedInstance.highestLevelOfEducation = (String) data.get(DataServices.getInstance().HIGHEST_LEVEL_OF_EDUCATION_REF);
-            UserDataModel.sharedInstance.birthday = (long) data.get(DataServices.getInstance().BIRTHDAY_REF);
-            UserDataModel.sharedInstance.individualGoalTotal = (int) getValueOrDefault(data.get(DataServices.getInstance().INDIVIDUAL_TOTAL_GOAL_NUMBER_REF),0);
-            UserDataModel.sharedInstance.groupGoalTotal = (int) getValueOrDefault(data.get(DataServices.getInstance().GROUP_TOTAL_GOAL_NUMBER_REF),0);
-            UserDataModel.sharedInstance.completedGoalTotal = (int) getValueOrDefault(data.get(DataServices.getInstance().COMPLETED_TOTAL_GOAL_NUMBER_REF),0);
+            Long birthDayLong = (Long)data.get(DataServices.getInstance().BIRTHDAY_REF);
+            UserDataModel.sharedInstance.birthday = (birthDayLong.longValue());
+
+            UserDataModel.sharedInstance.individualGoalTotal = (int)((Long) getValueOrDefault(data.get(DataServices.getInstance().INDIVIDUAL_TOTAL_GOAL_NUMBER_REF),0)).longValue();
+            UserDataModel.sharedInstance.groupGoalTotal = (int)((Long) getValueOrDefault(data.get(DataServices.getInstance().GROUP_TOTAL_GOAL_NUMBER_REF),0)).longValue();
+            UserDataModel.sharedInstance.completedGoalTotal = (int)((Long) getValueOrDefault(data.get(DataServices.getInstance().COMPLETED_TOTAL_GOAL_NUMBER_REF),0)).longValue();
         }
     }
 
@@ -205,4 +244,20 @@ public class UserDataModel {
     public void refreshLocalActiveData(ArrayList<GoalModel> activePersonal, ArrayList<GoalModel> activeHard, ArrayList<GoalModel> expiredPersonal,ArrayList<GoalModel> expiredHard,)
     */
 
+    @Override
+    public String toString() {
+        return "UserDataModel{" +
+                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", occupation='" + occupation + '\'' +
+                ", highestLevelOfEducation='" + highestLevelOfEducation + '\'' +
+                ", birthday=" + birthday +
+                ", groupGoalTotal=" + groupGoalTotal +
+                ", individualGoalTotal=" + individualGoalTotal +
+                ", completedGoalTotal=" + completedGoalTotal +
+                ", profileImg=" + profileImg +
+                ", rawGoalsData=" + rawGoalsData +
+                '}';
+    }
 }

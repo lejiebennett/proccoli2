@@ -1,7 +1,6 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
-import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.R;
 import com.google.android.material.textfield.TextInputEditText;
 
 

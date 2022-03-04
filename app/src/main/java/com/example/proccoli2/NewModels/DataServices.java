@@ -19,8 +19,10 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firestore.v1.Write;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -946,6 +948,7 @@ public class DataServices {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
+                    Log.d("callUserInfo", "onComplete: ");
                     DocumentSnapshot docSnap = task.getResult();
                    // this.checkFCM();
                     UserDataModel.parseData(docSnap);
@@ -962,7 +965,11 @@ public class DataServices {
         });
     }
 
-    ///End of Edit profile funcs
+    public void updateUserInfo(HashMap<String,Object> updateData) {
+        Log.d("updateUserInfo", "updateUserInfo: " + updateData);
+        Log.d("updateUserInfoUid", "updateUserInfo: " + this.uid);
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).update(updateData);
+    }
 
     public void requestPersonalGoals(ResultHandler<Object> handler){
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -988,6 +995,8 @@ public class DataServices {
             }
         });
     }
+    //End of profileVC funcs
+
 
     ///Mark: CreateIndividualGoal VC
     public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data){
@@ -1026,8 +1035,124 @@ public class DataServices {
     }
 
     /// End of CreateIndividualVC
+    ///Group Wall Page
+    public void finishTimerForGroupGoal(String goalId,String subgoalId,String studyId, int studiedTime,HashMap<String,Object> finishData) {
+        //finish means users finished the whole time that he proposed to study
+        //first update the main goal sub pack/subgoal/ total studied Time
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        //second update studyCollection/subgoal/studyid
+        batch.update( mainGoalDoc,createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment((int)(studiedTime))));
+
+        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
+
+        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + FINISH_TIME_REF,finishData);
+        hashMap.put(this.uid+ "." + subgoalId+"."+studyId +"." + STUDIED_TIME_REF,studiedTime);
+        hashMap.put(this.uid + "." + subgoalId +"." + studyId + "." + IS_FINISHED_REF,true);
+        batch.update(studyCollectionRef,hashMap);
+
+        DocumentReference personalCollectionGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        batch.update(personalCollectionGoalRef,createHashmap(TOTAL_STUDIED_TIME_REF ,FieldValue.increment((int)(studiedTime))));
+
+        batch.commit();
+
+        //TabbarVC.sharedInstance?.profileVCInstance.isProgressBtnAnimationOn = true;
+    }
+    public void resumeTimerForGroupGoal(String goalId, String subgoalId,String studyId,HashMap<String,Object> resumeData) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + RESUMES_REF + "." + getAlphaNumericString(11), resumeData));
 
 
+    }
+    public void breakTimerForGroupGoal(String goalId, String subgoalId, String studyId, HashMap<String,Object> breakData) {
+        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + BREAKS_REF + "." + getAlphaNumericString(11) ,breakData);
+        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + TOTAL_BREAK_TIMES_REF,FieldValue.increment(1));
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).
+                update(hashMap);
+
+    }
+
+    public void startTimerForGroupGoal(String goalId, String subgoalId, String studyId, long proposedStudyTime) {
+        TimerDataModel startData = new TimerDataModel(studyId,  System.currentTimeMillis(),  0,  false, proposedStudyTime);
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(TimerDataModel.jsonFormatterForGroupGoal(this.uid, subgoalId, startData));
+    }
+
+    public void sendTotalStudiedTimeForGroupGoalStopTimer(String goalId,String subgoalId,double totalStudiedTime,HashMap<String,Object> stopData,String studyId) {
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference goalRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference personalCollectionGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
+        batch.update(goalRef,createHashmap(SUB_GOAL_PACK_REF +"." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment((int)(totalStudiedTime))));
+        batch.update(personalCollectionGoalRef,createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment((int)(totalStudiedTime))));
+
+        HashMap<String,Object> hashMap = createHashmap(this.uid + "." + subgoalId + "." + studyId + "." + STOP_TIME_REF, stopData);
+        hashMap.put(this.uid + "." + subgoalId + "." + studyId + "." + STUDIED_TIME_REF,totalStudiedTime);
+        batch.update(studyCollectionRef,hashMap);
+
+        batch.commit();
+
+        //TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
+    }
+
+    public void createGroupGoal(String bigGoal,String goalType,boolean isGoalCompleted,String taskType,String goalCreaterUid,HashMap<String,groupMembersPack> groupMembers,String relatedCourse,double whenIsItDue,double createdAt, ResultHandler<Object> handler) {
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+            DocumentReference docForGoal = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document();
+            GroupGoalModel groupGoal = new GroupGoalModel(docForGoal.getId(), bigGoal, goalType, isGoalCompleted, taskType, goalCreaterUid, groupMembers, relatedCourse, whenIsItDue, createdAt, null);
+            //let chatDocRef = docForGoal.collection(GROUP_CHAT_COLLECTION_REF).document(shapeSize.groupChatDocID)
+            DocumentReference studyTimerREf = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(docForGoal.getId()).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
+            DocumentReference chatOnlineOfflineRef = docForGoal.collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document("shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF");
+            DocumentReference reminderDocRef = docForGoal.collection(REMINDERS_COLLECTIONS_REF).document("shapeSize.REMINDERS_DOC_ID");
+
+            DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
+            DocumentReference personalCollectionRef = userDocRef.collection(PERSONAL_GOALS_COLLECTION_REF).document(docForGoal.getId());
+            groupGoalForPersonalCollection dataForPersonalCollection = new groupGoalForPersonalCollection(docForGoal.getId(), groupGoal.bigGoal, groupGoal.goalType, groupGoal.isGoalCompleted, groupGoal.taskType, groupGoal.goalCreaterUid, groupGoal.whenIsItDue, groupGoal.createdAt, 0.0, 0.0, groupGoal.whenIsItDue);
+
+            try {
+                batch.set(docForGoal, groupGoal);
+            } catch (Exception e) {
+                HashMap<String, Object> handlerResult = new HashMap<>();
+                handlerResult.put("_success", false);
+                handlerResult.put("_response", null);
+                handlerResult.put("_error", e);
+                handler.onSuccess(handlerResult);
+            }
+            try {
+                batch.set(personalCollectionRef, dataForPersonalCollection);
+                batch.update(userDocRef, createHashmap(GROUP_TOTAL_GOAL_NUMBER_REF, FieldValue.increment((1))));
+                //batch.setData(["exist":true], forDocument: chatDocRef)
+                batch.set(reminderDocRef, createHashmap("exist", true));
+                HashMap<String, Object> hashMap1 = createHashmap(this.uid, "userOnlineStatus.prepareJsonForWritingCurrentUser()");
+                HashMap<String, Object> hashMap = createHashmap(ONLINE_STATUS_DIC_REF, hashMap1);
+                batch.set(chatOnlineOfflineRef, hashMap);
+                batch.set(studyTimerREf, createHashmap("exist", true));
+                batch.commit();
+                HashMap<String, Object> handlerResult = new HashMap<>();
+                handlerResult.put("_success", true);
+                handlerResult.put("_response", groupGoal);
+                handlerResult.put("_error", null);
+                handler.onSuccess(handlerResult);
+
+            } catch (Exception e) {
+                HashMap<String, Object> handlerResult = new HashMap<>();
+                handlerResult.put("_success", false);
+                handlerResult.put("_response", null);
+                handlerResult.put("_error", e);
+                handler.onSuccess(handlerResult);
+            }
+    }
+    public void completeGroupGoal(String goalId, ArrayList<String> uids){
+        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF,true);
+        hashMap.put(COMPLETED_DATE_REF,System.currentTimeMillis());
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
+        for(String  uid : uids) {
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+            batch.update(FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(uid),createHashmap(COMPLETED_GOAL_NUMBERS_REF,FieldValue.increment((int)(1))));
+            batch.update(FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId),createHashmap( IS_GOAL_COMPLETED_REF , true));
+            batch.commit();
+        }
+    }
+
+
+    //Activity Log Data End
 
     public void fixCompletedGoalNumber(int number) {
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).update(createHashmap(COMPLETED_GOAL_NUMBERS_REF,number));

@@ -1,15 +1,11 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.profile;
 
 import static com.example.proccoli2.R.drawable.avatar_background;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorSpace;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -27,20 +23,21 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.widget.ImageViewCompat;
 
+import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.NewModels.SingletonStrings;
+import com.example.proccoli2.NewModels.UserDataModel;
+import com.example.proccoli2.R;
+import com.example.proccoli2.avatarView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -48,6 +45,7 @@ import java.util.Random;
  */
 public class profileView extends AppCompatActivity {
 
+    SingletonStrings ss = new SingletonStrings();
     TextInputEditText fullNameInput, occupationInput, highestEducationInput;
     Button saveBtn, editAvatarBtn;
     Button dateButtonBirthdate;
@@ -57,6 +55,8 @@ public class profileView extends AppCompatActivity {
     String originalColor; //Color from Main
     String avatarImageO;
     Toolbar toolbar;
+    edit_profile_VC edit_controller = new edit_profile_VC(this);
+    profile_VC profile_controller = new profile_VC(this);
 
     //get data from the avatar collection
     ActivityResultLauncher<Intent> activityResultLaunchAvatarCollection = registerForActivityResult(
@@ -121,6 +121,7 @@ public class profileView extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("go backtoMain", "onClick: I am here with id" + Integer.parseInt(avatarImageO));
                 setAvatarIntent(Integer.parseInt(avatarImageO));
+
             }
         });
 
@@ -138,6 +139,7 @@ public class profileView extends AppCompatActivity {
         initiatePickerBirthdate();
         dateButtonBirthdate = findViewById(R.id.datePickerButtonBirthdate);
         dateButtonBirthdate.setText(getTodaysDate());
+        profile_controller.loadCurrentUserInfoIntoView();
     }
 
     /**
@@ -299,9 +301,21 @@ public class profileView extends AppCompatActivity {
     public void setAvatarIntent(int i){
 
         Intent myIntent = new Intent(this, MainActivity.class);
+
+        HashMap<String,String> profileImageHashmap = new HashMap<>();
+        profileImageHashmap.put(colorCode,Integer.toString(i));
         myIntent.putExtra("avatarImage", Integer.toString(i));
         myIntent.putExtra("colorCode",colorCode);
         Log.d("IMAGEID", "setAvatar: " + Integer.toString(i));
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.POFILE_IMG_WITH_COLOR_REF,profileImageHashmap);
+        hashMap.put(ss.FULL_NAME_REF, fullNameInput.getText().toString());
+        hashMap.put(ss.OCCUPATION_REF,occupationInput.getText().toString());
+        hashMap.put(ss.HIGHEST_LEVEL_OF_EDUCATION_REF,highestEducationInput.getText().toString());
+        Log.d("Birthdate", "setAvatarIntent: " + dateButtonBirthdate.getText().toString());
+        hashMap.put(ss.BIRTHDAY_REF,profile_controller.dateStrToUnix2(dateButtonBirthdate.getText().toString()));
+        Log.d("UpdateProfileInfo", "setAvatarIntent: " + hashMap);
+        edit_controller.updateProfileInfo(hashMap);
         setResult(RESULT_OK,myIntent);
         finish();
     }

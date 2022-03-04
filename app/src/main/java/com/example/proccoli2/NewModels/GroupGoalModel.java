@@ -9,20 +9,35 @@ import java.util.Base64;
 import java.util.HashMap;
 
 public class GroupGoalModel implements Serializable {
-    /*
+
     DataServices ss = new DataServices();
     String goalId;
     String bigGoal;
     String goalType;
-    String isGoalCompleted;
+    boolean isGoalCompleted;
     String taskType;
     String goalCreaterUid;
     HashMap<String, groupMembersPack> groupMembers;
     String relatedCourse;
     double whenIsItDue;
     double createdAt;
-    @ExplicitNull groupSubgoalPack subGoalPack;
+    //@ExplicitNull groupSubgoalPack subGoalPack;
+    groupSubgoalPack subGoalPack;
 
+
+    public GroupGoalModel(String id, String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, HashMap<String, groupMembersPack> groupMembers, String relatedCourse, double whenIsItDue, double createdAt, groupSubgoalPack subGoalPack) {
+        this.goalId = id;
+        this.bigGoal=bigGoal;
+        this.goalType=goalType;
+        this.isGoalCompleted=isGoalCompleted;
+        this.taskType=taskType;
+        this.goalCreaterUid=goalCreaterUid;
+        this.groupMembers=groupMembers;
+        this.relatedCourse=relatedCourse;
+        this.whenIsItDue=whenIsItDue;
+        this.createdAt=createdAt;
+        this.subGoalPack=subGoalPack;
+    }
 }
     class groupMembersPack implements Serializable {
         DataServices ss = new DataServices();
@@ -30,7 +45,8 @@ public class GroupGoalModel implements Serializable {
         String uid;
         String email;
         String status;
-        @ExplicitNull HashMap<String, assignedSubgoalsField> assignedSubgoals;
+        //@ExplicitNull HashMap<String, assignedSubgoalsField> assignedSubgoals;
+        HashMap<String, assignedSubgoalsField> assignedSubgoals;
 
         class assignedSubgoalsField implements Serializable {
             String subgoalName;
@@ -60,35 +76,15 @@ public class GroupGoalModel implements Serializable {
         }
     }
 
+
     class groupSubgoalPack implements Serializable{
         ArrayList<groupSubGoalFields> subGoalsArray;
-        class DynamicCodingKeysForGroup implements Serializable{
-            String stringValue;
-            int intValue;
-            public DynamicCodingKeysForGroup(String stringValue){
-                this.stringValue = stringValue;
-            }
 
-            public Object DynamicCodingKeysForGroup(int intValue){
-                return null;
-            }
-
-        public groupSubgoalPack(){
-            ArrayList<groupSubGoalFields> tempArr = new ArrayList<>();
-            for(DynamicCodingKeysForGroup key: container.allKeys){
-                if(DynamicCodingKeysForGroup(key.stringValue)!=null){
-                    try{
-                        data = container.decode(groupSubGoalFields.this,jsonKey);
-                        data.subgoalID = key.stringValue;
-                        tempArr.append(data);
-                    }
-                }
-                else return;
-            }
-            this.subGoalsArray = tempArr;
-        }
     }
+
+
     class groupSubGoalFields implements Serializable{
+        DataServices ss = new DataServices();
         String status;
         boolean isChecked;
         boolean isDeleted;
@@ -116,16 +112,17 @@ public class GroupGoalModel implements Serializable {
 
         public HashMap<String,Object> jsonConverter(groupSubGoalFields data){
             HashMap<String,Object> hashmap = new HashMap<>();
-            hashmap.put(STATUS_REF,data.status);
-            hashmap.put(IS_CHECKED_REF,data.isChecked);
-            hashmap.put(IS_DELETED_REF,data.isDeleted);
-            hashmap.put(SUB_DEADLINE_REF,data.subDeadline);
-            hashmap.put(SUB_GOAL_NAME_REF,data.subgoalName);
-            hashmap.put(TOTAL_STUDIED_TIME_REF,data.totalStudiedTime);
-            hashmap.put(ASSIGNED_TO_USER_NAME_REF,(String) getValueOrDefault(data.assignedToUserName,"");
-            hashmap.put(ASSIGNED_TO_UID_REF,(String) getValueOrDefault(data.assignedToUid,"");
-            hashmap.put(SUB_GOAL_ID_REF,data.subgoalId);
-            hashmap.put(PROGRESS_PERCENTAGE_REF,data.progressPercentage);
+            hashmap.put(ss.STATUS_REF,data.status);
+            hashmap.put(ss.IS_CHECKED_REF,data.isChecked);
+            hashmap.put(ss.IS_DELETED_REF,data.isDeleted);
+            hashmap.put(ss.SUB_DEADLINE_REF,data.subDeadline);
+            hashmap.put(ss.SUB_GOAL_NAME_REF,data.subgoalName);
+            hashmap.put(ss.TOTAL_STUDIED_TIME_REF,data.totalStudiedTime);
+            hashmap.put(ss.ASSIGNED_TO_USER_NAME_REF,(String) getValueOrDefault(data.assignedToUserName,""));
+            hashmap.put(ss.ASSIGNED_TO_UID_REF,(String) getValueOrDefault(data.assignedToUid,""));
+            hashmap.put(ss.SUB_GOAL_ID_REF,data.subgoalId);
+            hashmap.put(ss.PROGRESS_PERCENTAGE_REF,data.progressPercentage);
+            return hashmap;
         }
 
         public  <T> T getValueOrDefault(T value, T defaultValue) {
@@ -161,5 +158,5 @@ public class GroupGoalModel implements Serializable {
         }
     }
 
-     */
-}
+
+
