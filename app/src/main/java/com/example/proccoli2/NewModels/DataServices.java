@@ -976,11 +976,14 @@ public class DataServices {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
+                    Log.d("requestTask", "onComplete: task Complete");
                     if(task.getException()==null) {
+                        Log.d("requestTask", "onComplete: No exceptions");
                         HashMap<String,Object> handlerHashmap = new HashMap<>();
                         handlerHashmap.put("_status", true);
                         handlerHashmap.put("_response",GoalModel.parseGoalsData((QuerySnapshot)task.getResult()));
                         handlerHashmap.put("_error",null);
+                        Log.d("requestPersonalGoals", "onComplete: " + handlerHashmap);
                         handler.onSuccess(handlerHashmap);
                         return;
                     }

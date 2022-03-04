@@ -24,7 +24,7 @@
             android:windowSoftInputMode="adjustNothing">
             ></activity>
         <activity android:name=".ui.subGoalCreation.subGoalView"></activity>
-        <activity android:name=".avatarView"></activity>
+        <activity android:name=".ui.avatarCollection.avatarView"></activity>
         <activity android:name=".singleGoalView"
             android:windowSoftInputMode="adjustPan">
             ></activity>

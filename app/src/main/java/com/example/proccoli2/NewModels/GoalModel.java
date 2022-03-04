@@ -1,5 +1,7 @@
 package com.example.proccoli2.NewModels;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.okhttp.internal.DiskLruCache;
@@ -26,6 +28,26 @@ public class GoalModel implements Serializable {
     double studiedTime;
     boolean isGraded;
 
+    public long getPersonalDeadline() {
+        return personalDeadline;
+    }
+
+    public long getWhenIsDue() {
+        return whenIsDue;
+    }
+
+    public String getGoalId() {
+        return goalId;
+    }
+
+    public double getProposedStudyTime() {
+        return proposedStudyTime;
+    }
+
+    public double getStudiedTime() {
+        return studiedTime;
+    }
+
     public void setBigGoal(String bigGoal) {
         this.bigGoal = bigGoal;
     }
@@ -48,6 +70,10 @@ public class GoalModel implements Serializable {
 
     public void setGoalCreaterEmail(String goalCreaterEmail) {
         this.goalCreaterEmail = goalCreaterEmail;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
     }
 
     public String getBigGoal() {
@@ -101,7 +127,7 @@ public class GoalModel implements Serializable {
         else{
             QuerySnapshot snaps = snapshots;
             for(DocumentSnapshot snap :snaps.getDocuments()){
-                HashMap<String,Object> data = (HashMap<String, Object>) snaps.getDocuments();
+                HashMap<String,Object> data = (HashMap<String, Object>) snap.getData();
                 String taskType = (String) getValueOrDefault(data.get(ss.TASK_TYPE_REF),"");
                 String bigGoal = (String) getValueOrDefault(data.get(ss.BIG_GOAL_REF),"");
                 long personalDeadline = (long) getValueOrDefault(data.get(ss.PERSONAL_DEADLINE_REF), 0.0);
@@ -122,6 +148,7 @@ public class GoalModel implements Serializable {
                 GoalModel event = new GoalModel(bigGoal,personalDeadline, taskType, eventId, createdAt, eventCreaterEmail, isCompleted, goalType,  whenIsItDue,  eventCreaterUid, proposedStudyTIme,  studiedTime, isGraded);
                 events.add(event);
             }
+            Log.d("parseData", "parseGoalsData: " + events);
             return events;
         }
     }
@@ -176,5 +203,28 @@ public class GoalModel implements Serializable {
         return value == null ? defaultValue : value;
     }
 
+    @Override
+    public String toString() {
+        return "GoalModel{" +
+                "bigGoal='" + bigGoal + '\'' +
+                ", personalDeadline=" + personalDeadline +
+                ", whenIsDue=" + whenIsDue +
+                ", isCompleted=" + isCompleted +
+                ", goalType='" + goalType + '\'' +
+                ", goalCreaterUid='" + goalCreaterUid + '\'' +
+                ", createdAt=" + createdAt +
+                ", taskType='" + taskType + '\'' +
+                ", goalId='" + goalId + '\'' +
+                ", goalCreaterEmail='" + goalCreaterEmail + '\'' +
+                ", proposedStudyTime=" + proposedStudyTime +
+                ", studiedTime=" + studiedTime +
+                ", isGraded=" + isGraded +
+                '}';
+    }
 
+    public boolean goalsEqual(GoalModel goal){
+        Log.d("goalsEqualTest", "goalsEqual: " + this.goalId + " and " + goal.goalId);
+        Log.d("GoalsEqualREsult", "goalsEqual: " + String.valueOf(this.goalId.equals(goal.goalId)));
+        return this.goalId.equals(goal.goalId);
+    }
 }

@@ -1,12 +1,14 @@
 package com.example.proccoli2.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.proccoli2.GoalModel;
 import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.R;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
@@ -31,7 +33,8 @@ public class HomeFragment_VC {
         return String.valueOf(Duration.between(now,unixConverted).toDays());
     }
 
-    public int countCompletedGoals(ArrayList<IndividualGoalModel> goalList){
+
+    public int countCompletedGoals(ArrayList<GoalModel> goalList){
         int counter = 0;
         for(int i = 0; i<goalList.size();i++) {
             if (goalList.get(i).isCompleted() == true)
@@ -40,7 +43,7 @@ public class HomeFragment_VC {
         return counter;
     }
 
-    public void assignGoal(IndividualGoalModel goal){
+    public void assignGoal(GoalModel goal){
         long todayUnixDateTime = System.currentTimeMillis() / 1000L;
         int goalPersonal = (int) goal.getPersonalDeadline();
         int goalDue = (int)goal.getWhenIsDue();
@@ -98,21 +101,21 @@ public class HomeFragment_VC {
     }
 
 
-    Comparator<IndividualGoalModel> compareByDeadline = new Comparator<IndividualGoalModel>() {
+    Comparator<GoalModel> compareByDeadline = new Comparator<GoalModel>() {
         @Override
-        public int compare(IndividualGoalModel goal1, IndividualGoalModel goal2) {
+        public int compare(GoalModel goal1, GoalModel goal2) {
             return Long.compare(goal1.getWhenIsDue(),goal2.getWhenIsDue());
         }
     };
 
-    Comparator<IndividualGoalModel> compareByPersonal = new Comparator<IndividualGoalModel>() {
+    Comparator<GoalModel> compareByPersonal = new Comparator<GoalModel>() {
         @Override
-        public int compare(IndividualGoalModel goal1 ,IndividualGoalModel goal2) {
+        public int compare(GoalModel goal1 ,GoalModel goal2) {
             return Long.compare(goal1.getPersonalDeadline(),goal2.getPersonalDeadline());
         }
     };
 
-    public ArrayList<IndividualGoalModel> setRecyclerViewList2(HomeFragment homeFragment){
+    public ArrayList<GoalModel> setRecyclerViewList2(HomeFragment homeFragment){
         boolean personalEnabled = homeFragment.personalSelected;
         boolean dueEnabled = homeFragment.dueDateSelected;
         int checkedBtn = homeFragment.toggleGroup.getCheckedButtonId();
@@ -202,12 +205,12 @@ public class HomeFragment_VC {
 
 
 
-    public void removeGoalFromList(int goalSelected,ArrayList<IndividualGoalModel> arrayList){
+    public void removeGoalFromList(int goalSelected,ArrayList<GoalModel> arrayList){
 
         arrayList.remove(goalSelected);
     }
 
-    public void findOldAndRemoveFromRecyclers(IndividualGoalModel updatedGoal){
+    public void findOldAndRemoveFromRecyclers(GoalModel updatedGoal){
         int index;
         Log.d("findOldandRemove", "started");
 
@@ -241,7 +244,7 @@ public class HomeFragment_VC {
         }
     }
 
-    public int searchArray(ArrayList<IndividualGoalModel> goalList, IndividualGoalModel updatedGoal){
+    public int searchArray(ArrayList<GoalModel> goalList, GoalModel updatedGoal){
         int index = -1;
 
         for(int i = 0; i<goalList.size(); i++){
@@ -262,18 +265,18 @@ public class HomeFragment_VC {
      * @param finishedDue
      * @return A single list of all of the goals
      */
-    public ArrayList<IndividualGoalModel> combineArraysForCount(ArrayList<IndividualGoalModel> activeDue, ArrayList<IndividualGoalModel> expiredDue, ArrayList<IndividualGoalModel> finishedDue){
-        ArrayList<IndividualGoalModel> countSubGoalList = new ArrayList<>();
+    public ArrayList<GoalModel> combineArraysForCount(ArrayList<GoalModel> activeDue, ArrayList<GoalModel> expiredDue, ArrayList<GoalModel> finishedDue){
+        ArrayList<GoalModel> countSubGoalList = new ArrayList<>();
 
-        for (IndividualGoalModel value : activeDue) {
+        for (GoalModel value : activeDue) {
             countSubGoalList.add(value);
         }
 
-        for (IndividualGoalModel value : expiredDue) {
+        for (GoalModel value : expiredDue) {
             countSubGoalList.add(value);
         }
 
-        for (IndividualGoalModel value : finishedDue) {
+        for (GoalModel value : finishedDue) {
             countSubGoalList.add(value);
         }
         Log.d("countSubGoalList", "combineArraysForCount: " + countSubGoalList);

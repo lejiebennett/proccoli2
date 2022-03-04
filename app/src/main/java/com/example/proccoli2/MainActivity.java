@@ -632,7 +632,7 @@ public class MainActivity extends AppCompatActivity{
 
         //Initialize recyclerView
         recyclerView = findViewById(R.id.goalList);
-        setUpRecyclerView();
+        //setUpRecyclerView(); //Need to comment this out since we are actually using HomeFragment instead
         //Data from createGoal Page
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),

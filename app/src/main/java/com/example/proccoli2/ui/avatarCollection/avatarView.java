@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.avatarCollection;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.proccoli2.R;
 import com.example.proccoli2.ui.profile.profileView;
 
 import java.util.Random;

@@ -85,6 +85,8 @@ public class IndividualGoalModel implements Serializable {
 
 
 
+
+
     public static <T> T getValueOrDefault(T value, T defaultValue) {
         return value == null ? defaultValue : value;
     }

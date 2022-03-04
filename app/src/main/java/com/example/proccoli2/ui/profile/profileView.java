@@ -28,9 +28,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.SingletonStrings;
-import com.example.proccoli2.NewModels.UserDataModel;
 import com.example.proccoli2.R;
-import com.example.proccoli2.avatarView;
+import com.example.proccoli2.ui.avatarCollection.avatarView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
