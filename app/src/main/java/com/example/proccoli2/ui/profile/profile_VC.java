@@ -117,20 +117,32 @@ public class profile_VC {
 
     public void loadCurrentUserInfoIntoView(){
         Log.d("loadCurrentUserInfo", "loadCurrentUserInfoIntoView: trying to load" );
+
         DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
 
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onSuccess(Object data) {
+
                 Log.d("loadCurrentUser", "onSuccess: " + data);
                 profileView.fullNameInput.setText(model.getFullName());
                 profileView.occupationInput.setText(model.getOccupation());
                 profileView.highestEducationInput.setText(model.getHighestLevelOfEducation());
 
                 HashMap<String,String> profImage = model.getProfileImg();
+                Log.d("profile_VC", "onSuccess: " + profImage);
                 Set<String> image = profImage.keySet();
-                profileView.newColor = (String) image.iterator().next();
-                int imageNumber = Integer.valueOf(profImage.get(profileView.newColor));
+                String imageNumberKey = image.iterator().next();
+                int imageNumber;
+                if(imageNumberKey=="light6"){
+                    imageNumber = 6;
+
+                }
+                else
+                    imageNumber = Integer.valueOf(imageNumberKey);
+
+                profileView.newColor = profImage.get(imageNumberKey);
+
                 profileView.setAvatar(imageNumber);
                 profileView.avatarImageO=profImage.get(profileView.newColor);
                 profileView.dateButtonBirthdate.setText(unixToString((int)model.getBirthday()));

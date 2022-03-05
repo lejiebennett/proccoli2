@@ -283,5 +283,9 @@ public class HomeFragment_VC {
         return countSubGoalList;
     }
 
+    public GoalModel convertIndividualToGoalModel(IndividualGoalModel individual){
+         return new GoalModel(individual.getBigGoal(),individual.getPersonalDeadline(),individual.getTaskType(),null,individual.getCreatedAt(),individual.getGoalCreaterEmail(),individual.isCompleted(),individual.getGoalType(),individual.getWhenIsDue(),null,individual.getProposedStudyTime(),0,false);
+    }
+
 
 }

@@ -4,68 +4,68 @@ import java.io.Serializable;
 
 public class SingletonStrings implements Serializable {
     //colelction references
-    final String USER_COLLECTION_REF = "users";
-    final String GOALS_COLLECTION_REF  = "goals";
-    final String REVISION_COLLECTION_REF = "revisions";
-    final String PERSONAL_NOTE_COLLEECTION_REF = "personalNote";
-    final String REMINDERS_COLLECTIONS_REF = "reminders";
-    final String PERSONAL_GOALS_COLLECTION_REF = "personalGoals";
-    final String INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF = "progressData";
-    final String LOG_DATA_COLLECTION_REF = "logData";
+    public final String USER_COLLECTION_REF = "users";
+    public final String GOALS_COLLECTION_REF  = "goals";
+    public final String REVISION_COLLECTION_REF = "revisions";
+    public final String PERSONAL_NOTE_COLLEECTION_REF = "personalNote";
+    public final String REMINDERS_COLLECTIONS_REF = "reminders";
+    public final String PERSONAL_GOALS_COLLECTION_REF = "personalGoals";
+    public final String INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF = "progressData";
+    public final String LOG_DATA_COLLECTION_REF = "logData";
 
 
     //login
-    final String INDIVIDUAL_TOTAL_GOAL_NUMBER_REF = "indvidualGoalTotal";
-    final String GROUP_TOTAL_GOAL_NUMBER_REF = "groupGoalTotal";
-    final String COMPLETED_TOTAL_GOAL_NUMBER_REF = "compfinal StringedGoalNumber";
+    public final String INDIVIDUAL_TOTAL_GOAL_NUMBER_REF = "indvidualGoalTotal";
+    public final String GROUP_TOTAL_GOAL_NUMBER_REF = "groupGoalTotal";
+    public final String COMPLETED_TOTAL_GOAL_NUMBER_REF = "compfinal StringedGoalNumber";
 
     //PROFILE VC SINGLETONS
-    final String SEGMENTED_CONTROL_ACTIVE_REF = "active";
-    final String SEGMENTED_CONTROL_EXPIRED_REF = "expired";
-    final String SEGMENTED_CONTROL_FINISHED_REF = "finished";
-    final String SORT_BY_PERSONAL_DEADLINE_REF = "personal";
-    final String SORT_BY_HARD_DEADLINE_REF = "hard";
+    public final String SEGMENTED_CONTROL_ACTIVE_REF = "active";
+    public final String SEGMENTED_CONTROL_EXPIRED_REF = "expired";
+    public final String SEGMENTED_CONTROL_FINISHED_REF = "finished";
+    public final String SORT_BY_PERSONAL_DEADLINE_REF = "personal";
+    public final String SORT_BY_HARD_DEADLINE_REF = "hard";
 
-    final String UID = "uid";
-    final String EMAIL = "email";
-    final String CREATED_AT = "createdAt";
-    final String INDIVIDUAL_GOAL_TOTAL_REF = "indvidualGoalNumber";
-    final String COMPLETED_GOAL_NUMBERS_REF = "compfinal StringedGoalNumber";
+    public final String UID = "uid";
+    public final String EMAIL = "email";
+    public final String CREATED_AT = "createdAt";
+    public final String INDIVIDUAL_GOAL_TOTAL_REF = "indvidualGoalNumber";
+    public final String COMPLETED_GOAL_NUMBERS_REF = "compfinal StringedGoalNumber";
 
 
 
-    final String GOAL_ID_REF = "goalId";
-    final String GOAL_TYPE_REF = "goalType";
-    final String BIG_GOAL_REF = "bigGoal";
-    final String PERSONAL_DEADLINE_REF = "personalDeadline";
-    final String INDIVIDUAL_REF = "individual";
-    final String GOAL_CREATER_UID_REF = "goalCreaterUid";
-    final String SUB_GOALS_REF = "subGoals";
-    final String SUB_GOAL_NAME_REF = "subgoalName";
+    public final String GOAL_ID_REF = "goalId";
+    public final String GOAL_TYPE_REF = "goalType";
+    public final String BIG_GOAL_REF = "bigGoal";
+    public final String PERSONAL_DEADLINE_REF = "personalDeadline";
+    public final String INDIVIDUAL_REF = "individual";
+    public final String GOAL_CREATER_UID_REF = "goalCreaterUid";
+    public final String SUB_GOALS_REF = "subGoals";
+    public final String SUB_GOAL_NAME_REF = "subgoalName";
     public final String POFILE_IMG_WITH_COLOR_REF = "profileImgWithHex";
     public final String FULL_NAME_REF = "fullName";
     public final String OCCUPATION_REF = "occupation";
     public final String HIGHEST_LEVEL_OF_EDUCATION_REF = "highestLevelOfEducation";
     public final String BIRTHDAY_REF = "birthday";
-    final String DIFFICULTY_LEVEL_REF = "difficultyLevel";
-    final String HOW_LONG_REF = "howLong";
-    final String SUB_DEADLINE_REF = "subDeadline";
-    final String IS_CHECKED_REF = "isChecked";
-    final String COMPLETED_DATE_REF = "compfinal StringedDate";
-    final String PROPOSED_START_TIME_REF = "proposedStartDate";
-    final String IS_DELETED_REF = "isDefinal Stringed";
-    final String SUB_GOAL_DELETE_TIME = "definal StringeTime";
-    final String INVITED_USER_UIDS_REF = "invitedUserUids";
-    final String GOAL_CREATER_EMAIL_REF = "goalCreaterEmail";
-    final String IS_GOAL_COMPLETED_REF = "isGoalCompfinal Stringed";
-    final String TASK_TYPE_REF = "taskType";
-    final String WHEN_IS_IT_DUE_REF = "whenIsItDue";
-    final String SUB_GOAL_PACK_REF = "subGoalPack";
-    final String TOTAL_STUDIED_TIME_REF = "totalStudiedTime";
-    final String NO_SUB_GOAL_REF = "noSubGoal";
-    final String SUB_GOAL_ID_REF = "subgoalId";
-    final String SUB_GOAL_CHECK_TIME_REF = "subGoalCheckTime";
-    final String SUB_GOAL_UN_CHECK_TIME_REF = "subGoalUnCheckTime";
+    public final String DIFFICULTY_LEVEL_REF = "difficultyLevel";
+    public final String HOW_LONG_REF = "howLong";
+    public final String SUB_DEADLINE_REF = "subDeadline";
+    public final String IS_CHECKED_REF = "isChecked";
+    public final String COMPLETED_DATE_REF = "compfinal StringedDate";
+    public final String PROPOSED_START_TIME_REF = "proposedStartDate";
+    public final String IS_DELETED_REF = "isDefinal Stringed";
+    public final String SUB_GOAL_DELETE_TIME = "definal StringeTime";
+    public final String INVITED_USER_UIDS_REF = "invitedUserUids";
+    public final String GOAL_CREATER_EMAIL_REF = "goalCreaterEmail";
+    public final String IS_GOAL_COMPLETED_REF = "isGoalCompfinal Stringed";
+    public final String TASK_TYPE_REF = "taskType";
+    public final String WHEN_IS_IT_DUE_REF = "whenIsItDue";
+    public final String SUB_GOAL_PACK_REF = "subGoalPack";
+    public final String TOTAL_STUDIED_TIME_REF = "totalStudiedTime";
+    public final String NO_SUB_GOAL_REF = "noSubGoal";
+    public final String SUB_GOAL_ID_REF = "subgoalId";
+    public final String SUB_GOAL_CHECK_TIME_REF = "subGoalCheckTime";
+    public final String SUB_GOAL_UN_CHECK_TIME_REF = "subGoalUnCheckTime";
 
 
     final String NOTE_REF = "note";

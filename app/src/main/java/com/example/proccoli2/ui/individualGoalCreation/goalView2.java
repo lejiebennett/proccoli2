@@ -36,8 +36,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.R;
 import com.example.proccoli2.ui.subGoalCreation.subGoalView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
@@ -59,6 +61,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
     String[] goalTypes = {"Assignment", "Discussion/Forum","Exam (Final)", "Exam (Midterm)",
             "Exam (Other)", "Group Project", "Project (Individual)", "Studying (Reading)", "Studying (Watching Videos)",
             "Studying (Other)", "Other"};
+
+    SingletonStrings ss = new SingletonStrings();
 
     IndividualGoalModel myGoal = new IndividualGoalModel(); //Used to store the input fields and send back to mainActivity
     TextInputEditText bigGoalInput, courseNumberInput;
@@ -536,7 +540,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
                                                                 //Set all of the attributes of the goal either using commented out constructor or set individually
 
-                                                                IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,"taskType",myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
+                                                                IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete, ss.INDIVIDUAL_REF,myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
                                                                 newGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
 
                                                                 Log.d("GoalMade", "onClick: " + newGoal.toString());
@@ -549,6 +553,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                                 Log.d("putExtras", "onClick: " + newGoal);
                                                                 setResult(RESULT_OK, i);
                                                                 Log.d("setExtras", "onClick: " + newGoal);
+                                                                controller.saveIndividualGoal(newGoal);
+
                                                                 finish();
                                                             }
                                                         }
@@ -567,7 +573,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     long currentUnix = System.currentTimeMillis() / 1000L;
 
                                                     //Set all of the attributes of the goal either using commented out constructor or set individually
-                                                    IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,"taskType",myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
+                                                    IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,ss.INDIVIDUAL_REF ,myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
 
                                                     Log.d("GoalMade", "onClick: " + newGoal.toString());
 

@@ -302,7 +302,7 @@ public class profileView extends AppCompatActivity {
         Intent myIntent = new Intent(this, MainActivity.class);
 
         HashMap<String,String> profileImageHashmap = new HashMap<>();
-        profileImageHashmap.put(colorCode,Integer.toString(i));
+        profileImageHashmap.put(Integer.toString(i),colorCode);
         myIntent.putExtra("avatarImage", Integer.toString(i));
         myIntent.putExtra("colorCode",colorCode);
         Log.d("IMAGEID", "setAvatar: " + Integer.toString(i));

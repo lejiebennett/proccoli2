@@ -145,6 +145,10 @@ public class IndividualGoalModel implements Serializable {
         return proposedStartDate;
     }
 
+    public double getProposedStudyTime() {
+        return proposedStudyTime;
+    }
+
     public ArrayList<IndividualSubGoalStructModel> getSubGoals() {
         return subGoals;
     }

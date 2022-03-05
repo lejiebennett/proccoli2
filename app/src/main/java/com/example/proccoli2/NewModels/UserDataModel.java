@@ -215,6 +215,7 @@ public class UserDataModel {
 
     public static void parseData(DocumentSnapshot snapshots){
         if(snapshots== null){
+            Log.d("nullSnapshot", "parseData: snapshotNULL");
             return;
         }
         else{
@@ -223,16 +224,21 @@ public class UserDataModel {
           //  DocumentSnapshot data = (DocumentSnapshot) snaps.getData();
             HashMap<String,Object> data = (HashMap<String, Object>) snaps.getData();
 
+            Log.d("UserDataModelParse", "parseData: " + data);
             UserDataModel.sharedInstance.email = DataServices.getInstance().email;
             UserDataModel.sharedInstance.userName = (String) getValueOrDefault(data.get(DataServices.getInstance().USER_NAME_REF),"unknownUser");
             UserDataModel.sharedInstance.fullName = (String) data.get(DataServices.getInstance().FULL_NAME_REF);
             HashMap<String,String> profileImgDefault = new HashMap<>();
-            profileImgDefault.put("light0","#000");
+            profileImgDefault.put("light6","#000000");
             UserDataModel.sharedInstance.profileImg = (HashMap<String, String>) getValueOrDefault(data.get(DataServices.getInstance().POFILE_IMG_WITH_COLOR_REF),profileImgDefault);
-            UserDataModel.sharedInstance.occupation = (String) data.get(DataServices.getInstance().OCCUPATION_REF);
-            UserDataModel.sharedInstance.highestLevelOfEducation = (String) data.get(DataServices.getInstance().HIGHEST_LEVEL_OF_EDUCATION_REF);
+
             Long birthDayLong = (Long)data.get(DataServices.getInstance().BIRTHDAY_REF);
-            UserDataModel.sharedInstance.birthday = (birthDayLong.longValue());
+            if(birthDayLong!=null){
+                UserDataModel.sharedInstance.birthday = (birthDayLong.longValue());
+                UserDataModel.sharedInstance.occupation = (String) data.get(DataServices.getInstance().OCCUPATION_REF);
+                UserDataModel.sharedInstance.highestLevelOfEducation = (String) data.get(DataServices.getInstance().HIGHEST_LEVEL_OF_EDUCATION_REF);
+            }
+
 
             UserDataModel.sharedInstance.individualGoalTotal = (int)((Long) getValueOrDefault(data.get(DataServices.getInstance().INDIVIDUAL_TOTAL_GOAL_NUMBER_REF),0)).longValue();
             UserDataModel.sharedInstance.groupGoalTotal = (int)((Long) getValueOrDefault(data.get(DataServices.getInstance().GROUP_TOTAL_GOAL_NUMBER_REF),0)).longValue();

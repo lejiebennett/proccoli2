@@ -122,7 +122,8 @@ public class HomeFragment extends Fragment{
 
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
-                        passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                        IndividualGoalModel passedIndividualGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
+                        passedGoal = controller.convertIndividualToGoalModel(passedIndividualGoal);
                         /*
                         Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
                         Log.d("HERE PassedGoal", String.valueOf(passedGoal));
@@ -563,8 +564,11 @@ public class HomeFragment extends Fragment{
                             recyclerView.setVisibility(View.VISIBLE);
 
                             Log.d("Result_OK", "onActivityResult: HERE");
-                            GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+
+                            //GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
+                            IndividualGoalModel passedIndividualGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
+                            passedGoal = controller.convertIndividualToGoalModel(passedIndividualGoal);
 
                             goalList.add(passedGoal);
                             Log.d("goalList", "Just added onActivityResult: goalLst" + goalList);

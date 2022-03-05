@@ -182,7 +182,7 @@ public class GoalModel implements Serializable {
         }
     }
 
-    public HashMap<String,Object> jsonFormatterForGoals(GoalModel data){
+    public static HashMap<String,Object> jsonFormatterForGoals(GoalModel data){
         HashMap<String,Object> hashmap = new HashMap<>();
         hashmap.put(ss.IS_GOAL_COMPLETED_REF,data.isCompleted);
         hashmap.put(ss.GOAL_CREATER_UID_REF,DataServices.uid);

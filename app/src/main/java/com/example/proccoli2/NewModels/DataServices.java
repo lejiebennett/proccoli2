@@ -414,7 +414,7 @@ public class DataServices {
     }
 
      */
-    private static final DataServices sharedInstance = new DataServices();
+    public static final DataServices sharedInstance = new DataServices();
     public static DataServices getInstance() {
         return sharedInstance;
     }
@@ -803,7 +803,7 @@ public class DataServices {
         Log.d("createNewUser", "createNewUserCollection: start" );
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put(USER_NAME_REF,userName);
-        hashMap.put( EMAIL, email);
+        hashMap.put(EMAIL, email);
         hashMap.put(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,0);
         hashMap.put(GROUP_TOTAL_GOAL_NUMBER_REF,0);
         hashMap.put(COMPLETED_TOTAL_GOAL_NUMBER_REF ,0);
@@ -950,7 +950,10 @@ public class DataServices {
                 if (task.isSuccessful()) {
                     Log.d("callUserInfo", "onComplete: ");
                     DocumentSnapshot docSnap = task.getResult();
+
+
                    // this.checkFCM();
+
                     UserDataModel.parseData(docSnap);
                     HashMap<String, Object> hashMapHandler = new HashMap<>();
                     hashMapHandler.put("_status", true);
@@ -1004,7 +1007,6 @@ public class DataServices {
     ///Mark: CreateIndividualGoal VC
     public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data){
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-
         DocumentReference generalGoalsCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document();
         DocumentReference userPersonalGoalsRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(generalGoalsCollectionRef.getId());
         DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
@@ -1021,7 +1023,7 @@ public class DataServices {
         batch.update(userDocRef, createHashmap(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
         batch.set(personalNoteDocRef,createHashmap(CREATED_AT,System.currentTimeMillis()));
         batch.set(goalReminderDocRef,createHashmap(EXIST_REF,true));
-        batch.set(userPersonalGoalsRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
+        batch.set(userPersonalGoalsRef,GoalModel.jsonFormatterForGoals(IndividualGoalModel.goalsModelConverterForDataWrite(data)));
         batch.set(noSubGoalDocReference,createHashmap(EXIST_REF,true));
         batch.set(individualWallProgressDocRef,createHashmap(EXIST_REF,true));
         batch.set( individualWallProgressLogDataDocRef,createHashmap(EXIST_REF,true));
@@ -1029,6 +1031,7 @@ public class DataServices {
         if(subGoals!=null) {
             for(IndividualSubGoalStructModel subGoal : subGoals){
                 batch.set(studyTimeCollection.document(subGoal.get_subGoalId()),createHashmap(EXIST_REF,true));
+
             }
         }
 
