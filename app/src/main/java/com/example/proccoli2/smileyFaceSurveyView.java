@@ -1,22 +1,14 @@
 package com.example.proccoli2;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.button.MaterialButton;
-
-import java.util.Random;
+import com.example.proccoli2.ui.individualWall.singleGoalView;
 
 /**
  * Used to get goal feedback using smiley faces from the user once an individual goal is marked complete

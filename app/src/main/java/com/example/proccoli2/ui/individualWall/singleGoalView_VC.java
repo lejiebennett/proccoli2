@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.individualWall;
 
 import android.os.Build;
 import android.util.Log;
@@ -8,14 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 public class singleGoalView_VC extends AppCompatActivity {
 
-    private singleGoalView singleGoalView;
+    private final singleGoalView singleGoalView;
     public singleGoalView_VC(singleGoalView singleGoalView){
         this.singleGoalView = singleGoalView;
     }
@@ -48,14 +45,14 @@ public class singleGoalView_VC extends AppCompatActivity {
         Log.d("calculateMinutes", "calculateMinutesAgo: " + today + " - " + unix);
         int difference = (int)today - unix;
         if ((difference/3600)<1)
-            return "\t"+ String.valueOf(difference/60) + " m ago";
+            return "\t"+ difference / 60 + " m ago";
         else{
             int hours = 0;
             while(difference >3600){
                 hours++;
                 difference = difference-3600;
             }
-            return "\t" + String.valueOf(hours) + "h " + (difference/60) + " m ago";
+            return "\t" + hours + "h " + (difference/60) + " m ago";
         }
     }
 

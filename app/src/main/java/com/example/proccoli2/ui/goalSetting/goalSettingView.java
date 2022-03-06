@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.goalSetting;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +23,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.R;
+import com.example.proccoli2.ui.subGoalView_goalSetting.subGoalView_goalSetting;
+import com.example.proccoli2.subGoalView_goalSetting_edit;
+import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 
@@ -40,7 +43,7 @@ public class goalSettingView extends AppCompatActivity {
 
     ImageButton exitGoalSettingBtn;
     Button addSubgoalsBtn;
-    GoalModel passedGoal, passedGoal2;
+    IndividualGoalModel passedGoal, passedGoal2;
     TextView completeBy, dueDate;
     Button revisePersonalDeadlineBtn, reviseDueDateBtn;
     RecyclerView subGoalRecyclerView;
@@ -65,7 +68,7 @@ public class goalSettingView extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
-                            passedGoal2 = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                            passedGoal2 = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal2));
 
                             SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
@@ -84,7 +87,7 @@ public class goalSettingView extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         Log.d("CATCHINGEditSub", "onActivityResult: ");
                         if (result.getResultCode() == RESULT_OK) {
-                            passedGoal2 = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                            passedGoal2 = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             int editedSubGoalPosition = (int) result.getData().getSerializableExtra("subGoalPosition");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal2));
 
@@ -101,13 +104,13 @@ public class goalSettingView extends AppCompatActivity {
 
 
         Bundle bundle = getIntent().getExtras();
-        passedGoal = (GoalModel) bundle.getSerializable("bigGoal");
+        passedGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
         Log.d("goalSettingGoalRecieve", "onCreate: " + passedGoal);
-        revisedPersonal= passedGoal.getCompletedBy();
-        revisedDue = passedGoal.getDeadline();
+        revisedPersonal= (int)passedGoal.getPersonalDeadline();
+        revisedDue =(int) passedGoal.getWhenIsDue();
 
-        completeBy.setText(controller.unixToStringDateTime(passedGoal.getCompletedBy()));
-        dueDate.setText(controller.unixToStringDateTime(passedGoal.getDeadline()));
+        completeBy.setText(controller.unixToStringDateTime((int)passedGoal.getPersonalDeadline()));
+        dueDate.setText(controller.unixToStringDateTime((int)passedGoal.getWhenIsDue()));
 
         addSubgoalsBtn = findViewById(R.id.addSubGoalSettingPage);
         addSubgoalsBtn.setOnClickListener(new View.OnClickListener(){
@@ -129,9 +132,9 @@ public class goalSettingView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    if(controller.compareDates(passedGoal.getStartDate(),revisedPersonal,revisedDue) == true){
-                        passedGoal.setDeadline(revisedDue);
-                        passedGoal.setCompletedBy(revisedPersonal);
+                    if(controller.compareDates((int)passedGoal.getProposedStartDate(),revisedPersonal,revisedDue) == true){
+                        passedGoal.setWhenIsDue(revisedDue);
+                        passedGoal.setPersonalDeadline(revisedPersonal);
                         Intent i = new Intent(goalSettingView.this, singleGoalView.class);
                         i.putExtra("bigGoal",passedGoal);
                         Log.d("putExtras", "onClick: " + passedGoal);
@@ -172,13 +175,14 @@ public class goalSettingView extends AppCompatActivity {
                                 // On dialog closed
                             }
                         })
-                        .title("Goal Complete By")
+                        .title("Personal Deadline")
                         .listener(new SingleDateAndTimePickerDialog.Listener() {
                             @Override
                             public void onDateSelected(Date date) {
                                 Log.d("NewDate", "onDateSelected: I selected this date" + date );
                                 revisedPersonal = (controller.dateStrToUnix(controller.dateToStr(date)));
                                 completeBy.setText(controller.unixToStringDateTime(revisedPersonal));
+                                DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
 
                                 Log.d("NewDate", "revised: " + revisedPersonal  + "completeBy: " + completeBy.getText());
                             }
@@ -205,13 +209,14 @@ public class goalSettingView extends AppCompatActivity {
                                 // On dialog closed
                             }
                         })
-                        .title("Goal Complete By")
+                        .title("Hard Deadline")
                         .listener(new SingleDateAndTimePickerDialog.Listener() {
                             @Override
                             public void onDateSelected(Date date) {
                                 revisedDue = (controller.dateStrToUnix(controller.dateToStr(date)));
 
                                 dueDate.setText(controller.unixToStringDateTime(revisedDue));
+                                DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
                             }
                         }).display();
             }
@@ -239,7 +244,7 @@ public class goalSettingView extends AppCompatActivity {
     }
 
     class SubGoalFullAdapter extends RecyclerView.Adapter {
-        List<SubGoalModel> items;
+        List<IndividualSubGoalStructModel> items;
 
         public SubGoalFullAdapter() {
             items = new ArrayList<>();
@@ -262,9 +267,9 @@ public class goalSettingView extends AppCompatActivity {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
             SubGoalFullViewHolder viewHolder = (SubGoalFullViewHolder) holder;
-            final SubGoalModel item = items.get(position);
+            final IndividualSubGoalStructModel item = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
-            viewHolder.subGoalTextGoalSettingView.setText(items.get(position).getSubGoalName() + "\nDeadline: "+ controller.unixToStringDateTime(items.get(position).getDeadline()) + "\nDifficulty Level: " + String.valueOf(items.get(position).getDifficultyLevel()));
+            viewHolder.subGoalTextGoalSettingView.setText(items.get(position).get_subGoalName() + "\nDeadline: "+ controller.unixToStringDateTime((int) items.get(position).get_deadline()) + "\nDifficulty Level: " + String.valueOf(items.get(position).get_difficultyLevel()));
         }
 
         @Override
@@ -273,13 +278,14 @@ public class goalSettingView extends AppCompatActivity {
         }
 
         public void remove(int position) {
-            SubGoalModel item = items.get(position);
+            IndividualSubGoalStructModel item = items.get(position);
             if (items.contains(item)) {
                 items.remove(position);
                 notifyItemRemoved(position);
                 for(int i = 0; i<passedGoal.getSubGoals().size()-1;i++){
                     if(passedGoal.getSubGoals().get(i) == item){
                         passedGoal.getSubGoals().remove(item);
+                        DataServices.getInstance().deleteSubGoal(item.get_subGoalId(),passedGoal.getGoalId());
                     }
                 }
             }
@@ -288,7 +294,7 @@ public class goalSettingView extends AppCompatActivity {
 
         }
 
-        public void add(SubGoalModel subGoalModel) {
+        public void add(IndividualSubGoalStructModel subGoalModel) {
             items.add(subGoalModel);
             notifyItemInserted(items.size()-1);
         }

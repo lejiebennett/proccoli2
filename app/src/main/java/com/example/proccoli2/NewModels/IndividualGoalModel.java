@@ -49,7 +49,9 @@ public class IndividualGoalModel implements Serializable {
         this.relatedCourse = relatedCourse;
     }
 
-    public IndividualGoalModel parseData(DocumentSnapshot docSnap){
+    public static IndividualGoalModel parseData(DocumentSnapshot docSnap){
+        Log.d("ParseData", "parseData: " + docSnap);
+        SingletonStrings ss = new SingletonStrings();
         Map<String,Object> data = docSnap.getData();
         HashMap<String,Object> parsedSubgoals = (HashMap<String,Object>)getValueOrDefault(data.get(ss.SUB_GOAL_PACK_REF),new HashMap<String,Object>());
         return new IndividualGoalModel((String)getValueOrDefault(data.get(ss.BIG_GOAL_REF),"nil"),(long)getValueOrDefault(data.get(ss.PERSONAL_DEADLINE_REF),0),(String)getValueOrDefault(data.get(ss.TASK_TYPE_REF),""),IndividualSubGoalStructModel.parseData(parsedSubgoals),(String) getValueOrDefault(data.get(ss.GOAL_CREATER_UID_REF),""), (String)getValueOrDefault(data.get(ss.GOAL_ID_REF),""),(long) getValueOrDefault(data.get(ss.CREATED_AT),0),(long)getValueOrDefault(data.get(ss.PROPOSED_START_TIME_REF),0), (String) getValueOrDefault(data.get(ss.GOAL_CREATER_EMAIL_REF),""), (boolean)getValueOrDefault(data.get(ss.IS_GOAL_COMPLETED_REF),false), (String) getValueOrDefault(data.get(ss.GOAL_TYPE_REF),""), (long) getValueOrDefault(data.get(ss.WHEN_IS_IT_DUE_REF),0), (String) getValueOrDefault(data.get(ss.RELATED_COURSE_REF),""));
@@ -177,5 +179,21 @@ public class IndividualGoalModel implements Serializable {
         Log.d("goalsEqualTest", "goalsEqual: " + this.goalId + " and " + goal.goalId);
         Log.d("GoalsEqualREsult", "goalsEqual: " + String.valueOf(this.goalId.equals(goal.goalId)));
         return this.goalId.equals(goal.goalId);
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
+    public void setWhenIsDue(long whenIsDue) {
+        this.whenIsDue = whenIsDue;
+    }
+
+    public void setPersonalDeadline(long personalDeadline) {
+        this.personalDeadline = personalDeadline;
+    }
+
+    public String getGoalId() {
+        return goalId;
     }
 }

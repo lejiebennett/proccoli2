@@ -942,6 +942,71 @@ public class DataServices {
     }
     */
 
+
+    public void revisePersonalOrHardDeadline(long newDeadline, long oldDeadline, boolean isPersonalDeadline,String goalId) {
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference revisionCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REVISION_COLLECTION_REF).document();
+        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        if(isPersonalDeadline == true) {
+
+            batch.update(goalInUserCollection, createHashmap(PERSONAL_DEADLINE_REF,newDeadline));
+            batch.update(goalInGeneralGoalCollection, createHashmap(PERSONAL_DEADLINE_REF, newDeadline));
+            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
+            hashMap.put("revisionType","personalDeadline");
+            hashMap.put("oldPersonalDeadline",oldDeadline);
+            hashMap.put("newPersonalDeadline", newDeadline);
+            batch.set(revisionCollectionRef,hashMap);
+            Log.d("reviseHard", "revisePersonalOrHardDeadline: "+hashMap);
+        }
+        else {
+            //update when is due
+            batch.update(goalInUserCollection, createHashmap(WHEN_IS_IT_DUE_REF,newDeadline));
+            batch.update(goalInGeneralGoalCollection, createHashmap(WHEN_IS_IT_DUE_REF, newDeadline));
+            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
+            hashMap.put("revisionType", "hardDeadline");
+            hashMap.put("oldPersonalDeadline", oldDeadline);
+            hashMap.put( "newPersonalDeadline",newDeadline);
+            batch.set(revisionCollectionRef,hashMap);
+            Log.d("revisePersonal", "revisePersonalOrHardDeadline: "+hashMap);
+
+        }
+
+        batch.commit();
+
+    }
+
+    public void addNewSubGoal(IndividualSubGoalStructModel data, String goalId) {
+        //
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference generalGoalDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference studyTimeDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(data.get_subGoalId());
+        batch.update(generalGoalDocRef, createHashmap(SUB_GOAL_PACK_REF + "." + data.get_subGoalId(),IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(data)));
+        batch.set(studyTimeDocRef,createHashmap(EXIST_REF,true));
+
+        batch.commit();
+    }
+    public void deleteSubGoal(String subgoalId,String goalId) {
+        HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_DELETED_REF,true);
+        hashMap.put(SUB_GOAL_PACK_REF +"." + subgoalId + "." + SUB_GOAL_DELETE_TIME,System.currentTimeMillis());
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
+    }
+
+    public void saveSubGoalRevisions(HashMap<String,Object> revisionData,String goalId,String subgoalId, HashMap<String,Object> newSubGoaldata) {
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference revisionCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REVISION_COLLECTION_REF).document();
+        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        batch.set(revisionCollectionRef,revisionData);
+
+        for(String key: newSubGoaldata.keySet()){
+            batch.update(goalInGeneralGoalCollection, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + key,getValueOrDefault((HashMap<String,Object>)newSubGoaldata.get(key),createHashmap("err","err"))));
+        }
+
+        batch.commit();
+    }
+
+    ///End of Edit Individual goal VC
+
     ////Mark: Profile VC funcs
     public void callUserInfo(ResultHandler<Object> handler) {
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -1156,6 +1221,89 @@ public class DataServices {
             batch.commit();
         }
     }
+
+    ///Mark: IndividualWall VC
+    public void requestStudiedTimeDetailsForIndividualWallProgress(String goalId, ResultHandler<Object> handler) {
+        //completion:@escaping(_ status:Bool, _ response:DocumentSnapshot?)->()
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getException()==null){
+                        HashMap<String,Object> resultHashmap = new HashMap<>();
+                        resultHashmap.put("_status",true);
+                        resultHashmap.put("_response",(DocumentSnapshot) task.getResult());
+                        handler.onSuccess(resultHashmap);
+                    }
+                    else{
+                        HashMap<String,Object> resultHashmap = new HashMap<>();
+                        resultHashmap.put("_status",true);
+                        resultHashmap.put("_response",null);
+                        handler.onSuccess(resultHashmap);
+                    }
+                }
+                else{
+
+                }
+            }
+        });
+    }
+
+    public void requestIndividualGoal(String goalId, ResultHandler<Object> handler) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).get()
+                .addOnCompleteListener(docSnap -> {
+                    if (docSnap.isSuccessful()) {
+                        try {
+                            docSnap = docSnap;
+                            Log.d("requestIndividualGoal", "requestIndividualGoal: " + docSnap);
+
+                            //IndividualWallVC.sharedInstance.data = IndividualGoalModel.parseData(docSnap);
+                            handler.onSuccess(docSnap.getResult());
+                        } catch (Exception e) {
+                            handler.onFailure(e);
+                        }
+                    } else {
+                        handler.onFailure(docSnap.getException());
+                    }
+                });
+    }
+
+    public void completeGoal(String goalId) {
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
+
+        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF, true);
+        hashMap.put( COMPLETED_DATE_REF,System.currentTimeMillis());
+        batch.update(goalInUserCollection,hashMap);
+
+        HashMap<String,Object> hashMap1 = createHashmap(IS_GOAL_COMPLETED_REF, true);
+        hashMap1.put(COMPLETED_DATE_REF,System.currentTimeMillis());
+
+        batch.update(goalInGeneralGoalCollection,hashMap1);
+        batch.update(userDocRef, createHashmap(COMPLETED_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
+
+        batch.commit();
+
+    }
+
+    public void completeSubGoal(String goalId,String subgoalId, boolean isChecked) {
+        String checkField;
+        if(isChecked) {
+            checkField = SUB_GOAL_CHECK_TIME_REF;
+        }
+        else {
+            checkField = SUB_GOAL_UN_CHECK_TIME_REF;
+        }
+
+        HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_CHECKED_REF,isChecked);
+        hashMap.put(SUB_GOAL_PACK_REF + "." +subgoalId + "." +checkField,System.currentTimeMillis());
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
+
+    }
+
+
 
 
     //Activity Log Data End

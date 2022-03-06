@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.groupGoalCreation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,38 +8,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.GoalModel;
+import com.example.proccoli2.NewModels.GroupGoalModel;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.UserDataModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+public class groupgoalCreation_VC extends AppCompatActivity {
+    private com.example.proccoli2.ui.groupGoalCreation.groupgoalView groupgoalView;
 
-public class subGoalCreation_goalSetting_VC extends AppCompatActivity {
-
-    private subGoalView_goalSetting subGoalView;
-
-    public subGoalCreation_goalSetting_VC(subGoalView_goalSetting subGoalView){
-        this.subGoalView = subGoalView;
+    public groupgoalCreation_VC(groupgoalView groupgoalView){
+        this.groupgoalView = groupgoalView;
     }
 
     public boolean nullFieldCheck(String input, String errorMessage, Context context, TextView textView) {
-        if (input.length() == 0) {
-            CharSequence text = errorMessage;
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-
-            textView.setTextColor(Color.RED);
-
-            return false;
-        }
-        return true;
-    }
-
-
-    public boolean nullFieldCheck(String input, String errorMessage, Context context, TextInputEditText textView) {
         if (input.length() == 0) {
             CharSequence text = errorMessage;
             int duration = Toast.LENGTH_LONG;
@@ -53,11 +41,25 @@ public class subGoalCreation_goalSetting_VC extends AppCompatActivity {
         return true;
     }
 
-    public boolean compareDates(String start, String complete, Context context,String goalComplete) throws ParseException {
-        Log.d("Date", "compareDates: " + start.toString() + complete.toString());
+
+    public boolean nullFieldCheck(String input, String errorMessage, Context context, TextInputEditText textView) {
+        if (input.length() == 0) {
+            CharSequence text = errorMessage;
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            textView.setHintTextColor(Color.RED);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean compareDates(String due, Context context,groupgoalView groupgoalView) throws ParseException {
+        Log.d("Date", "compareDates: " + due.toString());
 
         //Sun Oct 17 10:55:00 EDT 2021
-     //   SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+      //  SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
         SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
 
@@ -65,31 +67,20 @@ public class subGoalCreation_goalSetting_VC extends AppCompatActivity {
         Log.d("Today's Date and time", "compareDates: " + today.toString());
 
 
-        if(today.after(sdf.parse(start)) || today.after(sdf.parse(complete)) || today.after(sdf.parse(goalComplete)))
+        if(today.after(sdf.parse(due)))
         {
-            Log.d("Compare FAiled", "compareDates: else RAN HERE");
+            Log.d("Compare Failed", "compareDates: else RAN");
             return false;
         }
-
-
-        if(sdf.parse(start).before(sdf.parse(complete)) &&
-                sdf.parse(complete).after(sdf.parse(start)) &&
-                sdf.parse(goalComplete).after(sdf.parse(complete)) &&
-                sdf.parse(goalComplete).after(sdf.parse(start)))
+        else
             return true;
 
-        else{
-            Log.d("Compare FAiled", "compareDates: else RAN");
-            return false;
-        }
-
     }
-
 
     //https://stackoverflow.com/questions/7784421/getting-unix-timestamp-from-date
     public int dateStrToUnix(String time) {
         long unixTime = 0;
-        //SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
+      //  SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
         SimpleDateFormat sf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
         try {
@@ -100,19 +91,18 @@ public class subGoalCreation_goalSetting_VC extends AppCompatActivity {
         }
         return (int)unixTime;
     }
-    public String unixToStringDateTime(int unix){
-        Date date = new java.util.Date(unix*1000L);
-       // SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
-        return sdf.format(date);
-
-    }
     public String dateToStr(Date date){
         SimpleDateFormat formatter = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
         return formatter.format(date);
     }
 
+    public String unixToStringDateTime(int unix){
+        Date date = new Date(unix*1000L);
+        //  SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
+        return sdf.format(date);
 
+    }
 
 }

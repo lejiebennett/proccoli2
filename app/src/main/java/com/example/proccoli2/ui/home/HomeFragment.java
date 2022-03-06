@@ -44,16 +44,16 @@ import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.R;
 import com.example.proccoli2.databinding.FragmentHomeBinding;
 import com.example.proccoli2.ui.individualGoalCreation.goalView2;
-import com.example.proccoli2.groupgoalView;
+import com.example.proccoli2.ui.groupGoalCreation.groupgoalView;
 import com.example.proccoli2.groupgoalsingleGoalView;
 import com.example.proccoli2.ui.login.loginView;
 import com.example.proccoli2.mainProgressView;
 import com.example.proccoli2.ui.profile.profileView;
-import com.example.proccoli2.singleGoalView;
+import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment{
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
                         IndividualGoalModel passedIndividualGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
-                        passedGoal = controller.convertIndividualToGoalModel(passedIndividualGoal);
+                        passedGoal = IndividualGoalModel.goalsModelConverterForDataWrite(passedIndividualGoal);
                         /*
                         Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
                         Log.d("HERE PassedGoal", String.valueOf(passedGoal));
@@ -231,6 +231,8 @@ public class HomeFragment extends Fragment{
                 textView.setText(s);
             }
         });
+
+
 
 
 
@@ -630,6 +632,7 @@ public class HomeFragment extends Fragment{
                             Log.d("SIX", "onActivityResult: " + finishedDue);
                             Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
+
                             ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                             int sumindividualCount = 0;
                             int sumgroupCount = 0;
@@ -644,6 +647,7 @@ public class HomeFragment extends Fragment{
                             completedCount = controller.countCompletedGoals(finishedDue);
                             goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
 
+                           // goalBoard.setText(("\nIndividual Goals: " + ));
 
 
 
@@ -905,17 +909,38 @@ public class HomeFragment extends Fragment{
             avatarGoal = (ImageView) itemView.findViewById(R.id.avatarGoal);
             avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
 
+
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-
+                    Log.d("homeFragment", "onClick: item");
                     //Individual Goal
-                    if(goalModel.getGoalType().equals("individual")){
+                    if(goalModel.getTaskType().equals("individual")){
                         Intent i = new Intent(getActivity(), singleGoalView.class);
-                        i.putExtra("bigGoal",goalModel);
-                        goalSelected = itemView.getVerticalScrollbarPosition();
-                        Log.d("goalModelPut", "onClick: " +goalModel);
-                        activityResultLaunch2.launch(i);
+                        Log.d("homeFragment", "onClick: item individual" + goalModel.getGoalId());
+
+                        DataServices.getInstance().requestIndividualGoal(goalModel.getGoalId(), new ResultHandler<Object>() {
+
+                                    @Override
+                                    public void onSuccess(Object data) {
+                                        Log.d("dataFromRequestHome", "onSuccess: " + data);
+                                        Log.d("dataFromRequestHome", "onSuccess: ");
+                                        IndividualGoalModel parsedGoal = IndividualGoalModel.parseData((DocumentSnapshot) data);
+                                        Log.d("HomeFragment", "onSuccess: " + parsedGoal);
+                                        //i.putExtra("bigGoal", goalModel);
+                                        i.putExtra("bigGoal", parsedGoal);
+                                        goalSelected = itemView.getVerticalScrollbarPosition();
+                                        Log.d("goalModelPut", "onClick: " +data);
+                                        activityResultLaunch2.launch(i);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+
+
                     }
                     else{ //Group goal
                         Intent i = new Intent(getActivity(), groupgoalsingleGoalView.class);

@@ -1,8 +1,7 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.individualWall;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -31,12 +29,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NotificationPublisher;
+import com.example.proccoli2.R;
+import com.example.proccoli2.goalProgressView;
+import com.example.proccoli2.ui.goalSetting.goalSettingView;
+import com.example.proccoli2.smileyFaceSurveyView;
+import com.example.proccoli2.timerView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -52,9 +57,9 @@ import java.util.List;
  */
 public class singleGoalView extends AppCompatActivity {
 
-    GoalModel passedGoal;
-    GoalModel myGoal;
-    GoalModel originalGoal;
+    IndividualGoalModel passedGoal;
+    IndividualGoalModel myGoal;
+    IndividualGoalModel originalGoal;
     TextView goalInfo, subGoalLabel,notesLabel;
     RecyclerView subGoalRecyclerView, notesRecyclerView;
     singleGoalView_VC controller = new singleGoalView_VC(this);
@@ -96,10 +101,10 @@ public class singleGoalView extends AppCompatActivity {
                         Log.d("RESULTSFROMTimer", "Studied" + String.valueOf(studiedFromTimer));
                         //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
                         Log.d("newItems", "onActivityResult: " + myGoal.getSubGoals());
-                        Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getStudiedTime());
+                        //Log.d("ResultFromTimer", "onActivityResult: old studied" +myGoal.getStudiedTime());
                         //Need to divide by 60000 since studied time is sent in milliseconds not minutes
-                        myGoal.setStudiedTime(myGoal.getStudiedTime() + (Double.valueOf(studiedFromTimer)/60000));
-                        Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getStudiedTime());
+                       // myGoal.setStudiedTime(myGoal.getStudiedTime() + (Double.valueOf(studiedFromTimer)/60000));
+                       // Log.d("ResultFromTimer", "onActivityResult: new studied" +myGoal.getStudiedTime());
 
                     }
                 }
@@ -135,12 +140,12 @@ public class singleGoalView extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("ActivityResultLaunch3", "onActivityResult: RUNNING");
-                        passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
+                        passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                         Log.d("RESULTSFROMSetSub", String.valueOf(passedGoal));
                         myGoal.setBigGoal(passedGoal.getBigGoal());
-                        myGoal.setDeadline(passedGoal.getDeadline());
-                        goalInfo.setText("\n" + myGoal.getBigGoal() + "\n\n" + controller.unixToString(myGoal.getDeadline()));
-                        myGoal.setSubgoals(passedGoal.getSubGoals());
+                        myGoal.setWhenIsDue(passedGoal.getWhenIsDue());
+                        goalInfo.setText("\n" + myGoal.getBigGoal() + "\n\n" + controller.unixToString((int)myGoal.getWhenIsDue()));
+                        myGoal.setSubGoals(passedGoal.getSubGoals());
                         adapter = new SubGoalFullAdapter();
                         subGoalRecyclerView.setAdapter(adapter);
                         subGoalLabel.setVisibility(View.VISIBLE);
@@ -158,7 +163,7 @@ public class singleGoalView extends AppCompatActivity {
 
         //Catch original goal from mainActivity that is used to initalize the view
         Bundle bundle = getIntent().getExtras();
-        originalGoal = (GoalModel) bundle.getSerializable("bigGoal");
+        originalGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
         myGoal = originalGoal;
 
         Log.d("OriginGoalFromMain", String.valueOf(originalGoal));
@@ -314,8 +319,8 @@ public class singleGoalView extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("back clicked", "onMenuItemClick: Clicked back");
                 Log.d("passBackGoal", "onMenuItemClick: " + myGoal);
-                Log.d("passBackNotes", "onMenuItemClick: " + myGoal.getPersonalNotes());
-                Intent i = new Intent(singleGoalView.this,MainActivity.class);
+              //  Log.d("passBackNotes", "onMenuItemClick: " + myGoal.getPersonalNotes());
+                Intent i = new Intent(singleGoalView.this, MainActivity.class);
                 i.putExtra("bigGoal",myGoal);
                 Log.d("Updated myGoal Goal", "onMenuItemClick: Passed" + myGoal);
                 setResult(RESULT_OK,i);
@@ -325,10 +330,10 @@ public class singleGoalView extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(myGoal.getIsCompleted()==false){
+                if(myGoal.isCompleted()==false){
                     int itemId = item.getItemId();
                     if (itemId == R.id.settingBtn) {
-                        Intent i = new Intent(singleGoalView.this,goalSettingView.class);
+                        Intent i = new Intent(singleGoalView.this, goalSettingView.class);
 
                         i.putExtra("bigGoal",myGoal);
                         Log.d("goalModelPutForSingle", "onClick: " + myGoal);
@@ -366,7 +371,7 @@ public class singleGoalView extends AppCompatActivity {
 
         //Initalize the text on the single goal view screen
         goalInfo = (TextView) findViewById(R.id.goalInfo);
-        goalInfo.setText("\n" + myGoal.getBigGoal() + "\n\n" + controller.unixToString(myGoal.getDeadline()));
+        goalInfo.setText("\n" + myGoal.getBigGoal() + "\n\n" + controller.unixToString((int) myGoal.getWhenIsDue()));
         subGoalLabel = findViewById(R.id.SubGoalRecyclerLabel);
         subGoalLabel.setText("\t\tSubgoals");
 
@@ -378,7 +383,7 @@ public class singleGoalView extends AppCompatActivity {
         setUpSubgoalRecyclerView();
 
         notesRecyclerView = findViewById(R.id.NotesRecyclerView);
-        setUpNotesRecyclerView();
+        //setUpNotesRecyclerView();
 
         notesRecyclerView.setVisibility(View.VISIBLE);
 
@@ -391,6 +396,7 @@ public class singleGoalView extends AppCompatActivity {
         noteInput = findViewById(R.id.noteInput);
 
         uploadNoteBtn = findViewById(R.id.uploadNote);
+        /*
         uploadNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -401,17 +407,19 @@ public class singleGoalView extends AppCompatActivity {
                 PersonalNoteModel note = new PersonalNoteModel(noteInput.getText().toString(),(int)currentUnix,noteID);
 
                 //Add note to the goalModel
-                myGoal.getPersonalNotes().add(note);
+                //myGoal.getPersonalNotes().add(note);
                 NotesAdapter adapterNotes = (NotesAdapter) notesRecyclerView.getAdapter();
-                Log.d("personalNotes", "onClick: " + myGoal.getPersonalNotes());
+                //Log.d("personalNotes", "onClick: " + myGoal.getPersonalNotes());
 
                 //Update the recycler
                 adapterNotes.addItems();
-                Log.d("added", "onClick: added PersonalNotes" + myGoal.getPersonalNotes().get(myGoal.getPersonalNotes().size()-1));
+               // Log.d("added", "onClick: added PersonalNotes" + myGoal.getPersonalNotes().get(myGoal.getPersonalNotes().size()-1));
                 noteInput.getText().clear();
                 closeKeyboard(view);
             }
         });
+
+         */
 
         completeBtn = findViewById(R.id.completeBtn);
         completeBtn.setOnClickListener(new View.OnClickListener() {
@@ -420,16 +428,16 @@ public class singleGoalView extends AppCompatActivity {
                 //Mark goal as complete
                 myGoal.setCompleted(true);
                 completeBtn.setBackgroundColor(Color.GREEN);
-                checkIfGoalComplete(myGoal.getIsCompleted());
+                checkIfGoalComplete(myGoal.isCompleted());
 
                 //Launch activity to get smileFace Survey
-                Intent intent = new Intent(singleGoalView.this,smileyFaceSurveyView.class);
+                Intent intent = new Intent(singleGoalView.this, smileyFaceSurveyView.class);
                 activityResultLaunchSmileyRating.launch(intent);
 
             }
         });
 
-        checkIfGoalComplete(myGoal.getIsCompleted());
+        checkIfGoalComplete(myGoal.isCompleted());
 
 
     }
@@ -451,7 +459,7 @@ public class singleGoalView extends AppCompatActivity {
     }
 
     class SubGoalFullAdapter extends RecyclerView.Adapter {
-        List<SubGoalModel> items;
+        List<IndividualSubGoalStructModel> items;
 
         public SubGoalFullAdapter() {
             items = new ArrayList<>();
@@ -472,16 +480,16 @@ public class singleGoalView extends AppCompatActivity {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
             SubGoalFullViewHolder viewHolder = (SubGoalFullViewHolder) holder;
-            final SubGoalModel item = items.get(position);
+            final IndividualSubGoalStructModel item = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
-            viewHolder.subGoalText.setText(items.get(position).getSubGoalName() + "\nDeadline: "+ controller.unixToStringDateTime(items.get(position).getDeadline()));
+            viewHolder.subGoalText.setText(items.get(position).get_subGoalName() + "\nDeadline: "+ controller.unixToStringDateTime((int)items.get(position).get_deadline()));
             viewHolder.setSubGoalPosition(position);
-            if(items.get(position).getIsChecked()==true){
-                Log.d("subgoalCompletedStatus", "onBindViewHolder: " + items.get(position).getIsChecked());
+            if(items.get(position).is_isChecked()==true){
+                Log.d("subgoalCompletedStatus", "onBindViewHolder: " + items.get(position).is_isChecked());
                 viewHolder.completeCheckbox.setChecked(true);
             }
             else{
-                Log.d("subgoalCompletedStatus", "onBindViewHolder: " + items.get(position).getIsChecked());
+                Log.d("subgoalCompletedStatus", "onBindViewHolder: " + items.get(position).is_isChecked());
                 viewHolder.completeCheckbox.setChecked(false);
             }
         }
@@ -492,7 +500,7 @@ public class singleGoalView extends AppCompatActivity {
         }
 
         public void remove(int position) {
-            SubGoalModel item = items.get(position);
+            IndividualSubGoalStructModel item = items.get(position);
             if (items.contains(item)) {
                 items.remove(position);
                 notifyItemRemoved(position);
@@ -512,7 +520,7 @@ public class singleGoalView extends AppCompatActivity {
             }
         }
 
-        public void addItem(SubGoalModel subgoal){
+        public void addItem(IndividualSubGoalStructModel subgoal){
             items.add(subgoal);
             notifyItemInserted(items.size() - 1);
             Log.d("AfterItemsAdd", "addItems: " + items);
@@ -544,8 +552,8 @@ public class singleGoalView extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     compoundButton.setChecked(b);
                     Log.d("SubGoalIndex", "onCheckedChanged: " + getSubGoalPosition());
-                    myGoal.getSubGoals().get(getSubGoalPosition()).setIsChecked(b);
-                    Log.d("newIsCompletedValue", "onCheckedChanged: " + myGoal.getSubGoals().get(getSubGoalPosition()).getIsChecked());
+                    myGoal.getSubGoals().get(getSubGoalPosition()).set_isChecked(b);
+                    Log.d("newIsCompletedValue", "onCheckedChanged: " + myGoal.getSubGoals().get(getSubGoalPosition()).is_isChecked());
                     Log.d("newCheckCount", "onCheckedChanged: " + myGoal);
                 }
             });
@@ -573,7 +581,7 @@ public class singleGoalView extends AppCompatActivity {
         subGoalRecyclerView.setHasFixedSize(true);
     }
 
-
+/*
     class NotesAdapter extends RecyclerView.Adapter {
         List<PersonalNoteModel> items;
 
@@ -627,16 +635,19 @@ public class singleGoalView extends AppCompatActivity {
         }
     }
 
+ */
+
     /**
      * Set up Notes Recycler view
      */
     private void setUpNotesRecyclerView() {
         notesRecyclerView.setVisibility(View.INVISIBLE);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notesRecyclerView.setAdapter(new NotesAdapter());
+     //   notesRecyclerView.setAdapter(new NotesAdapter());
         notesRecyclerView.setHasFixedSize(true);
         Log.d("finishedSetup", "setUpNotesRecyclerView: finished setUpNotesRecyclerView");
     }
+
 
 
     /**

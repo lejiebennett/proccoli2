@@ -26,6 +26,10 @@ public class IndividualSubGoalStructModel implements Serializable {
         this._difficultyLevel = _difficultyLevel;
     }
 
+    public void set_isChecked(boolean _isChecked) {
+        this._isChecked = _isChecked;
+    }
+
     public void set_subGoalName(String _subGoalName) {
         this._subGoalName = _subGoalName;
     }

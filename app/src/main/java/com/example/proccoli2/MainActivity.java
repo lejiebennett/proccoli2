@@ -26,8 +26,10 @@ import android.widget.TextView;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.ui.dashboard.DashboardFragment;
+import com.example.proccoli2.ui.groupGoalCreation.groupgoalView;
 import com.example.proccoli2.ui.home.HomeFragment;
 import com.example.proccoli2.ui.individualGoalCreation.goalView2;
+import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.example.proccoli2.ui.login.loginView;
 import com.example.proccoli2.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -986,7 +988,7 @@ public class MainActivity extends AppCompatActivity{
 
                     //Individual Goal
                     if(goalModel.getGoalType().equals("individual")){
-                        Intent i = new Intent(MainActivity.this,singleGoalView.class);
+                        Intent i = new Intent(MainActivity.this, singleGoalView.class);
                         i.putExtra("bigGoal",goalModel);
                         goalSelected = itemView.getVerticalScrollbarPosition();
                         Log.d("goalModelPut", "onClick: " +goalModel);

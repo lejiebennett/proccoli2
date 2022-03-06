@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.subGoalView_goalSetting;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,11 +14,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class groupgoalCreation_VC extends AppCompatActivity {
-    private groupgoalView groupgoalView;
 
-    public groupgoalCreation_VC(groupgoalView groupgoalView){
-        this.groupgoalView = groupgoalView;
+public class subGoalCreation_goalSetting_VC extends AppCompatActivity {
+
+    private subGoalView_goalSetting subGoalView;
+
+    public subGoalCreation_goalSetting_VC(subGoalView_goalSetting subGoalView){
+        this.subGoalView = subGoalView;
     }
 
     public boolean nullFieldCheck(String input, String errorMessage, Context context, TextView textView) {
@@ -29,7 +31,8 @@ public class groupgoalCreation_VC extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
 
-            textView.setHintTextColor(Color.RED);
+            textView.setTextColor(Color.RED);
+
             return false;
         }
         return true;
@@ -43,17 +46,18 @@ public class groupgoalCreation_VC extends AppCompatActivity {
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
+
             textView.setHintTextColor(Color.RED);
             return false;
         }
         return true;
     }
 
-    public boolean compareDates(String due, Context context,groupgoalView groupgoalView) throws ParseException {
-        Log.d("Date", "compareDates: " + due.toString());
+    public boolean compareDates(String start, String complete, Context context,String goalComplete) throws ParseException {
+        Log.d("Date", "compareDates: " + start.toString() + complete.toString());
 
         //Sun Oct 17 10:55:00 EDT 2021
-      //  SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+     //   SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
         SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
 
@@ -61,20 +65,31 @@ public class groupgoalCreation_VC extends AppCompatActivity {
         Log.d("Today's Date and time", "compareDates: " + today.toString());
 
 
-        if(today.after(sdf.parse(due)))
+        if(today.after(sdf.parse(start)) || today.after(sdf.parse(complete)) || today.after(sdf.parse(goalComplete)))
         {
-            Log.d("Compare Failed", "compareDates: else RAN");
+            Log.d("Compare FAiled", "compareDates: else RAN HERE");
             return false;
         }
-        else
+
+
+        if(sdf.parse(start).before(sdf.parse(complete)) &&
+                sdf.parse(complete).after(sdf.parse(start)) &&
+                sdf.parse(goalComplete).after(sdf.parse(complete)) &&
+                sdf.parse(goalComplete).after(sdf.parse(start)))
             return true;
 
+        else{
+            Log.d("Compare FAiled", "compareDates: else RAN");
+            return false;
+        }
+
     }
+
 
     //https://stackoverflow.com/questions/7784421/getting-unix-timestamp-from-date
     public int dateStrToUnix(String time) {
         long unixTime = 0;
-      //  SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
+        //SimpleDateFormat sf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
         SimpleDateFormat sf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
         try {
@@ -85,18 +100,19 @@ public class groupgoalCreation_VC extends AppCompatActivity {
         }
         return (int)unixTime;
     }
+    public String unixToStringDateTime(int unix){
+        Date date = new java.util.Date(unix*1000L);
+       // SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");//Specify your timezone
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
 
+        return sdf.format(date);
+
+    }
     public String dateToStr(Date date){
         SimpleDateFormat formatter = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
         return formatter.format(date);
     }
 
-    public String unixToStringDateTime(int unix){
-        Date date = new Date(unix*1000L);
-        //  SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
-        return sdf.format(date);
 
-    }
 
 }

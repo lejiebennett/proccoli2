@@ -1,7 +1,8 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.goalSetting;
 
-import android.content.Context;
 import android.util.Log;
+
+import com.example.proccoli2.NewModels.UserDataModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,8 +26,8 @@ public class goalSetting_VC {
         Log.d("Today's Date and time", "compareDates: " + today.toString());
 
 
-        if(today.after(sdf.parse(unixToStringDateTime(start))) || today.after(sdf.parse(unixToStringDateTime(complete)))
-                || today.after(sdf.parse(unixToStringDateTime(due))))
+        //if(today.after(sdf.parse(unixToStringDateTime(start))) || today.after(sdf.parse(unixToStringDateTime(complete)))
+        if(today.after(sdf.parse(unixToStringDateTime(complete))) || today.after(sdf.parse(unixToStringDateTime(due))))
         {
             Log.d("Compare Failed", "compareDates: else RAN");
             return false;
@@ -74,4 +75,7 @@ public class goalSetting_VC {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
         return formatter.format(date);
     }
+
+
+
 }
