@@ -133,8 +133,12 @@ public class goalSettingView extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     if(controller.compareDates((int)passedGoal.getProposedStartDate(),revisedPersonal,revisedDue) == true){
+                        DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
+                        DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
+
                         passedGoal.setWhenIsDue(revisedDue);
                         passedGoal.setPersonalDeadline(revisedPersonal);
+
                         Intent i = new Intent(goalSettingView.this, singleGoalView.class);
                         i.putExtra("bigGoal",passedGoal);
                         Log.d("putExtras", "onClick: " + passedGoal);
@@ -182,7 +186,7 @@ public class goalSettingView extends AppCompatActivity {
                                 Log.d("NewDate", "onDateSelected: I selected this date" + date );
                                 revisedPersonal = (controller.dateStrToUnix(controller.dateToStr(date)));
                                 completeBy.setText(controller.unixToStringDateTime(revisedPersonal));
-                                DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
+                            //    DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
 
                                 Log.d("NewDate", "revised: " + revisedPersonal  + "completeBy: " + completeBy.getText());
                             }
@@ -216,7 +220,7 @@ public class goalSettingView extends AppCompatActivity {
                                 revisedDue = (controller.dateStrToUnix(controller.dateToStr(date)));
 
                                 dueDate.setText(controller.unixToStringDateTime(revisedDue));
-                                DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
+                               // DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
                             }
                         }).display();
             }

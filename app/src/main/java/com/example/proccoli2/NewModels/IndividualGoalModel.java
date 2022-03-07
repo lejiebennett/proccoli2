@@ -54,6 +54,7 @@ public class IndividualGoalModel implements Serializable {
         SingletonStrings ss = new SingletonStrings();
         Map<String,Object> data = docSnap.getData();
         HashMap<String,Object> parsedSubgoals = (HashMap<String,Object>)getValueOrDefault(data.get(ss.SUB_GOAL_PACK_REF),new HashMap<String,Object>());
+        Log.d("parseDataIndividual", "parseData: " + parsedSubgoals);
         return new IndividualGoalModel((String)getValueOrDefault(data.get(ss.BIG_GOAL_REF),"nil"),(long)getValueOrDefault(data.get(ss.PERSONAL_DEADLINE_REF),0),(String)getValueOrDefault(data.get(ss.TASK_TYPE_REF),""),IndividualSubGoalStructModel.parseData(parsedSubgoals),(String) getValueOrDefault(data.get(ss.GOAL_CREATER_UID_REF),""), (String)getValueOrDefault(data.get(ss.GOAL_ID_REF),""),(long) getValueOrDefault(data.get(ss.CREATED_AT),0),(long)getValueOrDefault(data.get(ss.PROPOSED_START_TIME_REF),0), (String) getValueOrDefault(data.get(ss.GOAL_CREATER_EMAIL_REF),""), (boolean)getValueOrDefault(data.get(ss.IS_GOAL_COMPLETED_REF),false), (String) getValueOrDefault(data.get(ss.GOAL_TYPE_REF),""), (long) getValueOrDefault(data.get(ss.WHEN_IS_IT_DUE_REF),0), (String) getValueOrDefault(data.get(ss.RELATED_COURSE_REF),""));
     }
 

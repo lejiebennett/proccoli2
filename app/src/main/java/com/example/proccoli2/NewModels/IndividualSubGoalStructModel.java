@@ -1,5 +1,7 @@
 package com.example.proccoli2.NewModels;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,7 +98,8 @@ public class IndividualSubGoalStructModel implements Serializable {
             _subGoalId = subgoalId;
             _totalStudyTime = totalStudyTime;
             _isChecked = isChecked;
-        }
+
+    }
         public static ArrayList<IndividualSubGoalStructModel> parseData(HashMap<String, Object> data){
             if(data==null){
                 return null;
@@ -104,13 +107,25 @@ public class IndividualSubGoalStructModel implements Serializable {
             else{
                 ArrayList<IndividualSubGoalStructModel> response = new ArrayList<IndividualSubGoalStructModel>();
                 for(String subgoalId: data.keySet()){
+                    Log.d("keys", "parseData: " + subgoalId);
                     if(subgoalId.equals(ss.NO_SUB_GOAL_REF)==false){
+                        Log.d("parseIndividualSubGoal", "parseDataGetSubgoalID: " + data.get(subgoalId));
                         if(data.get(subgoalId)==null){
+                            Log.d("here", "parseData: returning null");
                             return null;
                         }
                         else {
+                            Log.d("ELSERan", "parseData: ELSE" );
                             HashMap<String,Object> subgoalData = (HashMap<String, Object>) data.get(subgoalId);
-                            response.add(new IndividualSubGoalStructModel(subgoalId,(String)getValueOrDefault(subgoalData.get(ss.SUB_GOAL_NAME_REF),"err"), (long) getValueOrDefault(subgoalData.get(ss.SUB_DEADLINE_REF),0), (int)getValueOrDefault(subgoalData.get(ss.DIFFICULTY_LEVEL_REF),0),(int)getValueOrDefault(subgoalData.get(ss.HOW_LONG_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_DELETED_REF),false), (long)getValueOrDefault(subgoalData.get(ss.PROPOSED_START_TIME_REF),0), (int)getValueOrDefault(subgoalData.get(ss.TOTAL_STUDIED_TIME_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_CHECKED_REF),false)));
+                            Log.d("subgoalData", "parseData: " + subgoalData);
+                            IndividualSubGoalStructModel test = new IndividualSubGoalStructModel(subgoalId, "subGoalName", 0, 0, 0, false,0, 0, false);
+                            Log.d("parseTest", "parseData: " + test.toString());
+
+                            IndividualSubGoalStructModel newSubgoal= new IndividualSubGoalStructModel(subgoalId, (String) getValueOrDefault(subgoalData.get(ss.SUB_GOAL_NAME_REF),"err"), (long) getValueOrDefault(subgoalData.get(ss.SUB_DEADLINE_REF),0), (int)(long)getValueOrDefault(subgoalData.get(ss.DIFFICULTY_LEVEL_REF),0),(int)(long)getValueOrDefault(subgoalData.get(ss.HOW_LONG_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_DELETED_REF),false), (long)getValueOrDefault(subgoalData.get(ss.PROPOSED_START_TIME_REF),0), (int)(long)getValueOrDefault(subgoalData.get(ss.TOTAL_STUDIED_TIME_REF),0), (boolean) getValueOrDefault(subgoalData.get(ss.IS_CHECKED_REF),false));
+
+                            Log.d("newsubgoal", "parseData: " + newSubgoal);
+                            response.add(newSubgoal);
+                            Log.d("response", "parseData: " + response);
 
                         }
 
@@ -199,4 +214,18 @@ public class IndividualSubGoalStructModel implements Serializable {
         return value == null ? defaultValue : value;
     }
 
+    @Override
+    public String toString() {
+        return "IndividualSubGoalStructModel{" +
+                "_deadline=" + _deadline +
+                ", _difficultyLevel=" + _difficultyLevel +
+                ", _subGoalName='" + _subGoalName + '\'' +
+                ", _howLongHours=" + _howLongHours +
+                ", _isDeleted=" + _isDeleted +
+                ", _startDate=" + _startDate +
+                ", _subGoalId='" + _subGoalId + '\'' +
+                ", _totalStudyTime=" + _totalStudyTime +
+                ", _isChecked=" + _isChecked +
+                '}';
+    }
 }

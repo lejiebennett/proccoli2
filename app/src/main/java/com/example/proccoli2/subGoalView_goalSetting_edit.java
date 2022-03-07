@@ -17,6 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
@@ -59,29 +62,29 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
 
         Bundle bundle = getIntent().getExtras();
 
-        GoalModel passedGoal = (GoalModel) bundle.getSerializable("bigGoal");
+        IndividualGoalModel passedGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
         passedSubGoalPosition = (int)bundle.getSerializable("subGoalPosition");
-        SubGoalModel passedSubGoal = (SubGoalModel) bundle.getSerializable("subgoal");
+        IndividualSubGoalStructModel passedSubGoal = (IndividualSubGoalStructModel) bundle.getSerializable("subgoal");
         Log.d("received passedGoal", "onCreate: " + passedGoal);
         Log.d("received subgoal", "onCreate: " + passedSubGoal);
 
 
         //Initialize all of the data fields with passed data
         subGoalGoal = findViewById(R.id.subGoalInput);
-        subGoalGoal.setText(passedSubGoal.getSubGoalName());
+        subGoalGoal.setText(passedSubGoal.get_subGoalName());
 
         subGoalCompleteBy = findViewById(R.id.subGoalDeadlineInput);
-        subGoalCompleteBy.setText(controller.unixToStringDateTime(passedSubGoal.getDeadline()));
+        subGoalCompleteBy.setText(controller.unixToStringDateTime((int)passedSubGoal.get_deadline()));
 
         subGoalStartDate = findViewById(R.id.subGoalStartDate);
-        subGoalStartDate.setText(controller.unixToStringDateTime(passedSubGoal.getStartDate()));
+        subGoalStartDate.setText(controller.unixToStringDateTime((int)passedSubGoal.get_startDate()));
 
         subGoalLevel = findViewById(R.id.subGoalDifficultyLevelInput);
-        subGoalLevel.setText(String.valueOf(passedSubGoal.getDifficultyLevel()));
+        subGoalLevel.setText(String.valueOf(passedSubGoal.get_difficultyLevel()));
 
         subGoalHowLong = findViewById(R.id.subGoalHowLongInput);
-        Log.d("HOWLONG", "onCreate: " + passedSubGoal.getHowLongHours());
-        subGoalHowLong.setText(passedSubGoal.getHowLongHours());
+        Log.d("HOWLONG", "onCreate: " + passedSubGoal.get_howLongHours());
+        subGoalHowLong.setText(passedSubGoal.get_howLongHours());
 
 
         //Initialize input pickers
@@ -197,7 +200,7 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
         });
 
 
-        int passedCompleteBy = passedGoal.getCompletedBy();
+        int passedCompleteBy = (int)passedGoal.getWhenIsDue();
 
         bigGoalCompleteByLabel = findViewById(R.id.BigGoalCompleteByLabel);
         bigGoalCompleteByLabel.setText("Big Goal Deadline " + passedCompleteBy);
@@ -236,21 +239,22 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
                                             int uComplete = controller.dateStrToUnix(subGoalCompleteBy.getText().toString());
                                             int uStart = controller.dateStrToUnix(subGoalStartDate.getText().toString());
                                             int formatedLevel = Integer.parseInt(subGoalLevel.getText().toString());
-                                            String formatedHowLong = subGoalHowLong.getText().toString();
+                                            long formatedHowLong = Long.parseLong(subGoalHowLong.getText().toString().split("")[0]);
                                             long currentUnix = System.currentTimeMillis() / 1000L;
 
                                             Log.d("Dates confirmed", "onClick: Passed all date conversions");
 
 
-                                            //   SubGoalModel subgoal = new SubGoalModel(subGoalID, subGoalGoal.getText().toString(), uComplete, formatedLevel,formatedHowLong,uStart,currentUnix;
-                                            SubGoalModel subgoal = new SubGoalModel(subGoalGoal.getText().toString(), uComplete, formatedLevel,formatedHowLong,uStart, (int) currentUnix);
-                                            subgoal.setIsChecked(passedSubGoal.getIsChecked());
+                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel("subgoalId", subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
+                                            subgoal.set_isChecked(passedSubGoal.is_isChecked());
 
                                             Log.d("SubMade", "onClick: " + subgoal.toString());
 
-                                            GoalModel passedGoal = (GoalModel) getIntent().getSerializableExtra("bigGoal");
+                                            IndividualGoalModel passedGoal = (IndividualGoalModel) getIntent().getSerializableExtra("bigGoal");
                                             passedGoal.getSubGoals().remove(passedSubGoalPosition);
                                             passedGoal.getSubGoals().add(subgoal);
+                                            DataServices.getInstance().addNewSubGoal(subgoal,passedGoal.getGoalId());
+                                            Log.d("subgoalID", "onClick: " + subgoal.get_subGoalId());
 
                                             Intent i = new Intent(subGoalView_goalSetting_edit.this, goalSettingView.class);
                                             // i.putExtra("subGoal", subgoal);
