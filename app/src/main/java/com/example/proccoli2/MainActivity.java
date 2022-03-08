@@ -636,15 +636,18 @@ public class MainActivity extends AppCompatActivity{
         recyclerView = findViewById(R.id.goalList);
         //setUpRecyclerView(); //Need to comment this out since we are actually using HomeFragment instead
         //Data from createGoal Page
+
+
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
-                            recyclerView.setVisibility(View.VISIBLE);
 
-                            Log.d("Result_OK", "onActivityResult: HERE");
+
+/*
+                            Log.d("Result_OK", "onActivityResult: HERE MAIN ACTIVITYY");
                             IndividualGoalModel passedGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
@@ -699,8 +702,10 @@ public class MainActivity extends AppCompatActivity{
 
                             //  recyclerList = expiredPersonal;
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
-                            CustomGoalAdapter adapter = (CustomGoalAdapter) recyclerView.getAdapter();
-                            adapter.addItems();
+                         //   CustomGoalAdapter adapter = (CustomGoalAdapter) recyclerView.getAdapter();
+                            //   adapter.addItems();
+                            CustomGoalAdapter adapter = new CustomGoalAdapter();
+                            recyclerView.setAdapter(adapter);
                             Log.d("currentItemList", "onActivityResult: " + adapter.items);
 
 
@@ -723,11 +728,12 @@ public class MainActivity extends AppCompatActivity{
                             goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
 
 
-
-
+ */
                         }
                     }
                 });
+
+
 
 
         mainProgressBtn = findViewById(R.id.mainProgressBtn);
@@ -947,8 +953,10 @@ public class MainActivity extends AppCompatActivity{
         }
 
         public void addItems(){
+            Log.d("Adding items", "addItems: " );
             if(items.size()!=0)
                 clearItems();
+
             items = new ArrayList<>();
             for(int i = 0; i<recyclerList.size();i++){
                 items.add(recyclerList.get(i));
@@ -962,6 +970,7 @@ public class MainActivity extends AppCompatActivity{
                 items.remove(i);
                 notifyItemRemoved(i);
             }
+            Log.d("clearedItems", "clearItems: " + items);
 
         }
     }

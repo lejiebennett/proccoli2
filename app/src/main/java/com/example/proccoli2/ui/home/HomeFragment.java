@@ -452,6 +452,7 @@ public class HomeFragment extends Fragment{
         //Initialize recyclerView
         recyclerView = binding.goalList;
         setUpRecyclerView();
+        Log.d("Home Fragment", "onCreateView: I AM HOME FRAGMENT");
         DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
 
             @Override
@@ -565,7 +566,7 @@ public class HomeFragment extends Fragment{
                         if (result.getResultCode() == RESULT_OK) {
                             recyclerView.setVisibility(View.VISIBLE);
 
-                            Log.d("Result_OK", "onActivityResult: HERE");
+                            Log.d("Result_OK", "onActivityResult: HERE HOME FRAGMENT" + recyclerView.getAdapter().getItemCount());
 
                             //GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", String.valueOf(passedGoal));
@@ -623,9 +624,16 @@ public class HomeFragment extends Fragment{
 
                             //  recyclerList = expiredPersonal;
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
+                            /*
+                            //Had to comment this out and just reset up the recycler view because it was having issues
+                            syncing with the bindviewHolder
                             CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
                             adapter.addItems();
                             Log.d("currentItemList", "onActivityResult: " + adapter.items);
+
+
+                             */
+                            setUpRecyclerView();
 
 
                             Log.d("FIVES", "onActivityResult: " + goalList);

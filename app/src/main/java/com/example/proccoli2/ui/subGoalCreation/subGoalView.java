@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.R;
@@ -235,8 +236,9 @@ public class subGoalView extends AppCompatActivity implements AdapterView.OnItem
 
                                             Log.d("Dates confirmed", "onClick: Passed all date conversions");
 
+                                            String subGoalID = DataServices.getInstance().getAlphaNumericString(11);
                                             //Creates Subgoal model with data from fields
-                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel("subgoalId", subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
+                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel(subGoalID, subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
 
                                             Log.d("SubMade", "onClick: " + subgoal.toString());
 

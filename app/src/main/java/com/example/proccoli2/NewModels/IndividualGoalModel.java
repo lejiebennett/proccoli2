@@ -80,7 +80,7 @@ public class IndividualGoalModel implements Serializable {
 
 
     public static GoalModel goalsModelConverterForDataWrite(IndividualGoalModel data){
-        return new GoalModel(data.bigGoal,data.personalDeadline, data.taskType, data.goalId, data.createdAt, data.goalCreaterEmail, data.isCompleted, data.goalType, data.whenIsDue, data.goalCreaterEmail, (double)getValueOrDefault(data.proposedStudyTime, 0.0), 0.0, false);
+            return new GoalModel(data.bigGoal,data.personalDeadline, data.taskType, data.goalId, data.createdAt, data.goalCreaterEmail, data.isCompleted, data.goalType, data.whenIsDue, data.goalCreaterEmail, (double)getValueOrDefault(data.proposedStudyTime, 0.0), 0.0, false);
 
     }
 

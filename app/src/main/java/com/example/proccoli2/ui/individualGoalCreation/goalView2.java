@@ -47,6 +47,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -539,8 +540,9 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                                 long currentUnix = System.currentTimeMillis() / 1000L;
 
                                                                 //Set all of the attributes of the goal either using commented out constructor or set individually
-
+                                                                //IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete, ss.INDIVIDUAL_REF,myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
                                                                 IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete, ss.INDIVIDUAL_REF,myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
+
                                                                 newGoal.setProposedStudyTime(controller.strToDoubleProposedTime(plannedStudyInput.getText().toString()));
 
                                                                 Log.d("GoalMade", "onClick: " + newGoal.toString());
@@ -554,6 +556,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                                 setResult(RESULT_OK, i);
                                                                 Log.d("setExtras", "onClick: " + newGoal);
                                                                 controller.saveIndividualGoal(newGoal);
+
 
                                                                 finish();
                                                             }
@@ -572,8 +575,15 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
                                                     long currentUnix = System.currentTimeMillis() / 1000L;
 
+                                                    ArrayList<IndividualSubGoalStructModel> tempStoreSubGoals = myGoal.getSubGoals();
+                                                    myGoal.setSubGoals(new ArrayList<>());
                                                     //Set all of the attributes of the goal either using commented out constructor or set individually
                                                     IndividualGoalModel newGoal = new IndividualGoalModel(bigGoalInput.getText().toString(),uComplete,ss.INDIVIDUAL_REF ,myGoal.getSubGoals(),FirebaseAuth.getInstance().getCurrentUser().getUid(),"eventId",currentUnix,uStart,FirebaseAuth.getInstance().getCurrentUser().getEmail(),false,goalType.getText().toString(),uDue,courseNumberInput.getText().toString().toUpperCase());
+                                                    String goalIdForSavedGoal =controller.saveIndividualGoal(newGoal).getGoalId();
+                                                    for(IndividualSubGoalStructModel subGoal: tempStoreSubGoals){
+                                                        DataServices.getInstance().addNewSubGoal(subGoal,goalIdForSavedGoal);
+                                                        myGoal.getSubGoals().add(subGoal);
+                                                    }
 
                                                     Log.d("GoalMade", "onClick: " + newGoal.toString());
 
@@ -585,7 +595,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                     Log.d("putExtras", "onClick: " + newGoal);
                                                     setResult(RESULT_OK, i);
                                                     Log.d("setExtras", "onClick: " + newGoal);
-                                                    controller.saveIndividualGoal(newGoal);
+
                                                     finish();
                                                 }
 

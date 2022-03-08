@@ -198,7 +198,7 @@ public class subGoalView_goalSetting extends AppCompatActivity implements Adapte
         int passedCompleteBy = (int)passedGoal.getPersonalDeadline();
 
         bigGoalCompleteByLabel = findViewById(R.id.BigGoalCompleteByLabel);
-        bigGoalCompleteByLabel.setText("Big Goal Deadline " + passedCompleteBy);
+        bigGoalCompleteByLabel.setText("Big Goal Deadline " + controller.unixToStringDateTime(passedCompleteBy));
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

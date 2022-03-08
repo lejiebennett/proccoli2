@@ -28,7 +28,7 @@ import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.R;
 import com.example.proccoli2.ui.subGoalView_goalSetting.subGoalView_goalSetting;
-import com.example.proccoli2.subGoalView_goalSetting_edit;
+import com.example.proccoli2.ui.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;

@@ -172,7 +172,7 @@ public class IndividualSubGoalStructModel implements Serializable {
         else return null;
     }
 
-    public HashMap<String,Object> addNoSubGoal(){
+    public static HashMap<String,Object> addNoSubGoal(){
         HashMap<String,Object> hashMap = new HashMap<>();
         HashMap<String,Object> hashMap1 = new HashMap<>();
         hashMap1.put(ss.SUB_GOAL_NAME_REF,ss.NO_SUB_GOAL_REF);
@@ -183,7 +183,7 @@ public class IndividualSubGoalStructModel implements Serializable {
         return hashMap;
     }
 
-    public String getAlphaNumericString(int n)
+    public static String getAlphaNumericString(int n)
     {
 
         // chose a Character random from this String

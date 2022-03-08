@@ -1,9 +1,10 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.subGoalView_goalSetting_edit;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.R;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
@@ -203,7 +205,7 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
         int passedCompleteBy = (int)passedGoal.getWhenIsDue();
 
         bigGoalCompleteByLabel = findViewById(R.id.BigGoalCompleteByLabel);
-        bigGoalCompleteByLabel.setText("Big Goal Deadline " + passedCompleteBy);
+        bigGoalCompleteByLabel.setText("Big Goal Deadline " + controller.unixToStringDateTime(passedCompleteBy));
 
         saveBtn = findViewById(R.id.saveSubgoalBtn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -245,7 +247,8 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
                                             Log.d("Dates confirmed", "onClick: Passed all date conversions");
 
 
-                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel("subgoalId", subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
+                                            String subGoalID = DataServices.getInstance().getAlphaNumericString(11);
+                                            IndividualSubGoalStructModel subgoal = new IndividualSubGoalStructModel(subGoalID, subGoalGoal.getText().toString(),uComplete, formatedLevel, (int) formatedHowLong,false,uStart,0,false);
                                             subgoal.set_isChecked(passedSubGoal.is_isChecked());
 
                                             Log.d("SubMade", "onClick: " + subgoal.toString());

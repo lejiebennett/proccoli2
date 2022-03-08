@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.subGoalView_goalSetting_edit;
 
 import android.content.Context;
 import android.graphics.Color;

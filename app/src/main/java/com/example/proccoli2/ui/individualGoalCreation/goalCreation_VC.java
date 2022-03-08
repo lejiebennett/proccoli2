@@ -180,7 +180,7 @@ public class goalCreation_VC extends AppCompatActivity {
         return time;
     }
 
-    public void saveIndividualGoal(IndividualGoalModel data) {
+    public IndividualGoalModel saveIndividualGoal(IndividualGoalModel data) {
         IndividualGoalModel returnData = DataServices.getInstance().saveIndividualGoal(data);
         //self.removeCreateGoalVC()
         //self.gotoIndividualVCAfterIndividualGoalCreation(data: returnData)
@@ -195,6 +195,7 @@ public class goalCreation_VC extends AppCompatActivity {
             newGoals.add(newGoal);
             UserDataModel.sharedInstance.setRawGoalsData(newGoals);
         }
+        return returnData;
 
         //log activity
         //activityChain?.addActivityForGoal(type: INDIVIDUAL_GOAL_CREATED_REF, goalId: returnData.goalId)
