@@ -34,8 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NewModels.PersonalNoteModel;
+import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NotificationPublisher;
 import com.example.proccoli2.R;
 import com.example.proccoli2.goalProgressView;
@@ -45,9 +48,12 @@ import com.example.proccoli2.timerView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -81,6 +87,9 @@ public class singleGoalView extends AppCompatActivity {
     TextView cancelSetReminderBtn, doneSetReminderBtn, setReminderLabel;
     NotificationChannel notificationChannel;
     NotificationManager notificationManager;
+
+    //Personal Notes
+    ArrayList<PersonalNoteModel> itemNotesFromServerOriginaly = new ArrayList<>();
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -383,7 +392,7 @@ public class singleGoalView extends AppCompatActivity {
         setUpSubgoalRecyclerView();
 
         notesRecyclerView = findViewById(R.id.NotesRecyclerView);
-        //setUpNotesRecyclerView();
+        setUpNotesRecyclerView();
 
         notesRecyclerView.setVisibility(View.VISIBLE);
 
@@ -396,37 +405,55 @@ public class singleGoalView extends AppCompatActivity {
         noteInput = findViewById(R.id.noteInput);
 
         uploadNoteBtn = findViewById(R.id.uploadNote);
-        /*
+
         uploadNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Log.d("clickedNote", "onClick: Clicked upload note");
                 long currentUnix = System.currentTimeMillis() / 1000L;
-                String noteID = "noteID0001";
-                PersonalNoteModel note = new PersonalNoteModel(noteInput.getText().toString(),(int)currentUnix,noteID);
+                String noteID = controller.getAlphaNumericString(11);
+                PersonalNoteModel note = new PersonalNoteModel(noteID,noteInput.getText().toString(),currentUnix);
 
                 //Add note to the goalModel
                 //myGoal.getPersonalNotes().add(note);
+
+                /*
+                //Before Firebase integration
                 NotesAdapter adapterNotes = (NotesAdapter) notesRecyclerView.getAdapter();
-                //Log.d("personalNotes", "onClick: " + myGoal.getPersonalNotes());
+                Log.d("personalNotes", "onClick: " + myGoal.getPersonalNotes());
 
                 //Update the recycler
                 adapterNotes.addItems();
+                */
+
+                DataServices.getInstance().savePersonalNote(myGoal.getGoalId(),note);
+                NotesAdapter adapterNotes = (NotesAdapter) notesRecyclerView.getAdapter();
+                adapterNotes.addItem(note);
+                //adapterNotes.addItems();
+                // notesRecyclerView.setAdapter(adapterNotes);
                // Log.d("added", "onClick: added PersonalNotes" + myGoal.getPersonalNotes().get(myGoal.getPersonalNotes().size()-1));
                 noteInput.getText().clear();
                 closeKeyboard(view);
             }
         });
 
-         */
+
 
         completeBtn = findViewById(R.id.completeBtn);
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Mark goal as complete
+                /*
                 myGoal.setCompleted(true);
+                completeBtn.setBackgroundColor(Color.GREEN);
+                checkIfGoalComplete(myGoal.isCompleted());
+
+
+                 */
+
+                controller.completeBtnTapped(myGoal);
                 completeBtn.setBackgroundColor(Color.GREEN);
                 checkIfGoalComplete(myGoal.isCompleted());
 
@@ -553,6 +580,7 @@ public class singleGoalView extends AppCompatActivity {
                     compoundButton.setChecked(b);
                     Log.d("SubGoalIndex", "onCheckedChanged: " + getSubGoalPosition());
                     myGoal.getSubGoals().get(getSubGoalPosition()).set_isChecked(b);
+                    DataServices.getInstance().completeSubGoal(myGoal.getGoalId(),myGoal.getSubGoals().get(getSubGoalPosition()).get_subGoalId(),myGoal.getSubGoals().get(getSubGoalPosition()).is_isChecked());
                     Log.d("newIsCompletedValue", "onCheckedChanged: " + myGoal.getSubGoals().get(getSubGoalPosition()).is_isChecked());
                     Log.d("newCheckCount", "onCheckedChanged: " + myGoal);
                 }
@@ -581,18 +609,31 @@ public class singleGoalView extends AppCompatActivity {
         subGoalRecyclerView.setHasFixedSize(true);
     }
 
-/*
+
     class NotesAdapter extends RecyclerView.Adapter {
         List<PersonalNoteModel> items;
 
         public NotesAdapter() {
             items = new ArrayList<>();
-
+           // List<PersonalNoteModel> itemsTemp = new ArrayList<>();
+            Log.d("NotesAdapter", "NotesAdapter: ");
+            /*
             for(int i = 0; i < myGoal.getPersonalNotes().size(); i++){
                 Log.d("trying to add", "personalNotes " +myGoal.getPersonalNotes().get(i));
                 items.add(myGoal.getPersonalNotes().get(i));
                 Log.d("Added", "personalNotes: " + myGoal.getPersonalNotes().get(i));
+            }*/
+
+
+            for(int i = 0; i < itemNotesFromServerOriginaly.size(); i++){
+                Log.d("trying to add", "setUpRecyclerView: " +itemNotesFromServerOriginaly.get(i));
+                items.add(itemNotesFromServerOriginaly.get(i));
+                Log.d("Added", "setUpRecyclerView: " + items.get(i));
             }
+            notifyDataSetChanged();
+
+
+
         }
 
         @Override
@@ -603,12 +644,12 @@ public class singleGoalView extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Log.d("Position", "onBindViewHolder: position" + position);
+            Log.d("PositionNotes", "onBindViewHolder: position" + position);
             NotesViewHolder viewHolder = (NotesViewHolder) holder;
             final PersonalNoteModel item = items.get(position);
-            Log.d("Position", "onBindViewHolder: position" + item);
+            Log.d("PositionNotes", "onBindViewHolder: position" + item);
             viewHolder.noteText.setText(items.get(position).getNote());
-            viewHolder.createdAt.setText(controller.calculateMinutesAgo(items.get(position).getCreatedAt()));
+            viewHolder.createdAt.setText(controller.calculateMinutesAgo((int)items.get(position).getCreatedAt()));
         }
 
         @Override
@@ -616,9 +657,11 @@ public class singleGoalView extends AppCompatActivity {
             return items.size();
         }
 
-        public void addItems(){
-            items.add(myGoal.getPersonalNotes().get(myGoal.getPersonalNotes().size()-1));
+        public void addItem(PersonalNoteModel note){
+            items.add(note);
             notifyItemInserted(items.size() - 1);
+
+
         }
     }
 
@@ -635,17 +678,41 @@ public class singleGoalView extends AppCompatActivity {
         }
     }
 
- */
-
     /**
      * Set up Notes Recycler view
      */
     private void setUpNotesRecyclerView() {
-        notesRecyclerView.setVisibility(View.INVISIBLE);
-        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-     //   notesRecyclerView.setAdapter(new NotesAdapter());
-        notesRecyclerView.setHasFixedSize(true);
-        Log.d("finishedSetup", "setUpNotesRecyclerView: finished setUpNotesRecyclerView");
+        DataServices.getInstance().requestPersonalNotes(myGoal.getGoalId(), new ResultHandler<Object>() {
+
+            @Override
+            public void onSuccess(Object data) {
+                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                if(hashMap.get("personalNotes")!=null){
+                    ArrayList<PersonalNoteModel> personalNotes = (ArrayList<PersonalNoteModel>) hashMap.get("personalNotes");
+                    for(int i = 0; i <personalNotes.size();i++){
+                        Log.d("trying to add ItemsTemp", "personalNotes " +personalNotes.get(i));
+                        itemNotesFromServerOriginaly.add(personalNotes.get(i));
+                        Log.d("Added to ItemsTemp", "personalNotes: " +personalNotes.get(i));
+                    }
+                }
+                Log.d("NotesItems", "onSuccess: " + itemNotesFromServerOriginaly);
+                Collections.reverse(itemNotesFromServerOriginaly);
+                notesRecyclerView.setVisibility(View.VISIBLE);
+                LinearLayoutManager notesLinearLayoutManager = new LinearLayoutManager(context);
+                notesRecyclerView.setLayoutManager(notesLinearLayoutManager);
+                NotesAdapter notesAdapter= new NotesAdapter();
+                notesRecyclerView.setAdapter(notesAdapter);
+                notesRecyclerView.setHasFixedSize(true);
+                Log.d("finishedSetup", "setUpNotesRecyclerView: finished setUpNotesRecyclerView");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+
+
     }
 
 

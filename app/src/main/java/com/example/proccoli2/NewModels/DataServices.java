@@ -424,7 +424,7 @@ public class DataServices {
         return value == null ? defaultValue : value;
     }
 
-    public HashMap<String,Object> createHashmap(String key, Object value){
+    public static HashMap<String,Object> createHashmap(String key, Object value){
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put(key,value);
         return hashMap;
@@ -942,7 +942,35 @@ public class DataServices {
     }
     */
 
+    public void savePersonalNote(String goalId, PersonalNoteModel note) {
+        Log.d("singleGoalView", "savePersonalNote: " + goalId);
+        Log.d("singleGoalView", "savePersonalNote: " + note);
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document("shapeSize.PERSONAL_NOTE_DOC_ID_REF").update(PersonalNoteModel.jsonConverter(note));
+    }
 
+   // public void requestPersonalNotes(String goalId) {
+    public void requestPersonalNotes(String goalId, ResultHandler<Object> handler){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        Log.d("requestPersonalNotes", "requestPersonalNotes: ");
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document("shapeSize.PERSONAL_NOTE_DOC_ID_REF").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    if(task.getException()==null){
+
+                        hashMap.put("personalNotes",PersonalNoteModel.parseData((DocumentSnapshot) task.getResult()));
+                        hashMap.put("mainGoalId",goalId);
+                       // PersonalNoteViews.sharedInstance.setData(personalNotes: personalNoteModel.parseData(documentSnap: docSnap), mainGoalId: goalId)
+                        handler.onSuccess(hashMap);
+                    }
+                }
+                else{
+                    hashMap.put("_error",task.getException().getLocalizedMessage());
+                    handler.onSuccess(hashMap);
+                }
+            }
+        });
+    }
     public void revisePersonalOrHardDeadline(long newDeadline, long oldDeadline, boolean isPersonalDeadline,String goalId) {
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         DocumentReference revisionCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REVISION_COLLECTION_REF).document();
@@ -1268,21 +1296,22 @@ public class DataServices {
                 });
     }
 
-    public void completeGoal(String goalId) {
+    public static void completeGoal(String goalId) {
+        SingletonStrings ss = new SingletonStrings();
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
-        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
+        DocumentReference goalInUserCollection = FirebaseFirestore.getInstance().collection(ss.USER_COLLECTION_REF).document(DataServices.getInstance().uid).collection(ss.PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference goalInGeneralGoalCollection = FirebaseFirestore.getInstance().collection(ss.GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(ss.USER_COLLECTION_REF).document(DataServices.getInstance().uid);
 
-        HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF, true);
-        hashMap.put( COMPLETED_DATE_REF,System.currentTimeMillis());
+        HashMap<String,Object> hashMap = createHashmap(ss.IS_GOAL_COMPLETED_REF, true);
+        hashMap.put(ss.COMPLETED_DATE_REF,System.currentTimeMillis());
         batch.update(goalInUserCollection,hashMap);
 
-        HashMap<String,Object> hashMap1 = createHashmap(IS_GOAL_COMPLETED_REF, true);
-        hashMap1.put(COMPLETED_DATE_REF,System.currentTimeMillis());
+        HashMap<String,Object> hashMap1 = createHashmap(ss.IS_GOAL_COMPLETED_REF, true);
+        hashMap1.put(ss.COMPLETED_DATE_REF,System.currentTimeMillis());
 
         batch.update(goalInGeneralGoalCollection,hashMap1);
-        batch.update(userDocRef, createHashmap(COMPLETED_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
+        batch.update(userDocRef, createHashmap(ss.COMPLETED_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
 
         batch.commit();
 

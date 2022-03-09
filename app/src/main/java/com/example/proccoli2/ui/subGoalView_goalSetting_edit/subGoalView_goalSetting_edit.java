@@ -258,6 +258,7 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
                                             passedGoal.getSubGoals().add(subgoal);
                                             DataServices.getInstance().addNewSubGoal(subgoal,passedGoal.getGoalId());
                                             Log.d("subgoalID", "onClick: " + subgoal.get_subGoalId());
+                                            //DataServices.getInstance().saveSubGoalRevisions(,passedGoal.getGoalId(),subGoalID,IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(subgoal));
 
                                             Intent i = new Intent(subGoalView_goalSetting_edit.this, goalSettingView.class);
                                             // i.putExtra("subGoal", subgoal);
