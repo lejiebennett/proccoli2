@@ -110,7 +110,7 @@ public class HomeFragment_VC {
 
     Comparator<GoalModel> compareByPersonal = new Comparator<GoalModel>() {
         @Override
-        public int compare(GoalModel goal1 ,GoalModel goal2) {
+        public int compare(GoalModel goal1, GoalModel goal2) {
             return Long.compare(goal1.getPersonalDeadline(),goal2.getPersonalDeadline());
         }
     };

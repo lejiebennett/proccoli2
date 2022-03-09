@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.proccoli2.ui.individualWall.singleGoalView;
+import com.example.proccoli2.ui.notificationPublisher.NotificationPublisherTimer;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;

@@ -39,7 +39,7 @@ import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.PersonalNoteModel;
 import com.example.proccoli2.NewModels.ResultHandler;
-import com.example.proccoli2.NotificationPublisher;
+import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
 import com.example.proccoli2.R;
 import com.example.proccoli2.goalProgressView;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
@@ -48,7 +48,6 @@ import com.example.proccoli2.timerView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -215,6 +214,13 @@ public class singleGoalView extends AppCompatActivity {
                 setReminderLabel.setVisibility(View.INVISIBLE);
 
 
+                //Verifies that the date selected is valid
+                if(controller.setReminder(myGoal,setReminderPicker.getDate().getTime())==false){
+                    return;
+                }
+
+
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     notificationChannel = new NotificationChannel("12345", "Proccoli", NotificationManager.IMPORTANCE_HIGH);
                     notificationChannel.enableLights(true);
@@ -231,14 +237,6 @@ public class singleGoalView extends AppCompatActivity {
                 notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
                 notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.createNotificationChannel(notificationChannel);
-
-
-                //Alarm approach
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent(singleGoalView.this, NotificationPublisher.class);
-                intent.putExtra("bigGoal",myGoal.getBigGoal());
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 
                 //Get the time of when to set the alarm
                 Calendar cal = Calendar.getInstance();
@@ -260,6 +258,18 @@ public class singleGoalView extends AppCompatActivity {
                 cal.set(Calendar.HOUR_OF_DAY, setReminderPicker.getDate().getHours());  // set hour
                 cal.set(Calendar.MINUTE, setReminderPicker.getDate().getMinutes());          // set minute
                 cal.set(Calendar.SECOND, setReminderPicker.getDate().getSeconds());               // set seconds
+
+
+                //Alarm approach
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(singleGoalView.this, NotificationPublisher.class);
+                intent.putExtra("bigGoalName",myGoal.getBigGoal());
+                String notificationID = DataServices.getInstance().getAlphaNumericString(11);
+                intent.putExtra("notification_id",notificationID);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                DataServices.getInstance().saveReminder(myGoal.getGoalId(),notificationID,DataServices.getInstance().prepareReminderData(cal.getTimeInMillis()/100L));
+
+
 
                 //Create the alarm
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,cal.getTimeInMillis(),pendingIntent);
@@ -453,13 +463,28 @@ public class singleGoalView extends AppCompatActivity {
 
                  */
 
-                controller.completeBtnTapped(myGoal);
-                completeBtn.setBackgroundColor(Color.GREEN);
-                checkIfGoalComplete(myGoal.isCompleted());
+                controller.completeBtnTapped(myGoal, new ResultHandler<Object>() {
 
-                //Launch activity to get smileFace Survey
-                Intent intent = new Intent(singleGoalView.this, smileyFaceSurveyView.class);
-                activityResultLaunchSmileyRating.launch(intent);
+                    @Override
+                    public void onSuccess(Object data) {
+                        HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                        if((boolean)hashMap.get("proceedToComplete") == true){
+                            completeBtn.setBackgroundColor(Color.GREEN);
+                            checkIfGoalComplete(myGoal.isCompleted());
+
+                            //Launch activity to get smileFace Survey
+                            Intent intent = new Intent(singleGoalView.this, smileyFaceSurveyView.class);
+                            activityResultLaunchSmileyRating.launch(intent);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+
 
             }
         });

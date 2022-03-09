@@ -1,6 +1,7 @@
 package com.example.proccoli2.ui.individualWall;
 
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
@@ -10,15 +11,22 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.NewModels.UserDataModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+
+import javax.xml.transform.Result;
 
 public class singleGoalView_VC extends AppCompatActivity {
 
@@ -95,14 +103,16 @@ public class singleGoalView_VC extends AppCompatActivity {
     }
 
 
-    public void completeBtnTapped(IndividualGoalModel goalModel) {
+    public void completeBtnTapped(IndividualGoalModel goalModel, ResultHandler<Object> handler) {
         if(goalModel==null){
-            return;
+            return ;
         }
         if(goalModel.getSubGoals().size()!=0){
             //chech if there is any uncheck sub goal
-            int uncheck = countCompletedSubGoals(goalModel.getSubGoals());
-            if( countCompletedSubGoals(goalModel.getSubGoals()) > 0){
+            int uncheck = countunCompletedSubGoals(goalModel.getSubGoals());
+            Log.d("completeBtnTapped", "completeBtnTapped: " + goalModel.getSubGoals());
+            Log.d("completeBtnTapped", "completeBtnTapped: " + uncheck);
+            if( uncheck > 0){
                 //send alert here
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(singleGoalView);
                 builder1.setTitle("Warning!");
@@ -114,7 +124,12 @@ public class singleGoalView_VC extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                                 proccedGoalCompletion(goalModel);
-                                evaluationCheckerForCompletion();
+                                evaluationCheckerForCompletion(goalModel);
+                                HashMap<String,Object> hashMap = new HashMap<>();
+                                hashMap.put("foundSubgoals",true);
+                                hashMap.put("proceedToComplete", true);
+                                handler.onSuccess(hashMap);
+
                             }
                         });
 
@@ -123,6 +138,10 @@ public class singleGoalView_VC extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
+                                HashMap<String,Object> hashMap = new HashMap<>();
+                                hashMap.put("foundSubgoals",true);
+                                hashMap.put("proceedToComplete", false);
+                                handler.onSuccess(hashMap);
                                 }
                             });
 
@@ -134,19 +153,55 @@ public class singleGoalView_VC extends AppCompatActivity {
                 //procceed the completion
                 //all sub goals are checked
                 proccedGoalCompletion(goalModel);
-                evaluationCheckerForCompletion();
-                return;
+                evaluationCheckerForCompletion(goalModel);
+                HashMap<String,Object> hashMap = new HashMap<>();
+                hashMap.put("foundSubgoals",true);
+                hashMap.put("proceedToComplete", true);
+                handler.onSuccess(hashMap);
             }
         }else {
             //there is no sub goal
             //procceed the completion
             proccedGoalCompletion(goalModel);
-            evaluationCheckerForCompletion();
+            evaluationCheckerForCompletion(goalModel);
+            HashMap<String,Object> hashMap = new HashMap<>();
+            hashMap.put("foundSubgoals",false);
+            hashMap.put("proceedToComplete", true);
+            handler.onSuccess(hashMap);
         }
 
     }
 
-    public void evaluationCheckerForCompletion() {
+    Comparator<IndividualSubGoalStructModel> compareBysubGoalId = new Comparator<IndividualSubGoalStructModel>() {
+        @Override
+        public int compare(IndividualSubGoalStructModel goal1 ,IndividualSubGoalStructModel goal2) {
+            return goal1.get_subGoalId().compareTo(goal2.get_subGoalId());
+        }
+    };
+
+    public void evaluationCheckerForCompletion(IndividualGoalModel goal) {
+        String mainGoalId = goal.getGoalId();
+        String goalName = goal.getBigGoal();
+        ArrayList<String> subgoalIds = new ArrayList<>();
+        subgoalIds.add(SingletonStrings.NO_SUB_GOAL_REF);
+        if(goal.getSubGoals().size()>0){
+            ArrayList<IndividualSubGoalStructModel> sortedSubIds = goal.getSubGoals();
+            Collections.sort(sortedSubIds,compareBysubGoalId);
+            for(IndividualSubGoalStructModel subId: sortedSubIds){
+                subgoalIds.add(subId.get_subGoalId());
+                if(sortedSubIds.size()+1 == subgoalIds.size()){
+                    //make one more sort because of no sub
+                    ArrayList<String> newSortedIds = subgoalIds;
+                    Collections.sort(newSortedIds);
+                  //  letUsKnowChartDataDownloaded(goalName, mainGoalId, newSortedIds);
+                }
+            }
+        }
+        else{
+           // self.letUsKnowChartDataDownloaded(goalName: goalName, goalId: mainGoalId, subGoalIds:subGoalIds)
+
+        }
+
         /*
         guard let mainGoalId = self.data?.goalId,
                 let goalName = self.data?.bigGoal  else {return}
@@ -195,10 +250,11 @@ public class singleGoalView_VC extends AppCompatActivity {
 
 
 
-    public int countCompletedSubGoals(ArrayList<IndividualSubGoalStructModel> subgoals){
+    public int countunCompletedSubGoals(ArrayList<IndividualSubGoalStructModel> subgoals){
+        Log.d("subgoalsToCheckComplete", "countCompletedSubGoals: " + subgoals);
         int counter = 0;
         for(int i = 0; i<subgoals.size();i++) {
-            if (subgoals.get(i).is_isChecked() == true)
+            if (subgoals.get(i).is_isChecked() == false)
                 counter++;
         }
         return counter;
@@ -234,6 +290,37 @@ public class singleGoalView_VC extends AppCompatActivity {
         }
 
         return sb.toString();
+    }
+
+    public boolean setReminder(IndividualGoalModel goal,long date) {
+        Log.d("setReminderPersonal", "setReminder: " + goal.getPersonalDeadline());
+        Log.d("setReminderDate", "setReminder: " + date);
+
+        boolean setReminder = false;
+        //set local notification
+        //guard let data = self.data else {return}
+        long reminderDate = date;
+        //reminder date sanity check
+        long current = System.currentTimeMillis()/100L;
+        if(reminderDate <= current){
+            Toast.makeText(singleGoalView, "You cannot set expired reminder date!", Toast.LENGTH_LONG).show();
+        }
+		else if(reminderDate <goal.getPersonalDeadline()) {
+            Toast.makeText(singleGoalView, "Your reminder date exceeds the proposed deadline.", Toast.LENGTH_LONG).show();
+		}
+		else {
+           // setLocalNotification(goal.getBigGoal(), goal.getGoalId(), date, reminderData);
+            setReminder=true;
+        }
+
+        //activity log activity
+        /*
+        activityChain?.addActivityForGoal(type: SET_REMINDER_BTN_TAPPED_REF, goalId: data.goalId)
+        //end log activiy
+
+         */
+        Log.d("singleGoalSetReminder", "setReminder: " + setReminder);
+        return setReminder;
     }
 
 }

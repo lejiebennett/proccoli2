@@ -62,7 +62,7 @@ public class SingletonStrings implements Serializable {
     public final String WHEN_IS_IT_DUE_REF = "whenIsItDue";
     public final String SUB_GOAL_PACK_REF = "subGoalPack";
     public final String TOTAL_STUDIED_TIME_REF = "totalStudiedTime";
-    public final String NO_SUB_GOAL_REF = "noSubGoal";
+    public static final String NO_SUB_GOAL_REF = "noSubGoal";
     public final String SUB_GOAL_ID_REF = "subgoalId";
     public final String SUB_GOAL_CHECK_TIME_REF = "subGoalCheckTime";
     public final String SUB_GOAL_UN_CHECK_TIME_REF = "subGoalUnCheckTime";
@@ -95,7 +95,7 @@ public class SingletonStrings implements Serializable {
     final String GROUP_WALL_TIMER_LBL_REF = "groupWall";
     final String PROFILE_PAGE_TIMER_LBL_REF = "profileVC";
     final String TIMER_VIEWS_TIMER_LBL_REF = "timerViewsLbl";
-    final String REMINDER_TIME_REF = "reminderTime";
+    public final String REMINDER_TIME_REF = "reminderTime";
     final String LOCATION_REF = "location";
 
     //tokes

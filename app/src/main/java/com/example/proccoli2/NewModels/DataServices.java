@@ -55,7 +55,7 @@ public class DataServices {
 
     final String UID = "uid";
     final String EMAIL = "email";
-    final String CREATED_AT = "createdAt";
+    static final String CREATED_AT = "createdAt";
     final String INDIVIDUAL_GOAL_TOTAL_REF = "indvidualGoalNumber";
     final String COMPLETED_GOAL_NUMBERS_REF = "compfinal StringedGoalNumber";
 
@@ -122,7 +122,7 @@ public class DataServices {
     final String GROUP_WALL_TIMER_LBL_REF = "groupWall";
     final String PROFILE_PAGE_TIMER_LBL_REF = "profileVC";
     final String TIMER_VIEWS_TIMER_LBL_REF = "timerViewsLbl";
-    final String REMINDER_TIME_REF = "reminderTime";
+    static final String REMINDER_TIME_REF = "reminderTime";
     final String LOCATION_REF = "location";
 
     //tokes
@@ -398,22 +398,21 @@ public class DataServices {
     
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
     static String uid = auth.getCurrentUser().getUid();
-    String email;
+    String email = auth.getCurrentUser().getEmail();
 
- //   static String uid = auth.getCurrentUser().getUid();
+    public String getEMAIL() {
+        return EMAIL;
+    }
+
+    public String getUID() {
+        return UID;
+    }
+
+    //   static String uid = auth.getCurrentUser().getUid();
  //   String email = auth.getCurrentUser().getEmail();
 
 
-    ///Mark: Edit Individual goal VC
 
-    /*
-    public void classsaveReminder(String goalId, String reminderId, HashMap<String, Object> reminderData) {
-        HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put(reminderId,reminderData);
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REMINDERS_COLLECTIONS_REF).document(shapeSize.REMINDERS_DOC_ID).update(hashMap);
-    }
-
-     */
     public static final DataServices sharedInstance = new DataServices();
     public static DataServices getInstance() {
         return sharedInstance;
@@ -807,7 +806,8 @@ public class DataServices {
         hashMap.put(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF,0);
         hashMap.put(GROUP_TOTAL_GOAL_NUMBER_REF,0);
         hashMap.put(COMPLETED_TOTAL_GOAL_NUMBER_REF ,0);
-        hashMap.put(CREATED_AT, System.currentTimeMillis());
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(CREATED_AT, current);
         Log.d("createNewUser", "createNewUserCollection: USER DATA" + hashMap);
         //guard let delegate = UIApplication.shared.delegate as? AppDelegate else {return}
         Log.d("createNewUser", "createNewUserCollection: " + TOKENS_TABLE_REF + "uid: " + this.uid);
@@ -942,10 +942,25 @@ public class DataServices {
     }
     */
 
+    ///Mark: Edit Individual goal VC
+    public void saveReminder(String goalId,String reminderId, HashMap<String,Object> reminderData) {
+       FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(REMINDERS_COLLECTIONS_REF).document("shapeSize.REMINDERS_DOC_ID").update(reminderId, reminderData);
+    }
+
     public void savePersonalNote(String goalId, PersonalNoteModel note) {
         Log.d("singleGoalView", "savePersonalNote: " + goalId);
         Log.d("singleGoalView", "savePersonalNote: " + note);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(PERSONAL_NOTE_COLLEECTION_REF).document("shapeSize.PERSONAL_NOTE_DOC_ID_REF").update(PersonalNoteModel.jsonConverter(note));
+    }
+
+    public HashMap<String,Object> prepareReminderData(long date){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(REMINDER_TIME_REF,date);
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(CREATED_AT, current);
+        hashMap.put("createdByUid", this.uid);
+        hashMap.put("createdByEmail", this.email);
+        return hashMap;
     }
 
    // public void requestPersonalNotes(String goalId) {
@@ -980,7 +995,8 @@ public class DataServices {
 
             batch.update(goalInUserCollection, createHashmap(PERSONAL_DEADLINE_REF,newDeadline));
             batch.update(goalInGeneralGoalCollection, createHashmap(PERSONAL_DEADLINE_REF, newDeadline));
-            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
+            long current = System.currentTimeMillis()/100L;
+            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,current);
             hashMap.put("revisionType","personalDeadline");
             hashMap.put("oldPersonalDeadline",oldDeadline);
             hashMap.put("newPersonalDeadline", newDeadline);
@@ -991,7 +1007,8 @@ public class DataServices {
             //update when is due
             batch.update(goalInUserCollection, createHashmap(WHEN_IS_IT_DUE_REF,newDeadline));
             batch.update(goalInGeneralGoalCollection, createHashmap(WHEN_IS_IT_DUE_REF, newDeadline));
-            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,System.currentTimeMillis());
+            long current = System.currentTimeMillis()/100L;
+            HashMap<String,Object> hashMap = createHashmap(CREATED_AT,current);
             hashMap.put("revisionType", "hardDeadline");
             hashMap.put("oldPersonalDeadline", oldDeadline);
             hashMap.put( "newPersonalDeadline",newDeadline);
@@ -1016,7 +1033,8 @@ public class DataServices {
     }
     public void deleteSubGoal(String subgoalId,String goalId) {
         HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_DELETED_REF,true);
-        hashMap.put(SUB_GOAL_PACK_REF +"." + subgoalId + "." + SUB_GOAL_DELETE_TIME,System.currentTimeMillis());
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(SUB_GOAL_PACK_REF +"." + subgoalId + "." + SUB_GOAL_DELETE_TIME,current);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
     }
 
@@ -1114,7 +1132,8 @@ public class DataServices {
         data.goalId = generalGoalsCollectionRef.getId();
         batch.set(generalGoalsCollectionRef,IndividualGoalModel.jsonFormatterForIndividualEvent(data));
         batch.update(userDocRef, createHashmap(INDIVIDUAL_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
-        batch.set(personalNoteDocRef,createHashmap(CREATED_AT,System.currentTimeMillis()));
+        long current = System.currentTimeMillis()/100L;
+        batch.set(personalNoteDocRef,createHashmap(CREATED_AT,current));
         batch.set(goalReminderDocRef,createHashmap(EXIST_REF,true));
         batch.set(userPersonalGoalsRef,GoalModel.jsonFormatterForGoals(IndividualGoalModel.goalsModelConverterForDataWrite(data)));
         batch.set(noSubGoalDocReference,createHashmap(EXIST_REF,true));
@@ -1171,7 +1190,8 @@ public class DataServices {
     }
 
     public void startTimerForGroupGoal(String goalId, String subgoalId, String studyId, long proposedStudyTime) {
-        TimerDataModel startData = new TimerDataModel(studyId,  System.currentTimeMillis(),  0,  false, proposedStudyTime);
+        long current = System.currentTimeMillis()/100L;
+        TimerDataModel startData = new TimerDataModel(studyId,  current,  0,  false, proposedStudyTime);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(TimerDataModel.jsonFormatterForGroupGoal(this.uid, subgoalId, startData));
     }
 
@@ -1240,7 +1260,8 @@ public class DataServices {
     }
     public void completeGroupGoal(String goalId, ArrayList<String> uids){
         HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF,true);
-        hashMap.put(COMPLETED_DATE_REF,System.currentTimeMillis());
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(COMPLETED_DATE_REF,current);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
         for(String  uid : uids) {
             WriteBatch batch = FirebaseFirestore.getInstance().batch();
@@ -1304,11 +1325,12 @@ public class DataServices {
         DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(ss.USER_COLLECTION_REF).document(DataServices.getInstance().uid);
 
         HashMap<String,Object> hashMap = createHashmap(ss.IS_GOAL_COMPLETED_REF, true);
-        hashMap.put(ss.COMPLETED_DATE_REF,System.currentTimeMillis());
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(ss.COMPLETED_DATE_REF,current);
         batch.update(goalInUserCollection,hashMap);
 
         HashMap<String,Object> hashMap1 = createHashmap(ss.IS_GOAL_COMPLETED_REF, true);
-        hashMap1.put(ss.COMPLETED_DATE_REF,System.currentTimeMillis());
+        hashMap1.put(ss.COMPLETED_DATE_REF,current);
 
         batch.update(goalInGeneralGoalCollection,hashMap1);
         batch.update(userDocRef, createHashmap(ss.COMPLETED_TOTAL_GOAL_NUMBER_REF, FieldValue.increment(1)));
@@ -1327,7 +1349,8 @@ public class DataServices {
         }
 
         HashMap<String,Object> hashMap = createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + IS_CHECKED_REF,isChecked);
-        hashMap.put(SUB_GOAL_PACK_REF + "." +subgoalId + "." +checkField,System.currentTimeMillis());
+        long current = System.currentTimeMillis()/100L;
+        hashMap.put(SUB_GOAL_PACK_REF + "." +subgoalId + "." +checkField,current);
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(hashMap);
 
     }
