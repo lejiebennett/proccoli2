@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity{
                         int sumindividualCount = 0;
                         int sumgroupCount = 0;
                         for(int i=0; i<sumArray.size();i++){
-                            if(sumArray.get(i).getGoalType().equals("individual"))
+                            if(sumArray.get(i).getTaskType().equals("individual"))
                                 sumindividualCount++;
                             else
                                 sumgroupCount++;
@@ -869,7 +869,7 @@ public class MainActivity extends AppCompatActivity{
         int sumindividualCount = 0;
         int sumgroupCount = 0;
         for(int i=0; i<sumArray.size();i++){
-            if(sumArray.get(i).getGoalType().equals("individual"))
+            if(sumArray.get(i).getTaskType().equals("individual"))
                 sumindividualCount++;
             else
                 sumgroupCount++;

@@ -200,7 +200,7 @@ public class HomeFragment extends Fragment{
                         int sumindividualCount = 0;
                         int sumgroupCount = 0;
                         for(int i=0; i<sumArray.size();i++){
-                            if(sumArray.get(i).getGoalType().equals("individual"))
+                            if(sumArray.get(i).getTaskType().equals("individual"))
                                 sumindividualCount++;
                             else
                                 sumgroupCount++;
@@ -527,12 +527,12 @@ public class HomeFragment extends Fragment{
                     Log.d("SIX", "onActivityResult: " + finishedDue);
                     Log.d("SIX", "onActivityResult: " + finishedPersonal);
 
-                    /*
+
                     ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                     int sumindividualCount = 0;
                     int sumgroupCount = 0;
                     for(int i=0; i<sumArray.size();i++){
-                        if(sumArray.get(i).getGoalType().equals("individual"))
+                        if(sumArray.get(i).getTaskType().equals("individual"))
                             sumindividualCount++;
                         else
                             sumgroupCount++;
@@ -543,7 +543,7 @@ public class HomeFragment extends Fragment{
                     goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
 
 
-                     */
+
                 }
                 else{
                     Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
@@ -645,7 +645,7 @@ public class HomeFragment extends Fragment{
                             int sumindividualCount = 0;
                             int sumgroupCount = 0;
                             for(int i=0; i<sumArray.size();i++){
-                                if(sumArray.get(i).getGoalType().equals("individual"))
+                                if(sumArray.get(i).getTaskType().equals("individual"))
                                     sumindividualCount++;
                                 else
                                     sumgroupCount++;
@@ -790,7 +790,7 @@ public class HomeFragment extends Fragment{
         int sumindividualCount = 0;
         int sumgroupCount = 0;
         for(int i=0; i<sumArray.size();i++){
-            if(sumArray.get(i).getGoalType().equals("individual"))
+            if(sumArray.get(i).getTaskType().equals("individual"))
                 sumindividualCount++;
             else
                 sumgroupCount++;

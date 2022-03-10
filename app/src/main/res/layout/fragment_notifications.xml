@@ -241,7 +241,7 @@
 
     <LinearLayout
         android:id="@+id/gradeReportLayout"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="289dp"
         android:background="#e6e8e6"
         android:orientation="horizontal"

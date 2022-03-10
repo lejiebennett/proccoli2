@@ -20,6 +20,7 @@ public class LogActivityModel {
         this.activity = hashMap;
     }
 
+
     public void addActivity(String type){
         this.activity.put(getAlphaNumericString(11),new activityPack(type,System.currentTimeMillis(),null,null,null));
 

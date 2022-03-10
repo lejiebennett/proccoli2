@@ -173,7 +173,7 @@ public class SingletonStrings implements Serializable {
 
 //Graph Button Names
 
-    final String ROBUST_DATA_REF = "robust";
+    static final String ROBUST_DATA_REF = "robust";
     final String BLANK_DATA_REF = "blank";
 
 
