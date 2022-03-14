@@ -2,12 +2,10 @@ package com.example.proccoli2.NewModels;
 
 import android.util.Log;
 
-import com.example.proccoli2.SubGoalModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

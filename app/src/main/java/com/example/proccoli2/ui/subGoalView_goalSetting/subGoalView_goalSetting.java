@@ -17,12 +17,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proccoli2.GoalModel;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.R;
-import com.example.proccoli2.SubGoalModel;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;

@@ -61,7 +61,7 @@ public class TimerDataModel {
         return proposedStudyTime;
     }
 
-    public HashMap<String,Object> jsonFormatter(TimerDataModel data){
+    public static HashMap<String,Object> jsonFormatter(TimerDataModel data){
         HashMap<String,Object> hashMap1 = new HashMap<>();
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap1.put(ss.CREATED_AT,data.startDateTime);

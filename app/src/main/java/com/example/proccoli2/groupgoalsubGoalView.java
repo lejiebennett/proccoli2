@@ -21,11 +21,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.oldModels.GoalModel;
+import com.example.proccoli2.oldModels.SubGoalModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.security.acl.Group;
 import java.text.ParseException;
 import java.util.Date;
 

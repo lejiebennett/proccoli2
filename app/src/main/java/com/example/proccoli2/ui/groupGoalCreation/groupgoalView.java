@@ -20,7 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.proccoli2.GoalModel;
+import com.example.proccoli2.oldModels.GoalModel;
 import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.R;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;

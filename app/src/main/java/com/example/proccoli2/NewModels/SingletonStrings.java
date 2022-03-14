@@ -167,14 +167,14 @@ public class SingletonStrings implements Serializable {
     final String yAxis_PROPOSED_STUDY_TIME_REF = "yProposedStudyTime";
     final String yAxis_TOTAL_STUDIED_TIME_REF = "yTotalStudiedTime";
 
-    final String EXIST_REF = "exist";
+    static final String EXIST_REF = "exist";
 
 
 
 //Graph Button Names
 
     static final String ROBUST_DATA_REF = "robust";
-    final String BLANK_DATA_REF = "blank";
+    static final String BLANK_DATA_REF = "blank";
 
 
     final String CHART_VIEW_BTN_CLICK_REF = "chartViewBtnClick";

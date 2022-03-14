@@ -30,6 +30,8 @@ import java.util.TimeZone;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import io.reactivex.Single;
+
 public class DataServices {
 
     //colelction references
@@ -1301,9 +1303,10 @@ public class DataServices {
     }
 
     ///Mark: IndividualWall VC
-    public void requestStudiedTimeDetailsForIndividualWallProgress(String goalId, ResultHandler<Object> handler) {
+    public static void requestStudiedTimeDetailsForIndividualWallProgress(String goalId, ResultHandler<Object> handler) {
+        SingletonStrings ss = new SingletonStrings();
         //completion:@escaping(_ status:Bool, _ response:DocumentSnapshot?)->()
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        FirebaseFirestore.getInstance().collection(ss.GOALS_COLLECTION_REF).document(goalId).collection(ss.INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
@@ -1425,46 +1428,50 @@ public class DataServices {
         batch.update(userPersonalGoalRef, createHashmap(TOTAL_STUDIED_TIME_REF, FieldValue.increment((studiedTime))));
         //update individual wall progress data
         DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
-        batch.update(["\(Date.dailyBaseTimeInterval(now:Date())).\(subgoalId)" : FieldValue.increment(Int64(studiedTime))], forDocument: individualWallProgressDocRef)
+       // batch.update(["\(Date.dailyBaseTimeInterval(now:Date())).\(subgoalId)" : FieldValue.increment((studiedTime))], individualWallProgressDocRef);
+
+        batch.update(createHashmap(Date.dailyBaseTimeInterval(now:Date()) + "." + subgoalId,FieldValue.increment((studiedTime))), individualWallProgressDocRef);
+
 
     }
-    class private func updateChartDataStuidedTimesForTimeReport(batch:WriteBatch, goalId:String, subgoalId:String, studiedTime:Int, startTime:Double) {
+    public void  updateChartDataStuidedTimesForTimeReport(WriteBatch batch, String goalId,String subgoalId,int studiedTime, double startTime) {
         //update profile chart data
-        let userPersonalGoalRef = Firestore.firestore().collection(USER_COLLECTION_REF).document(DatabaseService.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId)
-        batch.updateData([TOTAL_STUDIED_TIME_REF: FieldValue.increment(Int64(studiedTime))], forDocument: userPersonalGoalRef)
+        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        batch.update(userPersonalGoalRef, createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment((studiedTime))));
         //update individual wall progress data
-        let individualWallProgressDocRef = Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document(shapeSize.individualProgressDocID)
-        batch.updateData(["\(Date.dailyBaseTimeInterval(now:Date(timeIntervalSince1970: startTime))).\(subgoalId)" : FieldValue.increment(Int64(studiedTime))], forDocument: individualWallProgressDocRef)
+        DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
+       // batch.update("\(Date.dailyBaseTimeInterval(now:Date(timeIntervalSince1970: startTime))).\(subgoalId)" , FieldValue.increment(studiedTime)), individualWallProgressDocRef);
 
     }
 
-    class func finishTimerForIndividual(goalId:String, subgoalId:String, studyId:String, studiedTime:Int, finishData:[String:Any]) {
+    public void finishTimerForIndividual(String goalId, String subgoalId, String studyId,int studiedTime, HashMap<String,Object> finishData) {
         //finish means users finished the whole time that he proposed to study
         //first update the main goal sub pack/subgoal/ total studied Time
-        let mainGoalDoc = Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId)
+        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
         //second update studyCollection/subgoal/studyid
-        let studyCollectionRef = Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId)
-        let batch = Firestore.firestore().batch()
-        batch.updateData(["\(SUB_GOAL_PACK_REF).\(subgoalId).\(TOTAL_STUDIED_TIME_REF)": FieldValue.increment(Int64(studiedTime))], forDocument: mainGoalDoc)
-        batch.updateData(["\(studyId).\(FINISH_TIME_REF)" : finishData,
-                "\(studyId).\(STUDIED_TIME_REF)" : studiedTime,
-                "\(studyId).\(IS_FINISHED_REF)" : true], forDocument: studyCollectionRef)
+        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId);
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        batch.update(mainGoalDoc, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF,FieldValue.increment((studiedTime))));
+        HashMap<String,Object> hashMap = createHashmap(studyId + "." + FINISH_TIME_REF,finishData);
+        hashMap.put(studyId + "." + STUDIED_TIME_REF, studiedTime);
+        hashMap.put(studyId + "." + IS_FINISHED_REF,true);
+        batch.update(studyCollectionRef,hashMap);
 
-        updateChartDataStuidedTimes(batch: batch, goalId: goalId, subgoalId: subgoalId, studiedTime: studiedTime)
+        updateChartDataStuidedTimes(batch,goalId,  subgoalId,studiedTime);
 
-        batch.commit()
+        batch.commit();
 
-        TabbarVC.sharedInstance?.profileVCInstance?.isProgressBtnAnimationOn = true
+       // TabbarVC.sharedInstance?.profileVCInstance?.isProgressBtnAnimationOn = true
     }
 
-    class func sendEvaluationDataAfterIndividualStudy(goalId:String, selectedSubgoalId:String, studyId:String,evaluationData:[String:Any]) {
-        Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(selectedSubgoalId).updateData(["\(studyId).\(SELF_EVALUATION_REF)" : evaluationData])
+    public void sendEvaluationDataAfterIndividualStudy(String goalId, String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(selectedSubgoalId).update(createHashmap(studyId + "." + SELF_EVALUATION_REF,evaluationData));
     }
-    class func sendEvaluationDataAfterGroupStudy(goalId:String, selectedSubgoalId:String, studyId:String,evaluationData:[String:Any]) {
-        Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).updateData(["\(DatabaseService.uid).\(selectedSubgoalId).\(studyId).\(SELF_EVALUATION_REF)" : evaluationData])
+    public void sendEvaluationDataAfterGroupStudy(String goalId,String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(this.uid+ "." + selectedSubgoalId + "." + studyId + "." + SELF_EVALUATION_REF,evaluationData));
     }
-    class func sendEvaluationDataAfterIndividialGoalCompletion(goalId:String, evaluationData:[String:Any]) {
-        Firestore.firestore().collection(GOALS_COLLECTION_REF).document(goalId).updateData(["\(SELF_EVALUATION_REF)" : evaluationData])
+    public void sendEvaluationDataAfterIndividialGoalCompletion(String goalId,HashMap<String,Object> evaluationData) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(createHashmap(SELF_EVALUATION_REF,evaluationData));
     }
 
     //end of timer APIS for individual goal

@@ -11,9 +11,7 @@ import androidx.annotation.RequiresApi;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NewModels.UserDataModel;
-import com.example.proccoli2.UserModel;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.auth.User;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

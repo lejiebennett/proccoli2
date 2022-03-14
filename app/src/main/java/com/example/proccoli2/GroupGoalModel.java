@@ -2,6 +2,9 @@ package com.example.proccoli2;
 
 import android.util.Log;
 
+import com.example.proccoli2.oldModels.PersonalNoteModel;
+import com.example.proccoli2.oldModels.SubGoalModel;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

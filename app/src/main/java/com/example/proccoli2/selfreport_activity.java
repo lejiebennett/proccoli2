@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.oldModels.GoalModel;
+
 import java.util.ArrayList;
 import java.util.List;
 

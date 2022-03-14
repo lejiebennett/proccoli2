@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.oldModels.GoalModel;
+import com.example.proccoli2.oldModels.SubGoalModel;
+
 import java.util.ArrayList;
 
 public class GoalAdapter extends RecyclerView.Adapter {

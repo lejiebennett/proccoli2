@@ -3,8 +3,10 @@ package com.example.proccoli2.ui.individualWall;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -14,6 +16,7 @@ import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NewModels.ProgressViewIndividualWallModel;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.NewModels.UserDataModel;
@@ -321,6 +324,56 @@ public class singleGoalView_VC extends AppCompatActivity {
          */
         Log.d("singleGoalSetReminder", "setReminder: " + setReminder);
         return setReminder;
+    }
+
+    public void createProgressModelandInstantiaveNewVC(String goalId, ArrayList<String> subGoalIds) {
+        Log.d("createProgressModel", "createProgressModelandInstantiaveNewVC: createProgressModelandInstantiaveNewVC");
+
+        /*
+        let model = ProgressViewIndividualWallModel.init(goalId: goalId, subGoalIds:subGoalIds)
+        model.callDetailedStudyData(isItForGoalCompletion: false) { (status) in
+            if status {
+                self.instantiateNewVC(destinationIdetifier: "individualWallProgress")
+            }
+        }
+
+         */
+    }
+    public void letUsKnowChartDataDownloaded(String goalName, String goalId, ArrayList<String> subGoalIds) {
+        Log.d("letUsKnow", "letUsKnowChartDataDownloaded: " + "letUsKnowChartDataDownloaded");
+
+        ProgressViewIndividualWallModel model = new ProgressViewIndividualWallModel.(goalId, subGoalIds);
+        model.callDetailedStudyData(true, new ResultHandler<Object>() {
+            @Override
+            public void onSuccess(Object data) {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        }{ (status) in
+            if status {
+                if (ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) > (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0) {
+                    //late start
+                    //send double alert question
+                    let later = ((ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) - (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0)) / 86400
+                    let questionView = DoubleAlertQuestionView(goalName: goalName, goalId:goalId, later: later, delegate: self)
+                    DispatchQueue.main.async {
+                        self.view.addSubview(questionView.prepareForView())
+                    }
+                }
+				else {
+                    //regular or early start
+                    //send only single alert questions
+                    let questionView = SingleAlertTypeQuestionView(questions: alertTypeQuestions(type: FACE_QUESTION_TYPE_REF_FOR_COMPLETION, question: "How well do you think you did on the goal you just completed?", goalId: goalId, selectedSubGoalId: "", studyId: ""), result: questionResult(questionId: "", result: nil, isMandatory: true), isGroupStudy: false)
+                    DispatchQueue.main.async {
+                        self.view.addSubview(questionView.prepareForView())
+                    }
+                }
+            }
+        }
     }
 
 }

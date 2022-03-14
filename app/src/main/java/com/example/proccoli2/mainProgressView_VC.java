@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.oldModels.GoalModel;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.text.SimpleDateFormat;

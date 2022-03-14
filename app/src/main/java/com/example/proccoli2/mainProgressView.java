@@ -16,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.proccoli2.oldModels.GoalModel;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -27,7 +27,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
@@ -35,24 +34,15 @@ import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.renderer.BarChartRenderer;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
-import com.github.mikephil.charting.renderer.XAxisRendererHorizontalBarChart;
-import com.github.mikephil.charting.renderer.XAxisRendererRadarChart;
-import com.github.mikephil.charting.renderer.YAxisRendererHorizontalBarChart;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.common.base.Splitter;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import io.grpc.okhttp.internal.Util;
 
 /**
  * Class for when main progress is clicked on which displays progress charts for all of the goals
