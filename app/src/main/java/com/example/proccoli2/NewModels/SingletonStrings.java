@@ -286,7 +286,7 @@ public class SingletonStrings implements Serializable {
     final String FINISHED_HARD_GOAL_TABLE_PROFILE_PAGE_REF = "finishedHard_goalTable_profilePage";
     final String GO_TO_GOAL_REF = "goToGoal";
     final String GROUP_GOAL_CREATE_REF = "groupGoalCreate";
-    final String INDIVIDUAL_GOAL_CREATE_REF = "individualGoalCreate";
+    public static final String INDIVIDUAL_GOAL_CREATE_REF = "individualGoalCreate";
     final String GO_TO_EDIT_PROFILE_REF = "goToEditProfile";;
     final String GO_TO_MAIN_PROGRESS_REF = "goToMainProgress";
     final String LOG_OUT_REF = "logOut";
@@ -299,8 +299,8 @@ public class SingletonStrings implements Serializable {
     final String INDIVIDUAL_GOAL_CREATED_REF = "individualGoal_created";
     final String GROUP_GOAL_CREATED_REF = "groupGoal_created";
     final String GROUP_GOAL_CREATE_BACK_BTN_TAPPED_REF = "backBtn_groupGoal_Create";
-    final String EDIT_PROFILE_BACK_BTN_TAPPED_REF = "backBtn_editProfile";
-    final String PROFILE_DATA_EDITTED_REF = "profileEdited";
+    public static final String EDIT_PROFILE_BACK_BTN_TAPPED_REF = "backBtn_editProfile";
+    public static final String PROFILE_DATA_EDITTED_REF = "profileEdited";
 
 
     final String SURVEY_OPEN_FROM_NOTIFICATION_REF = "surveyOpen_from_notification";
@@ -320,24 +320,24 @@ public class SingletonStrings implements Serializable {
     final String GROUP_GOAL_INVITATION_DECLINE_REF = "decline_groupGoal";
 
 
-    final String PROGRESS_VIEW_INDIVIDUAL_WALL_REF = "progressViewBtn_IndividualWall";
-    final String COMPLETE_GOAL_BTN_TAPPED_REF = "compfinal StringeGoalBtn";
-    final String SET_TIMER_BTN_TAPPED_REF = "setTimerBtn";
-    final String BACK_BTN_INDIVIDUAL_WALL_TAPPED_REF = "backBtn_individualWall";
-    final String SETTINGS_INDIVIDUAL_WALL_TAPPED_REF = "settings_individualWall";
-    final String REMOVE_REMINDER_DATA_PICKER_REF = "remove_reminder_datePicker";
-    final String SET_REMINDER_BTN_TAPPED_REF = "setReminder";
-    final String SUBGOAL_TIMER_SET_REF = "subgoalTimerSet";
-    final String STOP_TIMER_REF = "timer_stopBTN";
-    final String TIMER_BACK_BTN_TAPPED_REF = "backBtn_timer";
-    final String TIMER_RESUME_BTN_TAPPED_REF = "resumeBtn_timer";
-    final String START_TIMER_BTN_TAPPED_REF = "startBtn_timer";
-    final String BREAK_TIMER_BTN_TAPPED_REF = "breakBtn_timer";
-    final String REVISE_DEADLINE_REF = "reviseDeadline";
-    final String GO_TO_DATE_BTN_REF = "goToDate_individualProgress";
-    final String PROGRESS_LOOK_REF = "_progressLook";
-    final String BACK_BTN_INDIVIDUAL_PROGRESS_REF = "backBtn_individualProgress";
-    final String GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF = "goToSelectedDate_IndividualProgress";
+    public static final String PROGRESS_VIEW_INDIVIDUAL_WALL_REF = "progressViewBtn_IndividualWall";
+    public static final String COMPLETE_GOAL_BTN_TAPPED_REF = "compfinal StringeGoalBtn";
+    public static final String SET_TIMER_BTN_TAPPED_REF = "setTimerBtn";
+    public static final String BACK_BTN_INDIVIDUAL_WALL_TAPPED_REF = "backBtn_individualWall";
+    public static final String SETTINGS_INDIVIDUAL_WALL_TAPPED_REF = "settings_individualWall";
+    public static final String REMOVE_REMINDER_DATA_PICKER_REF = "remove_reminder_datePicker";
+    public static final String SET_REMINDER_BTN_TAPPED_REF = "setReminder";
+    public static final String SUBGOAL_TIMER_SET_REF = "subgoalTimerSet";
+    public static final String STOP_TIMER_REF = "timer_stopBTN";
+    public static final String TIMER_BACK_BTN_TAPPED_REF = "backBtn_timer";
+    public static final String TIMER_RESUME_BTN_TAPPED_REF = "resumeBtn_timer";
+    public static final String START_TIMER_BTN_TAPPED_REF = "startBtn_timer";
+    public static final String BREAK_TIMER_BTN_TAPPED_REF = "breakBtn_timer";
+    public static final String REVISE_DEADLINE_REF = "reviseDeadline";
+    public static final String GO_TO_DATE_BTN_REF = "goToDate_individualProgress";
+    public static final String PROGRESS_LOOK_REF = "_progressLook";
+    public static final String BACK_BTN_INDIVIDUAL_PROGRESS_REF = "backBtn_individualProgress";
+    public static final String GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF = "goToSelectedDate_IndividualProgress";
     final String ADD_SUBGOAL_BTN_TAP_INDIVIDUAL_WALL_REF = "addSubgoal_btnTap_individualWall";
 
 

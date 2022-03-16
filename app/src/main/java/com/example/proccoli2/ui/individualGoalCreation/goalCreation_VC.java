@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.NewModels.UserDataModel;
 import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.google.android.material.textfield.TextInputEditText;
@@ -195,10 +197,11 @@ public class goalCreation_VC extends AppCompatActivity {
             newGoals.add(newGoal);
             UserDataModel.sharedInstance.setRawGoalsData(newGoals);
         }
-        return returnData;
+
 
         //log activity
-        //activityChain?.addActivityForGoal(type: INDIVIDUAL_GOAL_CREATED_REF, goalId: returnData.goalId)
+        LogActivityModel.getActivityChain().addActivityForGoal(SingletonStrings.INDIVIDUAL_GOAL_CREATE_REF,returnData.getGoalId());
+        return returnData;
     }
 
     public void individualDataSend(IndividualGoalModel data) {

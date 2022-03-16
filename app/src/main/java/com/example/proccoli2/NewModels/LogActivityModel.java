@@ -8,11 +8,13 @@ import java.util.HashMap;
 
 
 public class LogActivityModel {
-    LogActivityModel activityChain= new LogActivityModel();
+    static LogActivityModel activityChain = new LogActivityModel();
     DataServices ss = new DataServices();
     HashMap<String,activityPack> activity;
 
-
+    public static LogActivityModel getActivityChain() {
+        return activityChain;
+    }
 
     public LogActivityModel(){
         HashMap<String,activityPack> hashMap = new HashMap<>();

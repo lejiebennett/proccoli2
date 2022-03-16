@@ -1,8 +1,12 @@
 package com.example.proccoli2.ui.profile;
 
+import static com.example.proccoli2.NewModels.SingletonStrings.EDIT_PROFILE_BACK_BTN_TAPPED_REF;
+import static com.example.proccoli2.NewModels.SingletonStrings.PROFILE_DATA_EDITTED_REF;
+
 import android.util.Log;
 
 import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.LogActivityModel;
 import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.NewModels.UserDataModel;
 
@@ -26,7 +30,7 @@ public class edit_profile_VC {
         DataServices.getInstance().updateUserInfo(updateData);
         //EditProfileViews.sharedInstance?.preapreForRemove();
         //dismiss(animated: true, completion: nil)
-        //activityChain?.addActivity(type: PROFILE_DATA_EDITTED_REF)
+        LogActivityModel.getActivityChain().addActivity(PROFILE_DATA_EDITTED_REF);
     }
 
     /*
@@ -36,14 +40,14 @@ public class edit_profile_VC {
 
      */
 
-    /*
-    func backBtnTapped() {
-        activityChain?.addActivity(type: EDIT_PROFILE_BACK_BTN_TAPPED_REF)
-        EditProfileViews.sharedInstance?.preapreForRemove()
-        dismiss(animated: true, completion: nil)
+
+    public void backBtnTapped() {
+        LogActivityModel.getActivityChain().addActivity(EDIT_PROFILE_BACK_BTN_TAPPED_REF);
+        //EditProfileViews.sharedInstance?.preapreForRemove()
+        //dismiss(animated: true, completion: nil)
     }
 
-     */
+
 
     public void handleUserdataModelLocaly(String field, Object newData){
 

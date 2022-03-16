@@ -1,5 +1,8 @@
 package com.example.proccoli2.ui.individualWall;
 
+import static com.example.proccoli2.NewModels.SingletonStrings.COMPLETE_GOAL_BTN_TAPPED_REF;
+import static com.example.proccoli2.NewModels.SingletonStrings.SET_REMINDER_BTN_TAPPED_REF;
+
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.content.DialogInterface;
@@ -16,6 +19,7 @@ import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
 import com.example.proccoli2.NewModels.ProgressViewIndividualWallModel;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NewModels.SingletonStrings;
@@ -244,11 +248,13 @@ public class singleGoalView_VC extends AppCompatActivity {
         }
 
 
+         */
+
         //activity log activity
-        activityChain?.addActivityForGoal(type: COMPLETE_GOAL_BTN_TAPPED_REF, goalId: newData.goalId)
+        LogActivityModel.getActivityChain().addActivityForGoal(COMPLETE_GOAL_BTN_TAPPED_REF, newData.getGoalId());
         //end log activiy
 
-         */
+
     }
 
 
@@ -317,11 +323,11 @@ public class singleGoalView_VC extends AppCompatActivity {
         }
 
         //activity log activity
-        /*
-        activityChain?.addActivityForGoal(type: SET_REMINDER_BTN_TAPPED_REF, goalId: data.goalId)
+
+        LogActivityModel.getActivityChain().addActivityForGoal(SET_REMINDER_BTN_TAPPED_REF, goal.getGoalId());
         //end log activiy
 
-         */
+
         Log.d("singleGoalSetReminder", "setReminder: " + setReminder);
         return setReminder;
     }
@@ -339,41 +345,47 @@ public class singleGoalView_VC extends AppCompatActivity {
 
          */
     }
-    public void letUsKnowChartDataDownloaded(String goalName, String goalId, ArrayList<String> subGoalIds) {
+    public void letUsKnowChartDataDownloaded(String goalName, String goalId, ArrayList<String> subGoalIds,IndividualGoalModel goalModel) {
         Log.d("letUsKnow", "letUsKnowChartDataDownloaded: " + "letUsKnowChartDataDownloaded");
 
-        ProgressViewIndividualWallModel model = new ProgressViewIndividualWallModel.(goalId, subGoalIds);
+        ProgressViewIndividualWallModel model = new ProgressViewIndividualWallModel(goalId, subGoalIds,goalModel);
         model.callDetailedStudyData(true, new ResultHandler<Object>() {
             @Override
             public void onSuccess(Object data) {
+                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                if((boolean)hashMap.get("_status") == true){
+                    Log.d("letUsKnowChart", "onSuccess: send double alert Question");
+                    /*
+                    if (ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) > (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0) {
 
+                        //late start
+                        //send double alert question
+                        let later = ((ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) - (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0)) / 86400
+                        let questionView = DoubleAlertQuestionView(goalName: goalName, goalId:goalId, later: later, delegate: self)
+                        DispatchQueue.main.async {
+                            self.view.addSubview(questionView.prepareForView())
+                        }
+                    }
+                    else{
+                        Log.d("letUsKnowChart", "onSuccess: send double alert Question");
+
+                        //regular or early start
+                        //send only single alert questions
+                        let questionView = SingleAlertTypeQuestionView(questions: alertTypeQuestions(type: FACE_QUESTION_TYPE_REF_FOR_COMPLETION, question: "How well do you think you did on the goal you just completed?", goalId: goalId, selectedSubGoalId: "", studyId: ""), result: questionResult(questionId: "", result: nil, isMandatory: true), isGroupStudy: false)
+                        DispatchQueue.main.async {
+                            self.view.addSubview(questionView.prepareForView())
+                        }
+                    }
+
+                     */
+                }
             }
 
             @Override
             public void onFailure(Exception e) {
 
             }
-        }{ (status) in
-            if status {
-                if (ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) > (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0) {
-                    //late start
-                    //send double alert question
-                    let later = ((ProgressViewIndividualWallModel.sharedInstance?.xMinFirstStudyTime ?? 0) - (ProgressViewIndividualWallModel.sharedInstance?.xMinProposedStarDate ?? 0)) / 86400
-                    let questionView = DoubleAlertQuestionView(goalName: goalName, goalId:goalId, later: later, delegate: self)
-                    DispatchQueue.main.async {
-                        self.view.addSubview(questionView.prepareForView())
-                    }
-                }
-				else {
-                    //regular or early start
-                    //send only single alert questions
-                    let questionView = SingleAlertTypeQuestionView(questions: alertTypeQuestions(type: FACE_QUESTION_TYPE_REF_FOR_COMPLETION, question: "How well do you think you did on the goal you just completed?", goalId: goalId, selectedSubGoalId: "", studyId: ""), result: questionResult(questionId: "", result: nil, isMandatory: true), isGroupStudy: false)
-                    DispatchQueue.main.async {
-                        self.view.addSubview(questionView.prepareForView())
-                    }
-                }
-            }
-        }
+        });
     }
 
 }

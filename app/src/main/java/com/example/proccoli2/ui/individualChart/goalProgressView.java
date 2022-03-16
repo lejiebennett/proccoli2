@@ -1,6 +1,12 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.individualChart;
+
+import static com.example.proccoli2.NewModels.SingletonStrings.BACK_BTN_INDIVIDUAL_PROGRESS_REF;
+import static com.example.proccoli2.NewModels.SingletonStrings.GO_TO_DATE_BTN_REF;
+import static com.example.proccoli2.NewModels.SingletonStrings.GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF;
+import static com.example.proccoli2.NewModels.SingletonStrings.PROGRESS_LOOK_REF;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +25,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import com.example.proccoli2.NewModels.DataServices;
+import com.example.proccoli2.NewModels.DateExtended;
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
+import com.example.proccoli2.NewModels.ProgressViewIndividualWallModel;
+import com.example.proccoli2.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -36,12 +48,14 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Class for when an individual goal is clicked to view goal progress in the single goal view page
  * Need to update from Fall 2021
  */
 public class goalProgressView extends AppCompatActivity {
+    static goalProgressView sharedInstance = new goalProgressView();
     BarChart chart;
     Toolbar toolbar;
     ImageView calendar, graphs;
@@ -52,18 +66,27 @@ public class goalProgressView extends AppCompatActivity {
     TextView cancelBtn, doneBtn;
 
     LinearLayout dateGoalProgressLinearLayout;
+    IndividualGoalModel data;
 
+    public static goalProgressView getSharedInstance() {
+        return sharedInstance;
+    }
 
     @Override
     public void onCreate(Bundle SavedInstanceState) {
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.goalprogress_view);
 
+        Intent intent = getIntent();
+        data = (IndividualGoalModel)intent.getExtras().get("bigGoal");
+
+
         toolbar = findViewById(R.id.toolbarGoalProgress);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("toolbar clicked", "onClick: I was clicked");
+                progressBackTapped();
                 finish();
             }
         });
@@ -107,6 +130,7 @@ public class goalProgressView extends AppCompatActivity {
         chart.setDrawValueAboveBar(false);
         chart.setHighlightFullBarEnabled(false);
         chart.getDescription().setEnabled(false);
+        chart.setVisibleXRangeMaximum(10);
 
         //Set the chart legend
         Legend l = chart.getLegend();
@@ -212,6 +236,7 @@ public class goalProgressView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("graphs", "onClick: I clicked the graph btn" + getResources());
+                changedDataSourceTapped();
                 if(twoGraph == true){
                     graphs.setImageResource(R.drawable.onegraph_foreground);
                     twoGraph = false;
@@ -232,12 +257,18 @@ public class goalProgressView extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("SelectedDate", "onClick: " + dateSpinner.getSelectedItem().toString());
                 dateGoalProgressLinearLayout.setVisibility(View.INVISIBLE);
+                Date selectedDate = (Date) dateSpinner.getSelectedItem();
+                long longSelectedDate = selectedDate.getTime()/100L;
+
+                goToDateSelected((int) longSelectedDate,dateSpinner.getSelectedItem().toString());
 
             }
         });
 
 
     }
+
+
 
 
     private int[] getColors() {
@@ -278,5 +309,109 @@ public class goalProgressView extends AppCompatActivity {
 
 
     }
+
+    public void goToDate(int positionToGoTo,ArrayList<String> xLabels){
+        /*
+        DispatchQueue.main.async {
+            if GoToDatePickerView.sharedInstace == nil {
+                self.view.addSubview(GoToDatePickerView().prepareForDisplay(delegate: self, xLabels: xLabels))
+            }
+        }
+
+         */
+        chart.moveViewToX(positionToGoTo);
+        // activity log
+        LogActivityModel.getActivityChain().addActivityForGoal(GO_TO_DATE_BTN_REF, (String) getValueOrDefault(data.getGoalId(),"goal_id_err"));
+        // end activity log
+
+
+    }
+
+    public void changedDataSourceTapped(String type){
+
+        /*
+        ProgressViewIndividualWallModel.getSharedInstance().dataSourceChange(type);
+
+
+        DataServices.getInstance().graphSwitchBtnClick(goalId,type,);
+
+         */
+        // activity log
+       // LogActivityModel.getActivityChain().addActivityForGoal("\(type)\(PROGRESS_LOOK_REF)",(String) getValueOrDefault(data.getGoalId(),"goal_id_err"));
+        LogActivityModel.getActivityChain().addActivityForGoal(type + PROGRESS_LOOK_REF,(String) getValueOrDefault(data.getGoalId(),"goal_id_err"));
+
+        // end activity log
+
+
+
+
+
+    }
+
+
+    public void progressBackTapped() {
+        /*
+        self.dismiss(animated: true) {
+            ProgressViewIndividualWallModel.sharedInstance?.prepareForDeint()
+        }
+        */
+        // activity log
+        LogActivityModel.getActivityChain().addActivityForGoal(BACK_BTN_INDIVIDUAL_PROGRESS_REF, getValueOrDefault(data.getGoalId(),"goal_id_err"));
+        // end activity log
+
+
+    }
+    public void goToDateSelected(int date, String stringDate) {
+
+      //  DispatchQueue.main.async {
+          //  IndividualWallChartView.sharedInstance.chartViewCollection.scrollToItem(at: IndexPath(row: date, section: 0), at: .centeredHorizontally, animated: true)
+            DataServices.chartGotoDateLog((String)getValueOrDefault(data.getGoalId(),"err"),stringDate);
+       // }
+
+        // activity log
+      //  LogActivityModel.getActivityChain().addActivityForGoal(GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF, IndividualWallVC.sharedInstance?.data?.goalId ?? "goal_id_err");
+        LogActivityModel.getActivityChain().addActivityForGoal(GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF, (String)getValueOrDefault(data.getGoalId(),"goal_id_err"));
+
+        // end activity log
+
+
+    }
+
+    public static <T> T getValueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
+    public void getSignalDataIsDowloded(ArrayList<BarEntry> data, ArrayList<String> xAxisLabels) {
+        if(xAxisLabels.size()== 0) {
+            defaultChartValue();
+        }
+		else {
+            chartData = data.chunked(shapeSize.chartDataPoint);
+            xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
+        }
+    }
+
+    public void scrollToTop() {
+        //chartViewCollection.scrollToItem(at: IndexPath(row: 0, section: 0), at: .centeredHorizontally, animated: false)
+        chart.moveViewToX(0);
+    }
+    public void getSignalAfterSourceChanged(ArrayList<BarEntry> data, ArrayList<String> xAxisLabels) {
+        if(xAxisLabels.size() == 0) {
+            defaultChartValue();
+        }
+		else {
+            chartData = data.chunked(shapeSize.chartDataPoint);
+            xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
+        }
+
+        scrollToTop();
+    }
+
+    public void defaultChartValue() {
+        xAxisDeadlineLabels = [[DateExtended.convertDateToStringWithOutHours(Date())]]
+        chartData = [[BarChartDataEntry(x: 1, yValues: [0.0])]]
+    }
+
+
 
 }

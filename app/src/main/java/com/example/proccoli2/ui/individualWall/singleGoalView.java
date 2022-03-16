@@ -41,7 +41,7 @@ import com.example.proccoli2.NewModels.PersonalNoteModel;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
 import com.example.proccoli2.R;
-import com.example.proccoli2.goalProgressView;
+import com.example.proccoli2.ui.individualChart.goalProgressView;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
 import com.example.proccoli2.smileyFaceSurveyView;
 import com.example.proccoli2.timerView;
@@ -384,6 +384,7 @@ public class singleGoalView extends AppCompatActivity {
             public void onClick(View view) {
                 //Actual code for goalProgressBtn
                 Intent myIntent = new Intent(singleGoalView.this, goalProgressView.class);
+                myIntent.putExtra("bigGoal",myGoal);
                 startActivity(myIntent);
             }
         });

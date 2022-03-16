@@ -1288,7 +1288,7 @@ public class DataServices {
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID").collection(LOG_DATA_COLLECTION_REF).document(CHART_VIEW_BTN_CLICK_REF).update(createHashmap(CHART_VIEW_BTN_CLICK_REF + "." + clickEventId + "." + EXIT_TIME_REF,current));
     }
 
-    public void chartGotoDateLog(String goalId,String gotoDataDate) {
+    public static void chartGotoDateLog(String goalId, String gotoDataDate) {
         long current = System.currentTimeMillis()/100L;
         HashMap<String,Object> hashMap = createHashmap(CLIK_TIME_REF,current);
         hashMap.put(GO_TO_DATE_REF, gotoDataDate);
@@ -1429,8 +1429,8 @@ public class DataServices {
         //update individual wall progress data
         DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
        // batch.update(["\(Date.dailyBaseTimeInterval(now:Date())).\(subgoalId)" : FieldValue.increment((studiedTime))], individualWallProgressDocRef);
-
-        batch.update(createHashmap(Date.dailyBaseTimeInterval(now:Date()) + "." + subgoalId,FieldValue.increment((studiedTime))), individualWallProgressDocRef);
+        String key = String.valueOf(new DateExtended().dailyBaseTimeInterval(new Date()));
+        batch.update(individualWallProgressDocRef, createHashmap(key + "." + subgoalId,FieldValue.increment((studiedTime))));
 
 
     }
@@ -1440,7 +1440,9 @@ public class DataServices {
         batch.update(userPersonalGoalRef, createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment((studiedTime))));
         //update individual wall progress data
         DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
-       // batch.update("\(Date.dailyBaseTimeInterval(now:Date(timeIntervalSince1970: startTime))).\(subgoalId)" , FieldValue.increment(studiedTime)), individualWallProgressDocRef);
+        //Multiplied startTime by 100L since Date constructor takes in milliseconds L
+        String key = String.valueOf(new DateExtended().dailyBaseTimeInterval(new Date((long) (startTime*100L))));
+        batch.update(individualWallProgressDocRef, createHashmap(key + "." + subgoalId, FieldValue.increment(studiedTime)));
 
     }
 
