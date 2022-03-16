@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -229,6 +230,17 @@ public class HomeFragment extends Fragment{
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
+                Bundle result = new Bundle();
+                result.putSerializable("goalList",goalList);
+                getParentFragmentManager().setFragmentResult("goalLst",result);
+            }
+        });
+
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                ArrayList<GoalModel> newGoalList = (ArrayList<GoalModel>) result.getSerializable("goalList");
+                Log.d("From search fragment", "onFragmentResult: " + newGoalList);
             }
         });
 

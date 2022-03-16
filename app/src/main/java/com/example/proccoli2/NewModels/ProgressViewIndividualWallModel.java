@@ -12,17 +12,12 @@ import androidx.annotation.RequiresApi;
 
 import com.example.proccoli2.ui.individualChart.goalProgressView;
 import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProgressViewIndividualWallModel {
@@ -97,7 +92,12 @@ public class ProgressViewIndividualWallModel {
             return;
         }
         for(BarEntry barEntry: data){
-            double total = barEntry.getYVals().reduce(0,+);
+            float[] yValsForEntry = barEntry.getYVals();
+            float floatTotal = 0;
+            for(float fl: yValsForEntry){
+                floatTotal = floatTotal + fl;
+            }
+            double total = floatTotal;
             if(yMax < getValueOrDefault(total,0.0)){
                 yMax = getValueOrDefault(total,0.0);
             }

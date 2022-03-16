@@ -42,6 +42,7 @@ import com.example.proccoli2.oldModels.GoalModel;
 import com.example.proccoli2.oldModels.PersonalNoteModel;
 import com.example.proccoli2.oldModels.SubGoalModel;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
+import com.example.proccoli2.ui.timerViewGroupGoals.timerViewGroupGoal;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
 

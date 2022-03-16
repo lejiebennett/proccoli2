@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.R;
 import com.example.proccoli2.oldModels.GoalModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;

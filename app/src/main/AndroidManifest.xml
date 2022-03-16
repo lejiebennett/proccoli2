@@ -47,10 +47,10 @@
         </activity>
         <activity android:name=".timerView">
         </activity>
-        <activity android:name=".timerViewGroupGoal">
+        <activity android:name=".ui.timerViewGroupGoals.timerViewGroupGoal">
         </activity>
-        <activity android:name=".timeReportView"></activity>
-        <activity android:name=".selfreport_activity"
+        <activity android:name=".UnusedFiles.timeReportView"></activity>
+        <activity android:name=".UnusedFiles.selfreport_activity"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
         <activity android:name=".smileyFaceSurveyView"></activity>

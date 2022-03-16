@@ -5,7 +5,6 @@ import static com.example.proccoli2.NewModels.SingletonStrings.GO_TO_DATE_BTN_RE
 import static com.example.proccoli2.NewModels.SingletonStrings.GO_TO_SELECTED_DATE_INDIVIDUAL_PROGRESS_REF;
 import static com.example.proccoli2.NewModels.SingletonStrings.PROGRESS_LOOK_REF;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -23,13 +21,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.DateExtended;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.LogActivityModel;
-import com.example.proccoli2.NewModels.ProgressViewIndividualWallModel;
 import com.example.proccoli2.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -41,7 +37,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -67,6 +62,12 @@ public class goalProgressView extends AppCompatActivity {
 
     LinearLayout dateGoalProgressLinearLayout;
     IndividualGoalModel data;
+
+    //values for the chart data
+    ArrayList<BarEntry> chartData = new ArrayList<BarEntry>();
+    final ArrayList<String> xAxisDeadlineLabels= new ArrayList<String>();
+
+
 
     public static goalProgressView getSharedInstance() {
         return sharedInstance;
@@ -236,7 +237,7 @@ public class goalProgressView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("graphs", "onClick: I clicked the graph btn" + getResources());
-                changedDataSourceTapped();
+              //  changedDataSourceTapped();
                 if(twoGraph == true){
                     graphs.setImageResource(R.drawable.onegraph_foreground);
                     twoGraph = false;
@@ -386,8 +387,8 @@ public class goalProgressView extends AppCompatActivity {
             defaultChartValue();
         }
 		else {
-            chartData = data.chunked(shapeSize.chartDataPoint);
-            xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
+           // chartData = data.chunked(shapeSize.chartDataPoint);
+           // xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
         }
     }
 
@@ -400,16 +401,20 @@ public class goalProgressView extends AppCompatActivity {
             defaultChartValue();
         }
 		else {
-            chartData = data.chunked(shapeSize.chartDataPoint);
-            xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
+           // chartData = data.chunked(shapeSize.chartDataPoint);
+           // xAxisDeadlineLabels = xAxisLabels.chunked(shapeSize.chartDataPoint);
         }
 
         scrollToTop();
     }
 
     public void defaultChartValue() {
-        xAxisDeadlineLabels = [[DateExtended.convertDateToStringWithOutHours(Date())]]
-        chartData = [[BarChartDataEntry(x: 1, yValues: [0.0])]]
+        String convertedDateToStringWithoOutHours = new DateExtended().convertDateToStringWithOutHours(new Date());
+        xAxisDeadlineLabels.add(convertedDateToStringWithoOutHours);
+        float[] defaultY= new float[1];
+        defaultY[0] = 0.0F;
+        BarEntry defaultBar = new BarEntry( 1,defaultY);
+        chartData.add(defaultBar);
     }
 
 

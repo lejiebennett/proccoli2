@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.timerViewGroupGoals;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -23,6 +23,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.proccoli2.R;
+import com.example.proccoli2.groupgoalsingleGoalView;
+import com.example.proccoli2.smileyFaceSurveyView;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisherTimer;
 import com.google.android.material.button.MaterialButton;
 

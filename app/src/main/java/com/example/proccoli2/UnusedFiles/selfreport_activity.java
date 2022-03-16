@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.R;
 import com.example.proccoli2.oldModels.GoalModel;
 
 import java.util.ArrayList;
@@ -182,7 +183,7 @@ public class selfreport_activity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("passedGoal",itemsCopy.get(goalSelected));
                     Log.d("timeReportPass", "onClick: passedGoal" + itemsCopy.get(goalSelected));
-                    Intent intent = new Intent(selfreport_activity.this,timeReportView.class);
+                    Intent intent = new Intent(selfreport_activity.this, timeReportView.class);
                     intent.putExtras(bundle);
                     //startActivity(intent);
 

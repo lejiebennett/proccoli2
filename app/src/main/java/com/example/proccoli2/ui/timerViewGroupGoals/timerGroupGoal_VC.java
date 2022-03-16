@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.timerViewGroupGoals;
 
 import androidx.appcompat.app.AppCompatActivity;
 

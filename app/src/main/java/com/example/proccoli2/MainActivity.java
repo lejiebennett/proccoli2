@@ -344,6 +344,7 @@ public class MainActivity extends AppCompatActivity{
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if(destination.getId()==R.id.navigation_notifications){
                     Log.d("notification", "onDestinationChanged: NOTIFICATIONS");
+
                   //  transaction.add(notificationsFragment,null);
 
                     /*
