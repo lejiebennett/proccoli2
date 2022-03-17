@@ -167,6 +167,101 @@
         android:translationZ="100dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+
+    <LinearLayout
+        android:id="@+id/report2PopupLayout"
+        android:layout_width="228dp"
+        android:layout_height="229dp"
+        android:background="@color/grey"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.30">
+
+        <TextView
+            android:id="@+id/gradePercentageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@color/grey"
+            android:text="\nGradePercentage"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gradePercentageDescription"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@color/grey"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/gradePercentageInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/boarder"
+            android:hint="max score..."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/submitBtnGP"
+                android:layout_width="96dp"
+                android:layout_height="51dp"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/cancelBtnGP"
+                android:layout_width="100dp"
+                android:layout_height="53dp"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gradePercentageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="289dp"
+        android:background="#e6e8e6"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <NumberPicker
+            android:id="@+id/percentPickerGP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e6e8e6"
+            android:divider="@color/black" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/reportPopupLayout"
         android:layout_width="228dp"

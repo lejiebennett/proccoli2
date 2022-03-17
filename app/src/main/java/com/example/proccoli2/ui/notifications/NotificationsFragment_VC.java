@@ -10,11 +10,16 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.proccoli2.NewModels.GoalModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.inject.Singleton;
 
 public class NotificationsFragment_VC {
     private NotificationsFragment notificationsFragment;
@@ -129,4 +134,5 @@ public class NotificationsFragment_VC {
         int difference = stop - start;
             return (double)(difference/60);
     }
+
 }

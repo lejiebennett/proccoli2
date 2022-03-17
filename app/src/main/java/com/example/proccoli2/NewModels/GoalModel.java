@@ -49,6 +49,10 @@ public class GoalModel implements Serializable {
         return studiedTime;
     }
 
+    public void setStudiedTime(double studiedTime) {
+        this.studiedTime = studiedTime;
+    }
+
     public void setBigGoal(String bigGoal) {
         this.bigGoal = bigGoal;
     }
@@ -99,6 +103,14 @@ public class GoalModel implements Serializable {
 
     public String getGoalCreaterEmail() {
         return goalCreaterEmail;
+    }
+
+    public boolean isGraded() {
+        return isGraded;
+    }
+
+    public void setGraded(boolean graded) {
+        isGraded = graded;
     }
 
     public GoalModel(String bigGoal, long personalDeadline, String taskType, String eventId, long createdAt, boolean isCompleted, String goalType, long whenIsDue, String eventCreaterUid, double proposedStudyTime, double studiedTime, boolean isGraded){

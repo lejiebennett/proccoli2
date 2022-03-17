@@ -29,12 +29,12 @@ public class DataServices {
     ShapeSize shapeSize = new ShapeSize();
 
     //colelction references
-    final String USER_COLLECTION_REF = "users";
+    static final String USER_COLLECTION_REF = "users";
     static final String GOALS_COLLECTION_REF  = "goals";
     final String REVISION_COLLECTION_REF = "revisions";
     final String PERSONAL_NOTE_COLLEECTION_REF = "personalNote";
     final String REMINDERS_COLLECTIONS_REF = "reminders";
-    final String PERSONAL_GOALS_COLLECTION_REF = "personalGoals";
+    static final String PERSONAL_GOALS_COLLECTION_REF = "personalGoals";
     static final String INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF = "progressData";
     static final String LOG_DATA_COLLECTION_REF = "logData";
 
@@ -85,8 +85,8 @@ public class DataServices {
     final String IS_GOAL_COMPLETED_REF = "isGoalCompfinal Stringed";
     final String TASK_TYPE_REF = "taskType";
     final String WHEN_IS_IT_DUE_REF = "whenIsItDue";
-    final String SUB_GOAL_PACK_REF = "subGoalPack";
-    final String TOTAL_STUDIED_TIME_REF = "totalStudiedTime";
+    static final String SUB_GOAL_PACK_REF = "subGoalPack";
+    static final String TOTAL_STUDIED_TIME_REF = "totalStudiedTime";
     final String NO_SUB_GOAL_REF = "noSubGoal";
     final String SUB_GOAL_ID_REF = "subgoalId";
     final String SUB_GOAL_CHECK_TIME_REF = "subGoalCheckTime";
@@ -95,11 +95,11 @@ public class DataServices {
 
     final String NOTE_REF = "note";
     final String NOTE_ID_REF = "noteId";
-    final String STUDY_TIME_REF = "studyTime";
-    final String STUDY_TIME_DOC_ID_REF = "KDFJNSDKjiew32mdsdsf03D";
+    static final String STUDY_TIME_REF = "studyTime";
+    static final String STUDY_TIME_DOC_ID_REF = "KDFJNSDKjiew32mdsdsf03D";
 
     final String TOTAL_BREAK_TIMES_REF = "totalBreakTimes";
-    final String IS_FINISHED_REF = "isFinished";
+    static final String IS_FINISHED_REF = "isFinished";
     final String PROPOSED_STUDY_TIME_REF = "proposedStudyTime";
     final String TOTAL_PROPOSED_STUDY_TIME_REF = "totalProposedStudyTime";
 
@@ -107,13 +107,13 @@ public class DataServices {
     final String RESUMES_REF = "resumes";
     final String BREAK_TIME_REF = "breakTime";
     final String STOP_TIME_REF = "stopTime";
-    final String STUDIED_TIME_REF = "studiedTime";
+    static final String STUDIED_TIME_REF = "studiedTime";
     final String STOPED_STUYD_TIME_REF = "stopedStudyTime";
     final String START_LOCATION_REF = "startLocation";
     final String BREAK_LOCATION_REF = "breakLocation";
     final String STOP_LOCATION_REF = "stopLocation";
-    final String FINISH_LOCATION_REF = "stopLocation";
-    final String FINISH_TIME_REF = "finishTime";
+    static final String FINISH_LOCATION_REF = "stopLocation";
+    static final String FINISH_TIME_REF = "finishTime";
     final String RESUME_TIME_REF = "resumeTime";
     final String RESUME_LOCATION_REF = "resumeLocation";
     final String INDIVIDUAL_WALL_TIMER_LBL_REF = "individualWall";
@@ -221,7 +221,7 @@ public class DataServices {
     final String Evaluation_REF = "evaluation";
     final String SELF_EVALUATION_LATE_START_REF = "IstartedLateBecause";
 
-    final String IS_GRADED_REF = "grade";
+    static final String IS_GRADED_REF = "grade";
 
 
 //Group Wall
@@ -336,7 +336,7 @@ public class DataServices {
     final String SELF_TIME_REPORT_REF = "btnTap_selfTimeReport";
     final String SELF_GRADE_REPORT_REF = "btnTap_selfGradeReport";
     final String SELF_TIME_REPORT_SUBMIT_REF = "submit_selfTimeReport";
-    final String SELF_GRADE_REPORT_SUBMIT_REF = "submit_selfGradeReport";
+    static final String SELF_GRADE_REPORT_SUBMIT_REF = "submit_selfGradeReport";
 
     final String CANCEL_FOR_GRADE_SUBMIT_REF = "cancelBtn_selfGradeReport";
     final String CANCEL_FOR_TIME_SUBMIT_REF = "cancelBtn_selfTimeReport";
@@ -388,7 +388,7 @@ public class DataServices {
     final String EXPIRED_GOAL_NOTIFICATION_READ_REF = "expired_goal_notification_read";
 
 
-    final String NO_LOCATION_REF = "no_location";
+    static final String NO_LOCATION_REF = "no_location";
     
     
     
@@ -1429,9 +1429,9 @@ public class DataServices {
 
 
     }
-    public void  updateChartDataStuidedTimesForTimeReport(WriteBatch batch, String goalId,String subgoalId,int studiedTime, double startTime) {
+    public static void  updateChartDataStuidedTimesForTimeReport(WriteBatch batch, String goalId, String subgoalId, int studiedTime, double startTime) {
         //update profile chart data
-        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(FirebaseAuth.getInstance().getUid()).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
         batch.update(userPersonalGoalRef, createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment((studiedTime))));
         //update individual wall progress data
         DocumentReference individualWallProgressDocRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF).document("shapeSize.individualProgressDocID");
@@ -1475,7 +1475,138 @@ public class DataServices {
 
     ///End of individual Wall VC
 
+    ////Mark:  SelfReport VC
+   public static void sendGradeReportData(String grade, String goalId) {
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(FirebaseAuth.getInstance().getUid()).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId).update(createHashmap(IS_GRADED_REF,grade));
 
+        LogActivityModel.getActivityChain().addActivityForGoal(SELF_GRADE_REPORT_SUBMIT_REF,goalId);
+    }
+
+    public static void requestIndividualGoalForSubGoalCheck(String goalId, ResultHandler<Object> handler){
+       // completion:@escaping(_ status:Bool, _ response:individualGoalStructForSelfTimeReport?, _ error:Error?)->()) {
+            FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.getException() == null) {
+                        DocumentSnapshot docSnap = (DocumentSnapshot) task.getResult();
+                        try {
+                            HashMap<String, Object> data = (HashMap<String, Object>) docSnap.getData();
+                            HashMap<String,Object> hashMap = new HashMap<>();
+                            hashMap.put("_status",true);
+                            hashMap.put("_response",hashMap);
+                            hashMap.put("error",null);
+                            handler.onSuccess(hashMap);
+                        }
+                        catch(Exception e){
+                            HashMap<String,Object> hashMap = new HashMap<>();
+                            hashMap.put("_status",true);
+                            hashMap.put("_response",null);
+                            hashMap.put("error",e);
+                            handler.onSuccess(hashMap);
+                        }
+                    }
+                    else{
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("_status",true);
+                        hashMap.put("_response",null);
+                        hashMap.put("error",task.getException().getLocalizedMessage());
+                        handler.onSuccess(hashMap);
+                    }
+                }
+            });
+    }
+
+    public static void requestGroupGoalForSubGoalCheck(String goalId, ResultHandler<Object> handler){
+        //completion:@escaping(_ status:Bool, _ response: groupGoalStructureForSelfTimeReport?, _ error:Error?)->()) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getException() == null) {
+                    DocumentSnapshot docSnap = (DocumentSnapshot) task.getResult();
+                    try {
+                        HashMap<String, Object> data = (HashMap<String, Object>) docSnap.getData();
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("_status",true);
+                        hashMap.put("_response",hashMap);
+                        hashMap.put("error",null);
+                        handler.onSuccess(hashMap);
+                    }
+                    catch(Exception e){
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("_status",true);
+                        hashMap.put("_response",null);
+                        hashMap.put("error",e);
+                        handler.onSuccess(hashMap);
+                    }
+                }
+                else{
+                    HashMap<String,Object> hashMap = new HashMap<>();
+                    hashMap.put("_status",true);
+                    hashMap.put("_response",null);
+                    hashMap.put("error",task.getException().getLocalizedMessage());
+                    handler.onSuccess(hashMap);
+                }
+            }
+        });
+    }
+
+    public static void sendSelfTimeReportForIndividual(String goalId, String subgoalId, int studiedTime, long startDate, long finishDate) {
+        String studyId = getAlphaNumericString(11);
+        HashMap<String,Object> timerStartData = TimerDataModel.jsonFormatterForSelfTimeReportForStartTimerIndividual(studyId, startDate, finishDate,studiedTime);
+
+        //first update the main goal sub pack/subgoal/ total studied Time
+        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        //second update studyCollection/subgoal/studyid
+        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId);
+        //third studyStart for timer page
+        DocumentReference studyStartRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(subgoalId);
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        batch.update(studyStartRef, timerStartData);
+        batch.update(mainGoalDoc, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF,FieldValue.increment((int)(studiedTime))));
+
+        HashMap<String,Object> hashMap1 = createHashmap( CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap1.put("reportedFinishTime",finishDate);
+        hashMap1.put("reportedStartTime", startDate);
+        hashMap1.put(FINISH_LOCATION_REF,NO_LOCATION_REF);
+        HashMap<String,Object> hashMap = createHashmap(studyId + "." + FINISH_TIME_REF, hashMap1);
+        hashMap.put(studyId + "." + STUDIED_TIME_REF,studiedTime);
+        hashMap.put(studyId +"." +  IS_FINISHED_REF,true);
+        batch.update(studyCollectionRef, hashMap);
+        updateChartDataStuidedTimesForTimeReport(batch, goalId, subgoalId,  studiedTime,startDate);
+        batch.commit();
+
+        //TabbarVC.sharedInstance?.profileVCInstance?.isProgressBtnAnimationOn = true
+    }
+    public static void sendSelfTimeReportForGroupGoal(String goalId, String subgoalId, int studiedTime, long startDate, long finishDate) {
+        String studyId = getAlphaNumericString(11);
+        HashMap<String,Object> timerStartData = TimerDataModel.jsonFormatterForSelfTimeReportForStartTimerGroup(FirebaseAuth.getInstance().getUid(), subgoalId,  studyId,  startDate, finishDate, studiedTime);
+
+        DocumentReference mainGoalDoc = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId);
+        DocumentReference studyCollectionRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
+        DocumentReference studyStartRef = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+        batch.update(studyStartRef, timerStartData);
+        batch.update(mainGoalDoc, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + TOTAL_STUDIED_TIME_REF, FieldValue.increment((int)studiedTime)));
+
+
+        HashMap<String,Object> hashMap1 = createHashmap( CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap1.put("reportedFinishTime",finishDate);
+        hashMap1.put("reportedStartTime", startDate);
+        hashMap1.put(FINISH_LOCATION_REF,NO_LOCATION_REF);
+        HashMap<String,Object> hashMap = createHashmap(FirebaseAuth.getInstance().getUid() + "." + subgoalId + "." + studyId + "." + FINISH_TIME_REF,hashMap1);
+        hashMap.put(FirebaseAuth.getInstance().getUid() + "." + subgoalId + "." + studyId + "." + STUDIED_TIME_REF, studiedTime);
+        hashMap.put(FirebaseAuth.getInstance().getUid() + "." + subgoalId + "." + studyId + "." + IS_FINISHED_REF, true);
+        batch.update(studyCollectionRef, hashMap);
+
+        DocumentReference userPersonalGoalRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(FirebaseAuth.getInstance().getUid()).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId);
+        batch.update(userPersonalGoalRef, createHashmap(TOTAL_STUDIED_TIME_REF,FieldValue.increment((int)(studiedTime))));
+
+
+        batch.commit();
+
+       // TabbarVC.sharedInstance?.profileVCInstance?.isProgressBtnAnimationOn = true
+    }
+    ////end SelfReport
 
 
     //Activity Log Data End

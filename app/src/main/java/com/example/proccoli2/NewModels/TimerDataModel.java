@@ -87,7 +87,7 @@ public class TimerDataModel {
 
     }
 
-    public HashMap<String,Object> jsonFormatterForSelfTimeReportForStartTimerIndividual(String studyId, double startTime, double finishTime, int reportedTime){
+    public static HashMap<String,Object> jsonFormatterForSelfTimeReportForStartTimerIndividual(String studyId, double startTime, double finishTime, int reportedTime){
         HashMap<String,Object> hashMap1 = new HashMap<>();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap1.put("reportTime",System.currentTimeMillis());
@@ -99,7 +99,7 @@ public class TimerDataModel {
         return hashMap;
     }
 
-    public HashMap<String, Object> jsonFormatterForSelfTimeReportForStartTimerGroup(String uid, String subgoalId, String studyId, double startTime,double finishTime, int reportedTime){
+    public static HashMap<String, Object> jsonFormatterForSelfTimeReportForStartTimerGroup(String uid, String subgoalId, String studyId, long startTime, long finishTime, int reportedTime){
         HashMap<String,Object> hashMap1 = new HashMap<>();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap1.put("reportTime",System.currentTimeMillis());

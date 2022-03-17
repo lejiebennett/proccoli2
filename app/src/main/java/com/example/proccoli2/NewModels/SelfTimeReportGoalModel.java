@@ -14,7 +14,7 @@ public class SelfTimeReportGoalModel {
         HashMap<String, groupMembersPack> groupMembers;
         groupSubgoalPack subGoalPack;s
 
-        static func subgoalChecker(subPack:groupSubgoalPack?,uid:String, completion:@escaping(_ isThereSub:Bool, _ response:[groupSubGoalFields]?)->()) {
+        static func subgoalChecker(groupSubgoalPack subPack,String uid completion:@escaping(_ isThereSub:Bool, _ response:[groupSubGoalFields]?)->()) {
             let subFilter = subPack?.subGoalsArray?.filter({$0.assignedToUid == uid && $0.isChecked != true && $0.isDeleted == false}).sorted(by: {$0.subDeadline > $1.subDeadline })
             if (subFilter?.count ?? 0) > 0  {
                 completion(true, subFilter);
@@ -47,5 +47,7 @@ public class SelfTimeReportGoalModel {
     }
 
      */
+
+
 
 }

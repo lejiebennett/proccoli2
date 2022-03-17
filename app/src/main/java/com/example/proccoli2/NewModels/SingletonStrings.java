@@ -309,12 +309,12 @@ public class SingletonStrings implements Serializable {
     final String SURVEY_ASNWERED_REF = "surveyAnswered";
 
     final String SELF_TIME_REPORT_REF = "btnTap_selfTimeReport";
-    final String SELF_GRADE_REPORT_REF = "btnTap_selfGradeReport";
-    final String SELF_TIME_REPORT_SUBMIT_REF = "submit_selfTimeReport";
+    public final String SELF_GRADE_REPORT_REF = "btnTap_selfGradeReport";
+    public final String SELF_TIME_REPORT_SUBMIT_REF = "submit_selfTimeReport";
     final String SELF_GRADE_REPORT_SUBMIT_REF = "submit_selfGradeReport";
 
     final String CANCEL_FOR_GRADE_SUBMIT_REF = "cancelBtn_selfGradeReport";
-    final String CANCEL_FOR_TIME_SUBMIT_REF = "cancelBtn_selfTimeReport";
+    public final String CANCEL_FOR_TIME_SUBMIT_REF = "cancelBtn_selfTimeReport";
 
     final String GROUP_GOAL_INVITATION_ACCEPT_REF = "accept_groupGoal";
     final String GROUP_GOAL_INVITATION_DECLINE_REF = "decline_groupGoal";
