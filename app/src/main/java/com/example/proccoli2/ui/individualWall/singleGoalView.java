@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -39,12 +40,15 @@ import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.PersonalNoteModel;
 import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.groupgoalsingleGoalView;
+import com.example.proccoli2.oldModels.SubGoalModel;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
 import com.example.proccoli2.R;
 import com.example.proccoli2.ui.individualChart.goalProgressView;
 import com.example.proccoli2.ui.goalSetting.goalSettingView;
 import com.example.proccoli2.smileyFaceSurveyView;
 import com.example.proccoli2.timerView;
+import com.example.proccoli2.ui.timerViewGroupGoals.timerViewGroupGoal;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -89,6 +93,13 @@ public class singleGoalView extends AppCompatActivity {
 
     //Personal Notes
     ArrayList<PersonalNoteModel> itemNotesFromServerOriginaly = new ArrayList<>();
+
+    ImageView startWorkingCancelBtn;
+    startWorkingFullAdapter startAdapter;
+    RecyclerView startWorkingRecyclerView; //Recycler view for all popups
+    int positionForSingleGoalReport = -1;
+    int positionToUpdateStudiedTime = -1;
+
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -176,6 +187,18 @@ public class singleGoalView extends AppCompatActivity {
 
         Log.d("OriginGoalFromMain", String.valueOf(originalGoal));
 
+        //Start Working Cancel Button
+        startWorkingCancelBtn = findViewById(R.id.startWorkingBtnCancelSingle);
+        startWorkingCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeStartWorkingPopup();
+            }
+        });
+        //Start Working RecyclerView
+        startWorkingRecyclerView = findViewById(R.id.startWorkingRecyclerViewSingle);
+        closeStartWorkingPopup();
+
 
         //Initalize Reminder views
         setReminderPicker = findViewById(R.id.setReminderPickerS);
@@ -190,6 +213,7 @@ public class singleGoalView extends AppCompatActivity {
         cancelSetReminderBtn.setVisibility(View.INVISIBLE);
         doneSetReminderBtn.setVisibility(View.INVISIBLE);
         setReminderLabel.setVisibility(View.INVISIBLE);
+
 
         cancelSetReminderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,8 +396,37 @@ public class singleGoalView extends AppCompatActivity {
                 startActivity(i);
 
                  */
+                /*
                 Intent i = new Intent(singleGoalView.this, timerView.class);
                 activityResultLaunchTimer.launch(i);
+
+                 */
+
+
+                //Determines how many goals need to be added to startWorking (aka what goals in myGoals.getSubgoals are incomplete)
+                int numOfSubGoalsIncomplete = 0;
+                for(int i = 0; i < myGoal.getSubGoals().size(); i++){
+                    if(myGoal.getSubGoals().get(i).is_isChecked()!=true){
+                        numOfSubGoalsIncomplete = numOfSubGoalsIncomplete + 1;
+                        positionForSingleGoalReport = i;
+                    }
+                }
+
+                //No goals are incomplete
+                if(numOfSubGoalsIncomplete == 0){
+                    Intent i = new Intent(singleGoalView.this, timerView.class);
+                    i.putExtra("bigGoal",myGoal);
+                    activityResultLaunchTimer.launch(i);
+
+                }
+                //More than 1 subgoal: set up recycler view
+                else
+                {
+                    //Change the ui
+                    openStartWorkingPopup();
+                    //Add the appropriate goals
+                    setUpStartWorkingRecyclerView();
+                }
 
             }
         });
@@ -754,6 +807,131 @@ public class singleGoalView extends AppCompatActivity {
             noteInput.setCursorVisible(false);
 
         }
+    }
+
+    private void openStartWorkingPopup(){
+        startWorkingRecyclerView.setVisibility(View.VISIBLE);
+        startWorkingRecyclerView.bringToFront();
+        startWorkingCancelBtn.setVisibility(View.VISIBLE);
+        startWorkingCancelBtn.bringToFront();
+    }
+
+    private  void closeStartWorkingPopup(){
+        startWorkingCancelBtn.setVisibility(View.INVISIBLE);
+        startWorkingRecyclerView.setVisibility(View.INVISIBLE);
+
+    }
+
+    ///////////////////StartWorking/////////////////////////////////////////////////////////////////
+
+    class startWorkingFullAdapter extends RecyclerView.Adapter {
+        List<IndividualSubGoalStructModel> startWorkingItems;
+
+        public startWorkingFullAdapter() {
+            startWorkingItems = new ArrayList<>();
+            Log.d("subgoals toFilter", "startWorkingFullAdapter: " + myGoal.getSubGoals());
+
+            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
+                if(myGoal.getSubGoals().get(i).is_isChecked()!=true){
+                    startWorkingItems.add(myGoal.getSubGoals().get(i));
+                    Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
+                }
+            }
+
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new startWorkingSubGoalViewHolder(parent);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            startWorkingSubGoalViewHolder viewHolder = (startWorkingSubGoalViewHolder) holder;
+            final IndividualSubGoalStructModel item = startWorkingItems.get(position);
+            Log.d("Position", "onBindViewHolder: position" + item);
+            viewHolder.subGoalText.setText("\n" + startWorkingItems.get(position).get_subGoalName() + "\nDeadline: "+ controller.unixToStringDateTime((int)startWorkingItems.get(position).get_deadline()));
+            viewHolder.setSubGoalPosition(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return startWorkingItems.size();
+        }
+
+        public void remove(int position) {
+            IndividualSubGoalStructModel item = startWorkingItems.get(position);
+            if (startWorkingItems.contains(item)) {
+                startWorkingItems.remove(position);
+                notifyItemRemoved(position);
+                for(int i = 0; i<myGoal.getSubGoals().size()-1;i++){
+                    if(myGoal.getSubGoals().get(i) == item){
+                        myGoal.getSubGoals().remove(item);
+                    }
+                }
+            }
+        }
+
+        public void addInitialItems(){
+            for(int i = 0; i < myGoal.getSubGoals().size(); i++){
+                Log.d("trying to add", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
+                startWorkingItems.add(myGoal.getSubGoals().get(i));
+                Log.d("Added", "setUpRecyclerView: " + myGoal.getSubGoals().get(i));
+            }
+        }
+
+        public void addItem(IndividualSubGoalStructModel subgoal){
+            startWorkingItems.add(subgoal);
+            notifyItemInserted(startWorkingItems.size() - 1);
+            Log.d("AfterItemsAdd", "addItems: " + startWorkingItems);
+        }
+    }
+
+    class startWorkingSubGoalViewHolder extends RecyclerView.ViewHolder {
+
+        TextView subGoalText,creatorInfo;
+        Button availableToClaim;
+        int subGoalPosition; //Position from startWorkingItems
+
+        public void setSubGoalPosition(int subGoalPosition) {
+            this.subGoalPosition = subGoalPosition;
+        }
+
+        public int getSubGoalPosition() {
+            return subGoalPosition;
+        }
+
+        public startWorkingSubGoalViewHolder(ViewGroup parent) {
+            super(LayoutInflater.from(parent.getContext()).inflate(R.layout.groupgoalsubgoalsstartworking_item, parent, false));
+            subGoalText = (TextView) itemView.findViewById(R.id.subgoalItemInfoSWGG);
+
+            subGoalText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    /*
+                    Intent i = new Intent(groupgoalsingleGoalView.this, timerView.class);
+                    startActivity(i);
+                     */
+                    positionToUpdateStudiedTime = myGoal.getSubGoals().indexOf(startAdapter.startWorkingItems.get(subGoalPosition));
+
+                    Intent i = new Intent(singleGoalView.this, timerView.class);
+                    i.putExtra("bigGoal",myGoal);
+                    i.putExtra("subGoal_selected",startAdapter.startWorkingItems.get(subGoalPosition));
+                    i.putExtra("positionToUpdateStudiedTime",positionToUpdateStudiedTime);
+                    activityResultLaunchTimer.launch(i);
+                }
+            });
+        }
+    }
+
+    private void setUpStartWorkingRecyclerView() {
+        startWorkingRecyclerView.setVisibility(View.VISIBLE);
+        startWorkingRecyclerView.bringToFront();
+        startWorkingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        startAdapter = new startWorkingFullAdapter();
+        startWorkingRecyclerView.setAdapter(startAdapter);
+        startWorkingRecyclerView.setHasFixedSize(true);
+
     }
 
 

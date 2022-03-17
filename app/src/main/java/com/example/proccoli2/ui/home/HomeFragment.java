@@ -54,7 +54,6 @@ import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -236,13 +235,15 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener("goalList", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 ArrayList<GoalModel> newGoalList = (ArrayList<GoalModel>) result.getSerializable("goalList");
                 Log.d("From search fragment", "onFragmentResult: " + newGoalList);
             }
         });
+
+
 
 
 
@@ -927,7 +928,14 @@ public class HomeFragment extends Fragment{
             countDownDueDate = (TextView) itemView.findViewById(R.id.countDownDueDate);
             countDownPersonal = (TextView) itemView.findViewById(R.id.countDownPersonal);
             avatarGoal = (ImageView) itemView.findViewById(R.id.avatarGoal);
-            avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
+
+            if(goalModel.getTaskType().equals("individual")){
+                avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
+
+            }
+            else{
+                avatarGoal.setImageResource(R.drawable.groupgoal_foreground);
+            }
 
 
             itemView.setOnClickListener(new View.OnClickListener(){

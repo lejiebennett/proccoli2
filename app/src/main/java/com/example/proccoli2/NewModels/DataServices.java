@@ -1,7 +1,6 @@
 package com.example.proccoli2.NewModels;
 
 
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,30 +18,25 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firestore.v1.Write;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import io.reactivex.Single;
 
 public class DataServices {
 
+    ShapeSize shapeSize = new ShapeSize();
+
     //colelction references
     final String USER_COLLECTION_REF = "users";
-    final String GOALS_COLLECTION_REF  = "goals";
+    static final String GOALS_COLLECTION_REF  = "goals";
     final String REVISION_COLLECTION_REF = "revisions";
     final String PERSONAL_NOTE_COLLEECTION_REF = "personalNote";
     final String REMINDERS_COLLECTIONS_REF = "reminders";
     final String PERSONAL_GOALS_COLLECTION_REF = "personalGoals";
-    final String INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF = "progressData";
-    final String LOG_DATA_COLLECTION_REF = "logData";
+    static final String INDIVIDUAL_PROGRESS_DATA_COLLECTION_REF = "progressData";
+    static final String LOG_DATA_COLLECTION_REF = "logData";
 
 
     //login
@@ -208,11 +202,11 @@ public class DataServices {
     final String BLANK_DATA_REF = "blank";
 
 
-    final String CHART_VIEW_BTN_CLICK_REF = "chartViewBtnClick";
+    static final String CHART_VIEW_BTN_CLICK_REF = "chartViewBtnClick";
     final String EXIT_TIME_REF = "exitTime";
-    final String CLIK_TIME_REF = "clickTime";
+    static final String CLIK_TIME_REF = "clickTime";
     final String TIME_ZONE_REF = "timeZone";
-    final String GO_TO_DATE_REF = "goToDate";
+    static final String GO_TO_DATE_REF = "goToDate";
     final String CALENDER_BTN_CLICK_REF = "calenderBtnClick";
     final String GRAPH_SWICTH_BTN_CLICKED_REF = "graphSwitch";
 
@@ -433,7 +427,7 @@ public class DataServices {
         return hashMap;
     }
 
-    public String getAlphaNumericString(int n)
+    public static String getAlphaNumericString(int n)
     {
 
         // chose a Character random from this String
@@ -1216,14 +1210,14 @@ public class DataServices {
         //TabbarVC.sharedInstance.profileVCInstance.isProgressBtnAnimationOn = true;
     }
 
-    public void createGroupGoal(String bigGoal,String goalType,boolean isGoalCompleted,String taskType,String goalCreaterUid,HashMap<String,groupMembersPack> groupMembers,String relatedCourse,double whenIsItDue,double createdAt, ResultHandler<Object> handler) {
+    public GroupGoalModel createGroupGoal(String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, HashMap<String,groupMembersPack> groupMembers, String relatedCourse, long whenIsItDue, long createdAt, ResultHandler<Object> handler) {
             WriteBatch batch = FirebaseFirestore.getInstance().batch();
             DocumentReference docForGoal = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document();
             GroupGoalModel groupGoal = new GroupGoalModel(docForGoal.getId(), bigGoal, goalType, isGoalCompleted, taskType, goalCreaterUid, groupMembers, relatedCourse, whenIsItDue, createdAt, null);
-            //let chatDocRef = docForGoal.collection(GROUP_CHAT_COLLECTION_REF).document(shapeSize.groupChatDocID)
+            DocumentReference chatDocRef = docForGoal.collection(GROUP_CHAT_COLLECTION_REF).document(shapeSize.groupChatDocID);
             DocumentReference studyTimerREf = FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(docForGoal.getId()).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF);
-            DocumentReference chatOnlineOfflineRef = docForGoal.collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document("shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF");
-            DocumentReference reminderDocRef = docForGoal.collection(REMINDERS_COLLECTIONS_REF).document("shapeSize.REMINDERS_DOC_ID");
+            DocumentReference chatOnlineOfflineRef = docForGoal.collection(ONLINE_CHAT_STATUS_COLLECTION_REF).document(shapeSize.USER_ONLINE_OFFLINE_STATUS_DOC_ID_REF);
+            DocumentReference reminderDocRef = docForGoal.collection(REMINDERS_COLLECTIONS_REF).document(shapeSize.REMINDERS_DOC_ID);
 
             DocumentReference userDocRef = FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid);
             DocumentReference personalCollectionRef = userDocRef.collection(PERSONAL_GOALS_COLLECTION_REF).document(docForGoal.getId());
@@ -1241,7 +1235,7 @@ public class DataServices {
             try {
                 batch.set(personalCollectionRef, dataForPersonalCollection);
                 batch.update(userDocRef, createHashmap(GROUP_TOTAL_GOAL_NUMBER_REF, FieldValue.increment((1))));
-                //batch.setData(["exist":true], forDocument: chatDocRef)
+                batch.set(chatDocRef,createHashmap("exists",true));
                 batch.set(reminderDocRef, createHashmap("exist", true));
                 HashMap<String, Object> hashMap1 = createHashmap(this.uid, "userOnlineStatus.prepareJsonForWritingCurrentUser()");
                 HashMap<String, Object> hashMap = createHashmap(ONLINE_STATUS_DIC_REF, hashMap1);
@@ -1261,6 +1255,7 @@ public class DataServices {
                 handlerResult.put("_error", e);
                 handler.onSuccess(handlerResult);
             }
+        return groupGoal;
     }
     public void completeGroupGoal(String goalId, ArrayList<String> uids){
         HashMap<String,Object> hashMap = createHashmap(IS_GOAL_COMPLETED_REF,true);

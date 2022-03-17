@@ -4,19 +4,15 @@ import static com.example.proccoli2.NewModels.SingletonStrings.COMPLETE_GOAL_BTN
 import static com.example.proccoli2.NewModels.SingletonStrings.SET_REMINDER_BTN_TAPPED_REF;
 
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
-import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.LogActivityModel;
@@ -32,8 +28,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-
-import javax.xml.transform.Result;
 
 public class singleGoalView_VC extends AppCompatActivity {
 
@@ -379,6 +373,7 @@ public class singleGoalView_VC extends AppCompatActivity {
 
                      */
                 }
+                return null;
             }
 
             @Override

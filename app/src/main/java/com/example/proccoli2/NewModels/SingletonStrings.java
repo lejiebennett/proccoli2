@@ -80,17 +80,17 @@ public class SingletonStrings implements Serializable {
 
     final String BREAKS_REF = "breaks";
     final String RESUMES_REF = "resumes";
-    final String BREAK_TIME_REF = "breakTime";
+    public final String BREAK_TIME_REF = "breakTime";
     final String STOP_TIME_REF = "stopTime";
     final String STUDIED_TIME_REF = "studiedTime";
-    final String STOPED_STUYD_TIME_REF = "stopedStudyTime";
+    public final String STOPED_STUYD_TIME_REF = "stopedStudyTime";
     final String START_LOCATION_REF = "startLocation";
-    final String BREAK_LOCATION_REF = "breakLocation";
-    final String STOP_LOCATION_REF = "stopLocation";
-    final String FINISH_LOCATION_REF = "stopLocation";
+    public final String BREAK_LOCATION_REF = "breakLocation";
+    public final String STOP_LOCATION_REF = "stopLocation";
+    public final String FINISH_LOCATION_REF = "stopLocation";
     final String FINISH_TIME_REF = "finishTime";
-    final String RESUME_TIME_REF = "resumeTime";
-    final String RESUME_LOCATION_REF = "resumeLocation";
+    public final String RESUME_TIME_REF = "resumeTime";
+    public final String RESUME_LOCATION_REF = "resumeLocation";
     final String INDIVIDUAL_WALL_TIMER_LBL_REF = "individualWall";
     final String GROUP_WALL_TIMER_LBL_REF = "groupWall";
     final String PROFILE_PAGE_TIMER_LBL_REF = "profileVC";
@@ -205,7 +205,7 @@ public class SingletonStrings implements Serializable {
     final String ASSIGNED_TO_EMAIL_REF = "assignedToEmail";
     final String ASSIGNED_TO_UID_REF = "assignedToUid";
     final String ASSIGNED_TO_USER_NAME_REF = "assignedToUserName";
-    final String GROUP_REF = "group";
+    public static final String GROUP_REF = "group";
     final String STATUS_REF = "status";
     final String WAITING_REF = "waiting";
     final String ACCEPTED_REF = "accepted";
@@ -285,7 +285,7 @@ public class SingletonStrings implements Serializable {
     final String FINISHED_PERSONAL_GOAL_TABLE_PROFILE_PAGE_REF = "finishedPersonal_goalTable_profilePage";
     final String FINISHED_HARD_GOAL_TABLE_PROFILE_PAGE_REF = "finishedHard_goalTable_profilePage";
     final String GO_TO_GOAL_REF = "goToGoal";
-    final String GROUP_GOAL_CREATE_REF = "groupGoalCreate";
+    public static final String GROUP_GOAL_CREATE_REF = "groupGoalCreate";
     public static final String INDIVIDUAL_GOAL_CREATE_REF = "individualGoalCreate";
     final String GO_TO_EDIT_PROFILE_REF = "goToEditProfile";;
     final String GO_TO_MAIN_PROGRESS_REF = "goToMainProgress";
@@ -297,7 +297,7 @@ public class SingletonStrings implements Serializable {
 
     final String INDIVIDUAL_GOAL_CREATE_BACK_BTN_TAPPED_REF = "backBtn_individualGoal_Create";;
     final String INDIVIDUAL_GOAL_CREATED_REF = "individualGoal_created";
-    final String GROUP_GOAL_CREATED_REF = "groupGoal_created";
+    public static final String GROUP_GOAL_CREATED_REF = "groupGoal_created";
     final String GROUP_GOAL_CREATE_BACK_BTN_TAPPED_REF = "backBtn_groupGoal_Create";
     public static final String EDIT_PROFILE_BACK_BTN_TAPPED_REF = "backBtn_editProfile";
     public static final String PROFILE_DATA_EDITTED_REF = "profileEdited";
@@ -363,7 +363,7 @@ public class SingletonStrings implements Serializable {
     final String EXPIRED_GOAL_NOTIFICATION_READ_REF = "expired_goal_notification_read";
 
 
-    final String NO_LOCATION_REF = "no_location";
+    public final String NO_LOCATION_REF = "no_location";
 
     public SingletonStrings(){
 

@@ -17,4 +17,6 @@ public class timer_VC extends AppCompatActivity {
         long millis = mins * 60 * 1000;
         return (int) millis;
     }
+    public void startTapped(){
+    }
 }

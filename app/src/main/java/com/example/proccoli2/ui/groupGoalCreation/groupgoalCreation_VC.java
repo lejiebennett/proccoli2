@@ -11,14 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.GroupGoalModel;
-import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.LogActivityModel;
+import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.NewModels.UserDataModel;
+import com.example.proccoli2.NewModels.groupGoalForPersonalCollection;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class groupgoalCreation_VC extends AppCompatActivity {
     private com.example.proccoli2.ui.groupGoalCreation.groupgoalView groupgoalView;
@@ -104,5 +108,47 @@ public class groupgoalCreation_VC extends AppCompatActivity {
         return sdf.format(date);
 
     }
+
+    public GroupGoalModel saveGroupGoal(GroupGoalModel data) {
+        GroupGoalModel returnData = DataServices.getInstance().createGroupGoal(data.getBigGoal(), data.getGoalType(), data.isGoalCompleted(), data.getTaskType(), data.getGoalCreaterUid(), data.getGroupMembers(), data.getRelatedCourse(), data.getWhenIsItDue(), data.getCreatedAt(), new ResultHandler<Object>() {
+            @Override
+            public void onSuccess(Object data) {
+                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                if(hashMap.get("_response")!=null){
+                    GroupGoalModel newGroupGoal = (GroupGoalModel) hashMap.get("_response");
+
+                    //self.removeCreateGoalVC()
+                    //self.gotoIndividualVCAfterIndividualGoalCreation(data: returnData)
+                    //PersonalNoteViews.sharedInstance.removeExistingDataForNewEventCreatation(goalId: returnData.goalId)
+                    //update userdata model here
+                    UserDataModel.sharedInstance.setGroupGoalTotal((int)getValueOrDefault(UserDataModel.sharedInstance.getGroupGoalTotal(),0) + 1);
+
+                    groupGoalForPersonalCollection groupGoalForPersonal = new groupGoalForPersonalCollection(newGroupGoal.getGoalId(), newGroupGoal.getBigGoal(), newGroupGoal.getGoalType(), newGroupGoal.isGoalCompleted(), newGroupGoal.getTaskType(), newGroupGoal.getGoalCreaterUid(), newGroupGoal.getWhenIsItDue(), newGroupGoal.getCreatedAt(), 0, 0, newGroupGoal.getWhenIsItDue());
+                    GoalModel newGoal = groupGoalForPersonalCollection.goalsModelConverterForDataWrite(groupGoalForPersonal);
+
+                    ArrayList<GoalModel> newGoals = new ArrayList<>();
+                    newGoals.add(newGoal);
+                    UserDataModel.sharedInstance.setRawGoalsData(newGoals);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+            if(returnData!=null){
+                //log activity
+                LogActivityModel.getActivityChain().addActivityForGoal(SingletonStrings.GROUP_GOAL_CREATE_REF, returnData.getGoalId());
+                return returnData;
+            }
+            return null;
+
+        }
+
+    public static <T> T getValueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
 
 }

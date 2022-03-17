@@ -124,6 +124,7 @@ public class ProgressViewIndividualWallModel {
                                 handler.onSuccess(result);
 
                             }
+                            return null;
                         }
 
                         @Override
@@ -132,6 +133,7 @@ public class ProgressViewIndividualWallModel {
                         }
                     });
                 }
+                return null;
             }
 
             @Override
@@ -191,6 +193,7 @@ public class ProgressViewIndividualWallModel {
                                     handler.onSuccess(hashMap);
                                 }
                             }
+                            return null;
                         }
 
                         @Override
@@ -299,6 +302,7 @@ public class ProgressViewIndividualWallModel {
                                 parseProgressDocForBlankDatai=parseProgressDocForBlankDatai+1;
                             }
                         }
+                        return null;
                     }
 
                     @Override
@@ -336,6 +340,7 @@ public class ProgressViewIndividualWallModel {
 
                             hashMap.put("_deadlineLines",results.get("_response"));
                         }
+                        return null;
                     }
 
                     @Override

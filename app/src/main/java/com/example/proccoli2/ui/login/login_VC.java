@@ -77,6 +77,7 @@ public class login_VC extends AppCompatActivity {
                             @Override
                             public void onSuccess(Object data) {
                                 Toast.makeText(loginView.getBaseContext(), "success", Toast.LENGTH_LONG).show();
+                                return null;
                             }
 
                             @Override
@@ -124,10 +125,11 @@ public class login_VC extends AppCompatActivity {
                         //resend verification
                         emailVerificationAlert("This account has not\nbeen verified\nPlease check your e-mail.", email);
                     }
-                    return;
+                    return null;
 
                 }
 
+                return null;
             }
 
             @Override
@@ -169,6 +171,7 @@ public class login_VC extends AppCompatActivity {
                         alert11.show();
                     }
                 }
+                return null;
             }
 
             @Override

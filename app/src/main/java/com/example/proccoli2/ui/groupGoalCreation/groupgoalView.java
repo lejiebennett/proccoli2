@@ -20,11 +20,16 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.proccoli2.oldModels.GoalModel;
+import com.example.proccoli2.NewModels.GoalModel;
+import com.example.proccoli2.NewModels.GroupGoalModel;
+import com.example.proccoli2.NewModels.SingletonStrings;
+import com.example.proccoli2.NewModels.groupGoalForPersonalCollection;
 import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.R;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -38,7 +43,7 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
             "Exam (Other)", "Group Project", "Project (Individual)", "Studying (Reading)", "Studying (Watching Videos)",
             "Studying (Other)", "Other"};
 
-    GoalModel myGoal = new GoalModel();
+    GroupGoalModel myGoal;
     TextInputEditText bigGoalInput, courseNumberInput;
     Button createGoalBtn;
     TextView goalDueDate, goalType;
@@ -49,6 +54,8 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
     //Pickers used to get input
     SingleDateAndTimePicker deadlinePicker;
     NumberPicker goalTypePicker;
+
+    SingletonStrings ss = new SingletonStrings();
 
 
 
@@ -188,23 +195,16 @@ public class groupgoalView extends AppCompatActivity implements AdapterView.OnIt
                                         //Convert String to unix
                                         // int uStart = controller.dateStrToUnix(goalStartDate.getText().toString()); DO NOT NEED FOR GROUP GOAL UI
                                         int uDue = controller.dateStrToUnix(goalDueDate.getText().toString());
+                                        long uDueLong = new Long(uDue);
                                         int uComplete =controller.dateStrToUnix(goalDueDate.getText().toString());
 
                                         long currentUnix = System.currentTimeMillis() / 1000L;
 
                                         //Create goal either using constructor or a group of setters making sure group goal is set as goal type
-                                        // GoalModel goal = new GoalModel(bigGoalInput.getText().toString(),uComplete,goalType.getText().toString(),uStart,uDue,(int)currentUnix,subgoals);
-                                        myGoal.setBigGoal(bigGoalInput.getText().toString());
-                                        myGoal.setCompletedBy(uComplete);
-                                        myGoal.setGoalType(goalType.getText().toString());
-                                        // myGoal.setStartDate(uStart); DO NOT NEED FOR GROUP GOAL UI
-                                        myGoal.setDeadline(uDue);
-                                        myGoal.setCreatedAt((int) currentUnix);
-                                        myGoal.setCourseNumber(courseNumberInput.getText().toString().toUpperCase());
-                                        myGoal.setGoalType("group");
-
-                                        String myGoalID = "TESTGOALID";
-                                        myGoal.setGoalId(myGoalID);
+                                        GroupGoalModel newGoal = new GroupGoalModel(bigGoalInput.getText().toString(),goalType.getText().toString(),false,ss.GROUP_REF, FirebaseAuth.getInstance().getCurrentUser().getUid(),null,courseNumberInput.getText().toString(),uDueLong,currentUnix,null);
+                                        GroupGoalModel savedGoal = controller.saveGroupGoal(newGoal);
+                                        groupGoalForPersonalCollection goalToPass = new groupGoalForPersonalCollection(savedGoal.getGoalId(),savedGoal.getBigGoal(),savedGoal.getGoalType(),savedGoal.isGoalCompleted(),savedGoal.getTaskType(),savedGoal.getGoalCreaterUid(),savedGoal.getWhenIsItDue(),savedGoal.getCreatedAt(),0,0,savedGoal.getWhenIsItDue());
+                                        GoalModel myGoal = groupGoalForPersonalCollection.goalsModelConverterForDataWrite(goalToPass);
 
                                         Log.d("GoalMade", "onClick: " + myGoal.toString());
 

@@ -15,13 +15,13 @@ public class GroupGoalModel implements Serializable {
     String goalCreaterUid;
     HashMap<String, groupMembersPack> groupMembers;
     String relatedCourse;
-    double whenIsItDue;
-    double createdAt;
+    long whenIsItDue;
+    long createdAt;
     //@ExplicitNull groupSubgoalPack subGoalPack;
     groupSubgoalPack subGoalPack;
 
 
-    public GroupGoalModel(String id, String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, HashMap<String, groupMembersPack> groupMembers, String relatedCourse, double whenIsItDue, double createdAt, groupSubgoalPack subGoalPack) {
+    public GroupGoalModel(String id, String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, HashMap<String, groupMembersPack> groupMembers, String relatedCourse, long whenIsItDue, long createdAt, groupSubgoalPack subGoalPack) {
         this.goalId = id;
         this.bigGoal=bigGoal;
         this.goalType=goalType;
@@ -33,6 +33,66 @@ public class GroupGoalModel implements Serializable {
         this.whenIsItDue=whenIsItDue;
         this.createdAt=createdAt;
         this.subGoalPack=subGoalPack;
+    }
+
+    public GroupGoalModel(String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, HashMap<String, groupMembersPack> groupMembers, String relatedCourse, long whenIsItDue, long createdAt, groupSubgoalPack subGoalPack) {
+        this.bigGoal=bigGoal;
+        this.goalType=goalType;
+        this.isGoalCompleted=isGoalCompleted;
+        this.taskType=taskType;
+        this.goalCreaterUid=goalCreaterUid;
+        this.groupMembers=groupMembers;
+        this.relatedCourse=relatedCourse;
+        this.whenIsItDue=whenIsItDue;
+        this.createdAt=createdAt;
+        this.subGoalPack=subGoalPack;
+    }
+
+
+
+    public boolean isGoalCompleted() {
+        return isGoalCompleted;
+    }
+
+
+    public String getGoalId() {
+        return goalId;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public String getGoalCreaterUid() {
+        return goalCreaterUid;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getGoalType() {
+        return goalType;
+    }
+
+    public String getBigGoal() {
+        return bigGoal;
+    }
+
+    public groupSubgoalPack getSubGoalPack() {
+        return subGoalPack;
+    }
+
+    public HashMap<String, groupMembersPack> getGroupMembers() {
+        return groupMembers;
+    }
+
+    public long getWhenIsItDue() {
+        return whenIsItDue;
+    }
+
+    public String getRelatedCourse() {
+        return relatedCourse;
     }
 }
     class groupMembersPack implements Serializable {
@@ -125,34 +185,7 @@ public class GroupGoalModel implements Serializable {
             return value == null ? defaultValue : value;
         }
     }
-    class groupGoalForPersonalCollection implements Serializable{
-        String goalId;
-        String bigGoal;
-        String goalType;
-        boolean isGoalCompleted;
-        String taskType;
-        String goalCreaterUid;
-        double whenIsItDue;
-        double createdAt;
-        double totalProposedStudyTime;
-        double totalStudiedTime;
-        double personalDeadline;
 
-        public groupGoalForPersonalCollection(String goalId, String bigGoal, String goalType, boolean isGoalCompleted, String taskType, String goalCreaterUid, double whenIsItDue, double createdAt, double totalProposedStudyTime, double totalStudiedTime, double personalDeadline){
-            this.goalId = goalId;
-            this.bigGoal = bigGoal;
-            this.goalType = goalType;
-            this.isGoalCompleted = isGoalCompleted;
-            this.taskType = taskType;
-            this.goalCreaterUid = goalCreaterUid;
-            this.whenIsItDue = whenIsItDue;
-            this.createdAt = createdAt;
-            this.totalProposedStudyTime = totalProposedStudyTime;
-            this.totalStudiedTime = totalStudiedTime;
-            this.personalDeadline = personalDeadline;
-
-        }
-    }
 
 
 

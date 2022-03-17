@@ -23,14 +23,19 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisherTimer;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class timerView extends AppCompatActivity {
 
+    SingletonStrings ss = new SingletonStrings();
     SeekBar timerSlider;
     MaterialButton startBtn, stopBtn, breakBtn, resumeBtn;
     TextView timerClock;
@@ -43,6 +48,15 @@ public class timerView extends AppCompatActivity {
     int smileRating;
     int selectedStudiedTime; //Time the user selected for the timer
     int studiedTime; //Time that the user actually studied. This is sent back to the singleGoalView
+
+
+    //Firebase integration
+    String selectedSubGoalId;
+    String goalId;
+
+    IndividualGoalModel originalGoal;
+    IndividualSubGoalStructModel clickedSubGoal;
+    int positionToUpdateStudiedTime;
 
     /***
      * Used to catch data from the smileyFace survey where users can rate their satisfaction with the goal they just completed
@@ -78,6 +92,15 @@ public class timerView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_view);
         Log.d("Created new", "onCreate: Created new");
+
+        Bundle bundle = getIntent().getExtras();
+        originalGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
+        clickedSubGoal = (IndividualSubGoalStructModel) bundle.getSerializable("subGoal_selected");
+        positionToUpdateStudiedTime = (int) bundle.getSerializable("positionToUpdateStudiedTime");
+        goalId = originalGoal.getGoalId();
+        selectedSubGoalId = clickedSubGoal.get_subGoalId();
+
+
 
         toolbar = findViewById(R.id.toolbarTimer);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -214,6 +237,7 @@ public class timerView extends AppCompatActivity {
                             activityResultLaunchSmileyRating.launch(i);
                         }
                     }.start();
+
             }
         });
 
@@ -236,6 +260,7 @@ public class timerView extends AppCompatActivity {
                 Log.d("StopStudyTime", "onClick: Timer stopped, passing studied time " + studiedTime);
                 setResult(RESULT_OK,myIntent2);
                 finish();
+
             }
         });
 
@@ -355,5 +380,77 @@ public class timerView extends AppCompatActivity {
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
         nMgr.cancel(notifyId);
+    }
+
+    public HashMap<String,Object> prepareBreakData(){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.BREAK_TIME_REF, TabbarVC.sharedInstance.timerClass.calculateStuiedTime());
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.BREAK_LOCATION_REF, ss.NO_LOCATION_REF );
+        return  hashMap;
+
+    }
+    public HashMap<String,Object> prepareStopData(double studiedTime){
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.STOPED_STUYD_TIME_REF,studiedTime);
+        hashMap.put(ss.STOP_LOCATION_REF,ss.NO_LOCATION_REF);
+        return hashMap;
+    }
+    public HashMap<String,Object> prepareStopDataForAppTerminate(double studiedTime){
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.STOPED_STUYD_TIME_REF,studiedTime);
+        hashMap.put(ss.STOP_LOCATION_REF,ss.NO_LOCATION_REF);
+        hashMap.put("reason", "app terminated");
+        return hashMap;
+    }
+    public HashMap<String,Object> prepareStopDataForDifferentGoalSelectedFromProfileWhileTimerIsON(double studiedTime){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.STOPED_STUYD_TIME_REF,studiedTime);
+        hashMap.put(ss.STOP_LOCATION_REF,ss.NO_LOCATION_REF);
+        hashMap.put("reason", "profile page different goal selection");
+        return hashMap;
+    }
+    public HashMap<String,Object> prepareFinishData(){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.FINISH_LOCATION_REF, ss.NO_LOCATION_REF);
+        return hashMap;
+    }
+
+
+    /*
+    @IBAction func timerBackBtnTapped(_ sender:UIButton) {
+        var isInitiated:Bool
+        if TabbarVC.sharedInstance?.timerClass != nil {
+            //counter is initiated
+            isInitiated = true
+        }
+		else {
+            isInitiated = false
+        }
+        timerView.removeFromSuperview()
+        delegate?.timerBackTapped(isCounterInitiated:isInitiated)
+    }
+    @IBAction func resumeTapped(_ sender:UIButton) {
+        onlyStopAndBreakeBtnActive()
+        TabbarVC.sharedInstance?.timerClass?.resume()
+        guard let selectedSubgoalId = self.selectedSubGoalId,
+                let studyId = self.studyId else {return}
+        delegate?.resumeTimer(selectedSubGoalId: selectedSubgoalId, studyId: studyId, resumeData: prepareResumeData())
+    }
+
+     */
+    public HashMap<String,Object> prepareResumeData(){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put(ss.RESUME_TIME_REF,TabbarVC.sharedInstance.timerClass.calculateStuiedTime());
+        hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
+        hashMap.put(ss.RESUME_LOCATION_REF, ss.NO_LOCATION_REF);
+
+        return  hashMap;
     }
 }
