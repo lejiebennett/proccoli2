@@ -86,7 +86,7 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
 
         subGoalHowLong = findViewById(R.id.subGoalHowLongInput);
         Log.d("HOWLONG", "onCreate: " + passedSubGoal.get_howLongHours());
-        subGoalHowLong.setText(passedSubGoal.get_howLongHours());
+        subGoalHowLong.setText(String.valueOf(passedSubGoal.get_howLongHours()));
 
 
         //Initialize input pickers
@@ -256,9 +256,10 @@ public class subGoalView_goalSetting_edit extends AppCompatActivity implements A
                                             IndividualGoalModel passedGoal = (IndividualGoalModel) getIntent().getSerializableExtra("bigGoal");
                                             passedGoal.getSubGoals().remove(passedSubGoalPosition);
                                             passedGoal.getSubGoals().add(subgoal);
-                                            DataServices.getInstance().addNewSubGoal(subgoal,passedGoal.getGoalId());
+                                            //DataServices.getInstance().addNewSubGoal(subgoal,passedGoal.getGoalId());
                                             Log.d("subgoalID", "onClick: " + subgoal.get_subGoalId());
-                                            //DataServices.getInstance().saveSubGoalRevisions(,passedGoal.getGoalId(),subGoalID,IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(subgoal));
+                                            Log.d("editSubgoal", "onClick: " + IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(subgoal));
+                                            DataServices.getInstance().saveSubGoalRevisions(IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(subgoal),passedGoal.getGoalId(),passedSubGoal.get_subGoalId(),IndividualSubGoalStructModel.jsonFormatterSingleIndividualSubGoal(subgoal));
 
                                             Intent i = new Intent(subGoalView_goalSetting_edit.this, goalSettingView.class);
                                             // i.putExtra("subGoal", subgoal);

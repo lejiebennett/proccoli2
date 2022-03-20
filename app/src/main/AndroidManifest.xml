@@ -50,6 +50,7 @@
         <activity android:name=".ui.timerViewGroupGoals.timerViewGroupGoal">
         </activity>
         <activity android:name=".UnusedFiles.timeReportView"></activity>
+        <activity android:name=".recyclerTest"></activity>
         <activity android:name=".UnusedFiles.selfreport_activity"
             android:windowSoftInputMode="adjustNothing">
             ></activity>

@@ -139,13 +139,16 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
-                getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+                /*
+                getParentFragmentManager().setFragmentResultListener("requestKey", getViewLifecycleOwner(), new FragmentResultListener() {
                     @Override
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                         ArrayList<GoalModel> newGoalList = (ArrayList<GoalModel>) result.getSerializable("goalList");
                         Log.d("From home fragment", "onFragmentResult: " + newGoalList);
                     }
                 });
+
+                 */
             }
         });
 
@@ -357,8 +360,10 @@ public class NotificationsFragment extends Fragment {
                         Log.d("Date", "compareDates: " + startTimeInput.getText().toString() + stopTimeInput.getText().toString());
                         Log.d("GOAL TO REPORT TIME TO", "onClick: " + goalSelected);
                         try {
-                            if (controller.compareDates(controller.unixToStringDateTime(searchGoalList.get(goalSelected).getStartDate()), startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
-                                Log.d("Success", "onClick: ran");
+                           // if (controller.compareDates(controller.unixToStringDateTime(searchGoalList.get(goalSelected).getStartDate()), startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
+                                if (controller.compareDates("0", startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
+
+                                    Log.d("Success", "onClick: ran");
                                 startTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
                                 stopTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
 

@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity{
                 if(destination.getId()==R.id.navigation_notifications){
                     Log.d("notification", "onDestinationChanged: NOTIFICATIONS");
 
-                  //  transaction.add(notificationsFragment,null);
+                    //  transaction.add(notificationsFragment,null);
 
                     /*
                     Bundle bundle = new Bundle();
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity{
                 }
                 else if(destination.getId()==R.id.navigation_home){
                     Log.d("home", "onDestinationChanged: Home");
-                  //  transaction.show(homeFragment);
+                    //  transaction.show(homeFragment);
 
                     fm.beginTransaction().hide(activeFragment).show(homeFragment).commit();
                     activeFragment = homeFragment;
@@ -396,9 +396,9 @@ public class MainActivity extends AppCompatActivity{
                 }
                 else if(destination.getId()==R.id.navigation_dashboard){
                     Log.d("Dashboard","onDestinationChanged: dashboard");
-                 //   DashboardFragment dashboardFragment = new DashboardFragment();
+                    //   DashboardFragment dashboardFragment = new DashboardFragment();
                     //  NotificationsFragment notificationsFragment = NotificationsFragment.newInstance(goalList);
-                   //   transaction.add(dashboardFragment,null);
+                    //   transaction.add(dashboardFragment,null);
                     //transaction.replace(R.id.nav_host_fragment_container, dashboardFragment)
                     //        .commit();
 
@@ -911,6 +911,7 @@ public class MainActivity extends AppCompatActivity{
 
 
         public CustomGoalAdapter() {
+            Log.d("customGoalAdapter", "CustomGoalAdapter: MainActivity");
             items = new ArrayList<>();
             /*
             for(int i = 0; i < goalList.size(); i++){
@@ -920,9 +921,9 @@ public class MainActivity extends AppCompatActivity{
             }
             */
             for(int i = 0; i < recyclerList.size(); i++){
-                Log.d("trying to add", "setUpRecyclerView: " + recyclerList.get(i));
+                Log.d("trying to add", "setUpRecyclerViewM: " + recyclerList.get(i));
                 items.add(recyclerList.get(i));
-                Log.d("Added", "setUpRecyclerView: " + recyclerList.get(i));
+                Log.d("Added", "setUpRecyclerViewM: " + recyclerList.get(i));
             }
         }
 
@@ -954,7 +955,7 @@ public class MainActivity extends AppCompatActivity{
         }
 
         public void addItems(){
-            Log.d("Adding items", "addItems: " );
+            Log.d("Adding itemsMA", "addItems: " );
             if(items.size()!=0)
                 clearItems();
 
@@ -1027,10 +1028,10 @@ public class MainActivity extends AppCompatActivity{
 
     private void loadFragment(Fragment fragment) {
 // create a FragmentManager
-    FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
 // create a FragmentTransaction to begin the transaction and replace the Fragment
-    FragmentTransaction fragmentTransaction = fm.beginTransaction();
-    // replace the FrameLayout with new Fragment
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        // replace the FrameLayout with new Fragment
         fragmentTransaction.replace(R.id.navigation_home, fragment);
         fragmentTransaction.commit(); // save the changes
     }

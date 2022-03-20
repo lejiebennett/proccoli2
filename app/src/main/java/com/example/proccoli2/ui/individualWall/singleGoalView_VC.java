@@ -373,7 +373,6 @@ public class singleGoalView_VC extends AppCompatActivity {
 
                      */
                 }
-                return null;
             }
 
             @Override

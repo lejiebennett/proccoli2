@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ProgressViewIndividualWallModel {
     ShapeSize shapeSize = new ShapeSize();
@@ -124,7 +125,6 @@ public class ProgressViewIndividualWallModel {
                                 handler.onSuccess(result);
 
                             }
-                            return null;
                         }
 
                         @Override
@@ -133,7 +133,6 @@ public class ProgressViewIndividualWallModel {
                         }
                     });
                 }
-                return null;
             }
 
             @Override
@@ -154,8 +153,10 @@ public class ProgressViewIndividualWallModel {
             handler.onSuccess(resultHandler);
         } else {
             ArrayList<BarEntry> response = new ArrayList<>();
-            HashMap<String,Object> sortedData = (HashMap<String, Object>) data.entrySet().stream().sorted((Comparator<? super Map.Entry<String, Object>>) Map.Entry.<String,BarEntry>comparingByKey());
-           // HashMap<String, Object> sortedData = Collections.sort(data);
+         //   HashMap<String,Object> sortedData = (HashMap<String, Object>) data.entrySet().stream().sorted((Comparator<? super Map.Entry<String, Object>>) Map.Entry.<String,BarEntry>comparingByKey());
+            Map<String, Object> sortedData = new TreeMap<String, Object>(data);
+
+            // HashMap<String, Object> sortedData = Collections.sort(data);
             this.rawData = data;
 
            // int i = 1;
@@ -193,7 +194,6 @@ public class ProgressViewIndividualWallModel {
                                     handler.onSuccess(hashMap);
                                 }
                             }
-                            return null;
                         }
 
                         @Override
@@ -302,7 +302,6 @@ public class ProgressViewIndividualWallModel {
                                 parseProgressDocForBlankDatai=parseProgressDocForBlankDatai+1;
                             }
                         }
-                        return null;
                     }
 
                     @Override
@@ -340,7 +339,6 @@ public class ProgressViewIndividualWallModel {
 
                             hashMap.put("_deadlineLines",results.get("_response"));
                         }
-                        return null;
                     }
 
                     @Override

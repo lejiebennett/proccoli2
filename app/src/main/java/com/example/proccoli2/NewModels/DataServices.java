@@ -1043,7 +1043,7 @@ public class DataServices {
         batch.set(revisionCollectionRef,revisionData);
 
         for(String key: newSubGoaldata.keySet()){
-            batch.update(goalInGeneralGoalCollection, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + key,getValueOrDefault((HashMap<String,Object>)newSubGoaldata.get(key),createHashmap("err","err"))));
+            batch.update(goalInGeneralGoalCollection, createHashmap(SUB_GOAL_PACK_REF + "." + subgoalId + "." + key,getValueOrDefault(newSubGoaldata.get(key),createHashmap("err","err"))));
         }
 
         batch.commit();

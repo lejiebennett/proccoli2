@@ -52,6 +52,8 @@ public class goalSettingView extends AppCompatActivity {
     int revisedPersonal;
     int revisedDue;
     ActivityResultLauncher<Intent> activityResultLaunchEditSubGoal;
+    //Add -1 if subgoal deleted
+    int indexChangeAdd = 0;
 
 
     @Override
@@ -75,6 +77,7 @@ public class goalSettingView extends AppCompatActivity {
                             passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
                             adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
                             subGoalRecyclerView.setVisibility(View.VISIBLE);
+                            indexChangeAdd = indexChangeAdd;
                         }
                     }
                 });
@@ -94,6 +97,7 @@ public class goalSettingView extends AppCompatActivity {
                             SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
                             passedGoal.getSubGoals().remove(editedSubGoalPosition);
                             adapter.remove(editedSubGoalPosition);
+                            indexChangeAdd = indexChangeAdd -1;
                             passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
                             Log.d("HERE PassedGoal w/Edit", String.valueOf(passedGoal));
                             adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
@@ -106,9 +110,22 @@ public class goalSettingView extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         passedGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
         Log.d("goalSettingGoalRecieve", "onCreate: " + passedGoal);
+        Log.d("goalSettingGoalRecieve", "onCreate: " + passedGoal.getSubGoals());
+
+        //Makes it so the subgoals marked deleted in the server do not appear in the recycler view
+        int numOriginalSubGoals = passedGoal.getSubGoals().size();
+        ArrayList<IndividualSubGoalStructModel> actualSubgoals = new ArrayList<>();
+        for (int i = 0; i<numOriginalSubGoals; i++) {
+            if(passedGoal.getSubGoals().get(i).is_isDeleted()==false){
+                actualSubgoals.add(passedGoal.getSubGoals().get(i));
+            }
+        }
+
+        passedGoal.setSubGoals(actualSubgoals);
+
+
         revisedPersonal= (int)passedGoal.getPersonalDeadline();
         revisedDue =(int) passedGoal.getWhenIsDue();
-
         completeBy.setText(controller.unixToStringDateTime((int)passedGoal.getPersonalDeadline()));
         dueDate.setText(controller.unixToStringDateTime((int)passedGoal.getWhenIsDue()));
 
@@ -274,6 +291,7 @@ public class goalSettingView extends AppCompatActivity {
             final IndividualSubGoalStructModel item = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
             viewHolder.subGoalTextGoalSettingView.setText(items.get(position).get_subGoalName() + "\nDeadline: "+ controller.unixToStringDateTime((int) items.get(position).get_deadline()) + "\nDifficulty Level: " + String.valueOf(items.get(position).get_difficultyLevel()));
+            viewHolder.setSubGoalPosition(position);
         }
 
         @Override
@@ -309,6 +327,16 @@ public class goalSettingView extends AppCompatActivity {
         ActivityResultLauncher activityResultLaunchEditSubgoal;
         TextView subGoalTextGoalSettingView;
         ImageButton editBtn, deleteBtn;
+        int subGoalPosition;
+
+        public void setSubGoalPosition(int subGoalPosition) {
+            this.subGoalPosition = subGoalPosition;
+        }
+
+        public int getSubGoalPosition() {
+            return subGoalPosition;
+        }
+
 
         public void setActivityResultLaunchEditSubgoal(ActivityResultLauncher activityResultLaunchEditSubgoal){
             this.activityResultLaunchEditSubgoal = activityResultLaunchEditSubgoal;
@@ -323,25 +351,30 @@ public class goalSettingView extends AppCompatActivity {
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int swipedPosition = view.getVerticalScrollbarPosition();
+                    int swipedPosition = getSubGoalPosition() + indexChangeAdd;
                     SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
                     adapter.remove(swipedPosition);
+                    indexChangeAdd = indexChangeAdd-1;
+
                 }
             });
 
             editBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
+
                     Intent i = new Intent(goalSettingView.this, subGoalView_goalSetting_edit.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("completeBy", controller.unixToStringDateTime(revisedPersonal));
                     i.putExtras(bundle);
-                    i.putExtra("subGoalPosition",view.getVerticalScrollbarPosition());
-                    i.putExtra("subgoal", passedGoal.getSubGoals().get(view.getVerticalScrollbarPosition()));
+                    i.putExtra("subGoalPosition",getSubGoalPosition() + indexChangeAdd);
+                    i.putExtra("subgoal", passedGoal.getSubGoals().get(getSubGoalPosition() + indexChangeAdd));
                     //Passes bigGoal info to keep working list of subgoals
                     i.putExtra("bigGoal", passedGoal);
-                    Log.d("subGoalEdit", "onClick: subGoalToEdit" +passedGoal.getSubGoals().get(view.getVerticalScrollbarPosition()));
+                    Log.d("subGoalEdit", "onClick: subGoalToEdit" +passedGoal.getSubGoals().get(getSubGoalPosition() + indexChangeAdd));
                     activityResultLaunchEditSubgoal.launch(i);
+
+
                 }
             });
 

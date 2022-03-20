@@ -185,8 +185,16 @@ public class singleGoalView extends AppCompatActivity {
         originalGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
         myGoal = originalGoal;
 
-        Log.d("OriginGoalFromMain", String.valueOf(originalGoal));
+        //Makes it so the subgoals marked deleted in the server do not appear in the recycler view
+        int numOriginalSubGoals = myGoal.getSubGoals().size();
+        ArrayList<IndividualSubGoalStructModel> actualSubgoals = new ArrayList<>();
+        for (int i = 0; i<numOriginalSubGoals; i++) {
+            if(myGoal.getSubGoals().get(i).is_isDeleted()==false){
+                actualSubgoals.add(myGoal.getSubGoals().get(i));
+            }
+        }
 
+        myGoal.setSubGoals(actualSubgoals);
         //Start Working Cancel Button
         startWorkingCancelBtn = findViewById(R.id.startWorkingBtnCancelSingle);
         startWorkingCancelBtn.setOnClickListener(new View.OnClickListener() {

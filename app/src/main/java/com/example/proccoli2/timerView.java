@@ -384,7 +384,7 @@ public class timerView extends AppCompatActivity {
 
     public HashMap<String,Object> prepareBreakData(){
         HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put(ss.BREAK_TIME_REF, TabbarVC.sharedInstance.timerClass.calculateStuiedTime());
+        hashMap.put(ss.BREAK_TIME_REF, "TabbarVC.sharedInstance.timerClass.calculateStuiedTime()");
         hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
         hashMap.put(ss.BREAK_LOCATION_REF, ss.NO_LOCATION_REF );
         return  hashMap;
@@ -447,7 +447,7 @@ public class timerView extends AppCompatActivity {
      */
     public HashMap<String,Object> prepareResumeData(){
         HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put(ss.RESUME_TIME_REF,TabbarVC.sharedInstance.timerClass.calculateStuiedTime());
+        hashMap.put(ss.RESUME_TIME_REF,"TabbarVC.sharedInstance.timerClass.calculateStuiedTime()");
         hashMap.put(ss.CREATED_AT, System.currentTimeMillis()/100L);
         hashMap.put(ss.RESUME_LOCATION_REF, ss.NO_LOCATION_REF);
 

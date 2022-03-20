@@ -1,10 +1,10 @@
 package com.example.proccoli2.NewModels;
 
 public class ShapeSize {
-    public ShapeSize model = new ShapeSize();
     public ShapeSize(){
-
     }
+    //public ShapeSize model = new ShapeSize();
+
     /*
     let chatYourSelfColor = #colorLiteral(red: 0.646271944, green: 0.8273729086, blue: 0.9113489985, alpha: 1)
     let chatOthersColor = #colorLiteral(red: 0.6188760996, green: 0.8946937323, blue: 0.8120148778, alpha: 1)
