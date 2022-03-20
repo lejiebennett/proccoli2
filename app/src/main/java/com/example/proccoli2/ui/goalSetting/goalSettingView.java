@@ -52,8 +52,7 @@ public class goalSettingView extends AppCompatActivity {
     int revisedPersonal;
     int revisedDue;
     ActivityResultLauncher<Intent> activityResultLaunchEditSubGoal;
-    //Add -1 if subgoal deleted
-    int indexChangeAdd = 0;
+    int indexChange = 0;
 
 
     @Override
@@ -77,7 +76,6 @@ public class goalSettingView extends AppCompatActivity {
                             passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
                             adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
                             subGoalRecyclerView.setVisibility(View.VISIBLE);
-                            indexChangeAdd = indexChangeAdd;
                         }
                     }
                 });
@@ -92,15 +90,20 @@ public class goalSettingView extends AppCompatActivity {
                         if (result.getResultCode() == RESULT_OK) {
                             passedGoal2 = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             int editedSubGoalPosition = (int) result.getData().getSerializableExtra("subGoalPosition");
-                            Log.d("HERE PassedGoal", String.valueOf(passedGoal2));
-
                             SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
-                            passedGoal.getSubGoals().remove(editedSubGoalPosition);
-                            adapter.remove(editedSubGoalPosition);
-                            indexChangeAdd = indexChangeAdd -1;
-                            passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
+                            Log.d("editted", "onActivityResult: " + adapter.items);
+                            Log.d("editted", "onActivityResult: " + editedSubGoalPosition);
+                            passedGoal.getSubGoals().set(editedSubGoalPosition,passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
+
+                                    Log.d("MATCH", "onActivityResult: ");
+                                    adapter.items.set(editedSubGoalPosition, passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size() - 1));
+                                    adapter.notifyItemChanged(editedSubGoalPosition);
+
+                           // passedGoal.getSubGoals().remove(editedSubGoalPosition);
+                           // adapter.remove(editedSubGoalPosition);
+                          //  passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
                             Log.d("HERE PassedGoal w/Edit", String.valueOf(passedGoal));
-                            adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
+                         //   adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
                             subGoalRecyclerView.setVisibility(View.VISIBLE);
                         }
                     }
@@ -150,8 +153,15 @@ public class goalSettingView extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     if(controller.compareDates((int)passedGoal.getProposedStartDate(),revisedPersonal,revisedDue) == true){
-                        DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
-                        DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
+
+                        if(passedGoal.getPersonalDeadline()!=revisedPersonal){
+                            DataServices.getInstance().revisePersonalOrHardDeadline(revisedPersonal,passedGoal.getPersonalDeadline(),true,passedGoal.getGoalId());
+
+                        }
+                        if(passedGoal.getWhenIsDue()!=revisedDue){
+                            DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
+
+                        }
 
                         passedGoal.setWhenIsDue(revisedDue);
                         passedGoal.setPersonalDeadline(revisedPersonal);
@@ -308,6 +318,7 @@ public class goalSettingView extends AppCompatActivity {
                     if(passedGoal.getSubGoals().get(i) == item){
                         passedGoal.getSubGoals().remove(item);
                         DataServices.getInstance().deleteSubGoal(item.get_subGoalId(),passedGoal.getGoalId());
+                        indexChange = indexChange-1;
                     }
                 }
             }
@@ -351,27 +362,31 @@ public class goalSettingView extends AppCompatActivity {
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int swipedPosition = getSubGoalPosition() + indexChangeAdd;
+                    Log.d("deleteMe", "onClick: " + passedGoal.getSubGoals());
+                    Log.d("editted", "onClick: "+ passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange));
+                    /*
+                    int swipedPosition = getSubGoalPosition()+indexChange;
                     SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
                     adapter.remove(swipedPosition);
-                    indexChangeAdd = indexChangeAdd-1;
 
+                     */
                 }
             });
 
             editBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
+                    Log.d("editted", "onClick: "+ passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange));
 
                     Intent i = new Intent(goalSettingView.this, subGoalView_goalSetting_edit.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("completeBy", controller.unixToStringDateTime(revisedPersonal));
                     i.putExtras(bundle);
-                    i.putExtra("subGoalPosition",getSubGoalPosition() + indexChangeAdd);
-                    i.putExtra("subgoal", passedGoal.getSubGoals().get(getSubGoalPosition() + indexChangeAdd));
+                    i.putExtra("subGoalPosition",getSubGoalPosition());
+                    i.putExtra("subgoal", passedGoal.getSubGoals().get(getSubGoalPosition()));
                     //Passes bigGoal info to keep working list of subgoals
                     i.putExtra("bigGoal", passedGoal);
-                    Log.d("subGoalEdit", "onClick: subGoalToEdit" +passedGoal.getSubGoals().get(getSubGoalPosition() + indexChangeAdd));
+                    Log.d("subGoalEdit", "onClick: subGoalToEdit" +passedGoal.getSubGoals().get(getSubGoalPosition()));
                     activityResultLaunchEditSubgoal.launch(i);
 
 
