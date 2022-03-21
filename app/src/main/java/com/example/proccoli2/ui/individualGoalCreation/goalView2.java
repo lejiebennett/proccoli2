@@ -547,6 +547,8 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
                                                                 Log.d("GoalMade", "onClick: " + newGoal.toString());
 
+                                                                String newGoalId = controller.saveIndividualGoal(newGoal).getGoalId();
+                                                                newGoal.setGoalId(newGoalId);
                                                                 //Send goal back to main activity
                                                                 Intent i = new Intent(goalView2.this, MainActivity.class);
                                                                 i.putExtra("bigGoal", newGoal);
@@ -555,7 +557,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                                                                 Log.d("putExtras", "onClick: " + newGoal);
                                                                 setResult(RESULT_OK, i);
                                                                 Log.d("setExtras", "onClick: " + newGoal);
-                                                                controller.saveIndividualGoal(newGoal);
+
 
 
                                                                 finish();
@@ -587,6 +589,7 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
                                                     Log.d("GoalMade", "onClick: " + newGoal.toString());
 
+                                                    newGoal.setGoalId(goalIdForSavedGoal);
                                                     //Send goal to MainActivity
                                                     Intent i = new Intent(goalView2.this, MainActivity.class);
                                                     i.putExtra("bigGoal", newGoal);

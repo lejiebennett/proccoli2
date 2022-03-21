@@ -161,14 +161,17 @@ public class UserDataModel {
     }
 
 
-    public void profileImg(HashMap<String,String> hashMap){
+    public HashMap<String, String> profileImg(HashMap<String,String> hashMap){
 
         //UpperDashViewForIndividual.sharedInstance.profileImageView.image = UIImage(named: newValue?.keys.first ?? "light0")
         //UpperDashViewForIndividual.sharedInstance.profileImageView.changeImageColor(color: UIColor.colorFromHexString(hexCode: newValue?.values.first ?? "#000"))
 
 
-        //String value = UserDashViewForIndividual.sharedInstance.profileImageView.image = getValueOrDefault(newValue.keys.first,"light0");
-        //String key = UserDashViewForIndividual.sharedInstance.profileImageView.changeImageColor(UIColor.colorFromHexString(getValueOrDefault(newValue.values.first,"#000"));
+        String key = (String) getValueOrDefault(hashMap.keySet().toArray()[0],"light6");
+        String value = getValueOrDefault(hashMap.get(key),"#000000");
+        HashMap<String,String> profileImage = new HashMap<>();
+        profileImage.put(key,value);
+        return profileImage;
     }
 
 

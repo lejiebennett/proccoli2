@@ -232,6 +232,10 @@ public class GoalModel implements Serializable {
         return value == null ? defaultValue : value;
     }
 
+    public void setGoalId(String goalId) {
+        this.goalId = goalId;
+    }
+
     @Override
     public String toString() {
         return "GoalModel{" +

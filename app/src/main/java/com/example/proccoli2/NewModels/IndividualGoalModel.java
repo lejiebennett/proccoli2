@@ -188,6 +188,10 @@ public class IndividualGoalModel implements Serializable {
         this.whenIsDue = whenIsDue;
     }
 
+    public void setGoalId(String goalId) {
+        this.goalId = goalId;
+    }
+
     public void setPersonalDeadline(long personalDeadline) {
         this.personalDeadline = personalDeadline;
     }

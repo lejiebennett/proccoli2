@@ -54,6 +54,7 @@ public class profileView extends AppCompatActivity {
     String originalColor; //Color from Main
     String avatarImageO;
     Toolbar toolbar;
+    String avatarImage; //Avatar image from main
     edit_profile_VC edit_controller = new edit_profile_VC(this);
     profile_VC profile_controller = new profile_VC(this);
 
@@ -106,11 +107,12 @@ public class profileView extends AppCompatActivity {
         //This gets data from the main activity page and then sets the avatar image on the profile page
         Bundle bundle = getIntent().getExtras();
         if (bundle!=null){
-            String avatarImage = bundle.getString("avatarImage");
+            avatarImage = bundle.getString("avatarImage");
 
             originalColor = bundle.getString("colorCode");
             Log.d("COLOR", "onCreate: " + originalColor);
             setAvatar(Integer.parseInt(avatarImage));
+
         }
 
 
@@ -118,6 +120,9 @@ public class profileView extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(avatarImageO == null){
+                    avatarImageO = avatarImage;
+                }
                 Log.d("go backtoMain", "onClick: I am here with id" + Integer.parseInt(avatarImageO));
                 setAvatarIntent(Integer.parseInt(avatarImageO));
 
@@ -132,6 +137,7 @@ public class profileView extends AppCompatActivity {
                 Intent i = new Intent(profileView.this, avatarView.class);
                 activityResultLaunchAvatarCollection.launch(i);
                 //startActivity(i);
+
             }
         });
 
@@ -299,6 +305,7 @@ public class profileView extends AppCompatActivity {
      */
     public void setAvatarIntent(int i){
 
+        Log.d("profileView", "setAvatarIntent: ");
         Intent myIntent = new Intent(this, MainActivity.class);
 
         HashMap<String,String> profileImageHashmap = new HashMap<>();

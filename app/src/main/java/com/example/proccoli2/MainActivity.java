@@ -239,8 +239,8 @@ public class MainActivity extends AppCompatActivity{
 
 
     final androidx.fragment.app.Fragment homeFragment = new HomeFragment();
-    final androidx.fragment.app.Fragment dashboardFragment = new DashboardFragment();
-    final androidx.fragment.app.Fragment notificationsFragment = new NotificationsFragment();
+   // final androidx.fragment.app.Fragment dashboardFragment = new DashboardFragment();
+    //final androidx.fragment.app.Fragment notificationsFragment = new NotificationsFragment();
 
     androidx.fragment.app.Fragment activeFragment = homeFragment;
 
@@ -326,8 +326,8 @@ public class MainActivity extends AppCompatActivity{
         transaction = fm.beginTransaction();
         transaction.setReorderingAllowed(true);
 
-        transaction.add(R.id.nav_host_fragment_activity_main,notificationsFragment).hide(notificationsFragment);
-        transaction.add(R.id.nav_host_fragment_activity_main,dashboardFragment).hide(dashboardFragment);
+        //transaction.add(R.id.nav_host_fragment_activity_main,notificationsFragment).hide(notificationsFragment);
+        //transaction.add(R.id.nav_host_fragment_activity_main,dashboardFragment).hide(dashboardFragment);
         transaction.add(R.id.nav_host_fragment_activity_main,homeFragment).commit();
 
 
@@ -347,14 +347,9 @@ public class MainActivity extends AppCompatActivity{
 
                     //  transaction.add(notificationsFragment,null);
 
-                    /*
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("goalList",goalList);
-                    Log.d("bundlePut", "onDestinationChanged: " + bundle.getSerializable("goalList"));
-                    NotificationsFragment notificationsFragment = new NotificationsFragment();
-                    notificationsFragment.setArguments(bundle);
                   //  NotificationsFragment notificationsFragment = NotificationsFragment.newInstance(goalList);
                   //  transaction.add(notificationsFragment,null).commit();
+                    /*
                    transaction.replace(R.id.nav_host_fragment_container, notificationsFragment)
                             .commit();
                     Log.d("getArgument", "onDestinationChanged: " + notificationsFragment.getArguments());
@@ -382,8 +377,8 @@ public class MainActivity extends AppCompatActivity{
 
 
                      */
-                    fm.beginTransaction().hide(activeFragment).show(notificationsFragment).commit();
-                    activeFragment = notificationsFragment;
+                   // fm.beginTransaction().hide(activeFragment).show(notificationsFragment).commit();
+                   // activeFragment = notificationsFragment;
 
                 }
                 else if(destination.getId()==R.id.navigation_home){
@@ -403,11 +398,11 @@ public class MainActivity extends AppCompatActivity{
                     //        .commit();
 
 
-                    fm.beginTransaction().hide(activeFragment).show(dashboardFragment).commit();
+                   // fm.beginTransaction().hide(activeFragment).show(dashboardFragment).commit();
 
 
                     //transaction.show(dashboardFragment);
-                    activeFragment = dashboardFragment;
+                  //  activeFragment = dashboardFragment;
 
                 }
                 else if(destination.getId()==R.id.navigation_invitations){
