@@ -1478,7 +1478,6 @@ public class DataServices {
     ////Mark:  SelfReport VC
    public static void sendGradeReportData(String grade, String goalId) {
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(FirebaseAuth.getInstance().getUid()).collection(PERSONAL_GOALS_COLLECTION_REF).document(goalId).update(createHashmap(IS_GRADED_REF,grade));
-
         LogActivityModel.getActivityChain().addActivityForGoal(SELF_GRADE_REPORT_SUBMIT_REF,goalId);
     }
 

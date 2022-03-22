@@ -99,6 +99,36 @@ public class NotificationsFragment_VC {
 
     }
 
+    public boolean compareDates(String startReport, String stopReport, Context context, NotificationsFragment notificationsFragment) throws ParseException {
+        Log.d("Date", "compareDates: "+ startReport.toString() + stopReport.toString());
+
+        //Sun Oct 17 10:55:00 EDT 2021
+        //  SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM, dd, yyyy --hh:mm aa");
+
+
+
+        //Start
+        //Start time
+        ///Stop time
+        //Today
+        Date today = new Date(System.currentTimeMillis());
+        Log.d("Today's Date and time", "compareDates: " + today.toString());
+
+
+        if(sdf.parse(startReport).before(today) &&
+                sdf.parse(stopReport).before(today) &&
+                sdf.parse(startReport).before(sdf.parse(stopReport)) &&
+                sdf.parse(stopReport).after(sdf.parse(startReport)))
+            return true;
+
+        else{
+            Log.d("Compare Failed", "compareDates: else RAN");
+            return false;
+        }
+
+    }
+
     //https://stackoverflow.com/questions/7784421/getting-unix-timestamp-from-date
     public int dateStrToUnix(String time) {
         long unixTime = 0;

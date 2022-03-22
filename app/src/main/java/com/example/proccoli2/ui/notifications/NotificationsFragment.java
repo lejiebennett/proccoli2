@@ -105,20 +105,14 @@ public class NotificationsFragment extends Fragment {
     ArrayList<String> updatedGoalStudyTimeIds = new ArrayList<>();
     ArrayList<Double> updatedGoalStudyTime = new ArrayList<>();
 
-    public static NotificationsFragment newInstance(ArrayList<GoalModel> goalList){
+    public static NotificationsFragment newInstance(){
         NotificationsFragment notificationsFragment = new NotificationsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("goalList", goalList);
-        notificationsFragment.setArguments(bundle);
         return notificationsFragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        Log.d("SavedInstanceState", "onCreate: " + savedInstanceState);
-        Log.d("arguments", "onCreate: " + bundle);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -149,6 +143,24 @@ public class NotificationsFragment extends Fragment {
                 });
 
                  */
+            }
+        });
+
+        DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
+
+            @Override
+            public void onSuccess(Object data) {
+                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                if(hashMap.get("_error")==null) {
+                    Log.d("personalGoals", "onSuccess: " + hashMap);
+                    searchGoalList = (ArrayList<GoalModel>) hashMap.get("_response");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
             }
         });
 
@@ -262,7 +274,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                 if(gradeScores[percentPicker.getValue()].equals("Score") == true && gradeLetters[letterPicker.getValue()].equals("Grade") == true){
-                    Toast toast = Toast.makeText(getContext(), "Please select a time duration", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getContext(), "Please select a score", Toast.LENGTH_LONG);
                     toast.show();
                 }
                 else{
@@ -298,19 +310,13 @@ public class NotificationsFragment extends Fragment {
                     Log.d("for goal", "onClick for goal: " + searchGoalList.get(goalSelected));
                     searchGoalList.get(goalSelected).setGraded(true);
                     tempGoalHolder = searchGoalList.get(goalSelected);
-                    DataServices.sendGradeReportData(gradePickedInput.getText().toString(),tempGoalHolder.getGoalId());
-
-                    //Alert popup
-                    AlertDialog dialog = new AlertDialog.Builder(getContext())
-                            .setTitle("Done!")
-                            .setMessage("Thank you! You have entered a grade for goal " + tempGoalHolder.getBigGoal())
-                            .setNegativeButton("Ok", null)
-                            .create();
-                    dialog.show();
+                  //  DataServices.sendGradeReportData(gradePickedInput.getText().toString(),tempGoalHolder.getGoalId());
+                    gradePercentageDescription.setText(gradePercentageInput.getText().toString() + " out of what score?");
 
                     adapter = new searchGoalAdapter();
                     recyclerView.setAdapter(adapter);
                     closeGradeReport();
+
                     openGradePercenetageReport();
 
                 }
@@ -361,7 +367,7 @@ public class NotificationsFragment extends Fragment {
                         Log.d("GOAL TO REPORT TIME TO", "onClick: " + goalSelected);
                         try {
                            // if (controller.compareDates(controller.unixToStringDateTime(searchGoalList.get(goalSelected).getStartDate()), startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
-                                if (controller.compareDates("0", startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
+                                if (controller.compareDates(startTimeInput.getText().toString(), stopTimeInput.getText().toString(), getContext(), NotificationsFragment.this)) {
 
                                     Log.d("Success", "onClick: ran");
                                 startTimeInput.setHintTextColor(Color.rgb(128, 128, 128));
@@ -378,8 +384,6 @@ public class NotificationsFragment extends Fragment {
                                 if(searchGoalList.get(goalSelected).getTaskType()=="group"){
                                     isGroup = true;
                                 }
-
-                                readyToSendDataTimeReport(searchGoalList.get(goalSelected).getStudiedTime(),uStart,uStop,searchGoalList.get(goalSelected).getGoalId(),selectedSubgoalId,isGroup);
                                 Log.d("collected Start/stop", "ustart: " + uStart + "stop: " + uStop);
                                 Log.d("for goal", "onClick for goal: " + searchGoalList.get(goalSelected));
 
@@ -388,30 +392,14 @@ public class NotificationsFragment extends Fragment {
                                 //Then update the appropriate goal
                                 Log.d("CURRENT STUDIED", "onClick: " + String.valueOf(searchGoalList.get(goalSelected).getStudiedTime()));
                                 searchGoalList.get(goalSelected).setStudiedTime(searchGoalList.get(goalSelected).getStudiedTime()+controller.calculateTimeDifferenceConvertToMins(uStart,uStop));
+                                readyToSendDataTimeReport(controller.calculateTimeDifferenceConvertToMins(uStart,uStop),uStart,uStop,searchGoalList.get(goalSelected).getGoalId(),selectedSubgoalId,isGroup);
+
                                 Log.d("New STUDIED", "onClick: " + String.valueOf(searchGoalList.get(goalSelected).getStudiedTime()));
                                 //Refresh the adapter
 
                                 adapter = new searchGoalAdapter();
                                 recyclerView.setAdapter(adapter);
-
-                                updatedGoalStudyTime.add(controller.calculateTimeDifferenceConvertToMins(uStart,uStop));
-                                if(selectedSubgoalId == null)
-                                    selectedSubgoalId = "";
-                                updatedGoalStudyTimeIds.add(searchGoalList.get(goalSelected).getGoalId() + selectedSubgoalId);
-
-
-
                                 closeTimeReport();
-                                new AlertDialog.Builder(getContext())
-                                        .setTitle("Sucesss")
-                                        .setMessage("Thanks for reporting your work session! Proccoli has updated your progress charts")
-                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                            }
-                                        })
-                                        .show();
 
                             } else {
                                 Toast toast = Toast.makeText(getContext(), "At least one date value is invalid.", Toast.LENGTH_LONG);
@@ -457,30 +445,14 @@ public class NotificationsFragment extends Fragment {
         });
 
         closeTimeReport();
-
-        searchGoalList = new ArrayList<>();
-
-        Bundle bundle = getArguments();
         Log.d("NOTIFICATION FRAGMENT", "onCreateView: HEREEE");
-        Log.d("arguments", "onCreateView: " + getArguments());
-        if(bundle!=null){
-            searchGoalList = (ArrayList<GoalModel>) bundle.getSerializable("goalList");
-        }
         Log.d("recievedGoalList", "onCreate: " + searchGoalList);
 
-        //Since the data pass isn't working, hardcoded data in instead
-        /*
-        searchGoalList.add(new GoalModel("GoalIDDD1", "Biggie",1643895301,1643290501,"Project",false));
-        searchGoalList.add(new GoalModel("GoalIDDD2", "BigGoal",1643895302,1643290502,"Discussion",false));
-        searchGoalList.add(new GoalModel("GoalIDDD3", "Indy",1643895303,1643290503,"Exam",false));
-        searchGoalList.add(new GoalModel("GoalIDDD4", "Goally",1643895304,1643290504,"Assignment",false));
-        searchGoalList.add(new GoalModel("GoalIDDD5", "BearGoal",1643895305,1643290505,"Project",false));
-
-         */
         setUpGoalSearchRecyclerView();
 
 
         SearchView searchView = binding.searchBarGoals;
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -788,6 +760,7 @@ public class NotificationsFragment extends Fragment {
     }
 
 
+    //Is this the current studiedTime before we add the reported or is it including the new reported time as well?
     public void readyToSendDataTimeReport(double studiedTime,long startTime,long finishTime,String goalId, String subgoalId, boolean isGroup) {
         LogActivityModel.getActivityChain().addActivityForGoal(ss.SELF_TIME_REPORT_SUBMIT_REF, goalId);
         if (isGroup) {
@@ -800,7 +773,7 @@ public class NotificationsFragment extends Fragment {
                         .setNegativeButton("Ok", null)
                         .create();
                 dialog.show();
-                updatedGoalStudyTimeIds.add(tempGoalHolder.getGoalId());
+                updatedGoalStudyTimeIds.add(tempGoalHolder.getGoalId() + "." + subgoalId);
                 updatedGoalStudyTime.add(studiedTime);
             }
             else
@@ -823,7 +796,8 @@ public class NotificationsFragment extends Fragment {
                     .create();
 
             updatedGoalStudyTime.add(studiedTime);
-            updatedGoalStudyTimeIds.add(tempGoalHolder.getGoalId());
+            //If the there is no subgoal id then it saves as noSubGoal
+            updatedGoalStudyTimeIds.add(tempGoalHolder.getGoalId() + "." + subgoalIdCheck);
 
         }
     }
