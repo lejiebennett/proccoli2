@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.R;
 import com.example.proccoli2.oldModels.GoalModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
 

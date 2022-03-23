@@ -189,11 +189,11 @@ public class SingletonStrings implements Serializable {
 
     //alert type survey questions
     final String RELATED_COURSE_REF = "relatedCourse";
-    final String FACE_QUESTION_TYPE_REF_FOR_TIMER = "faceQuestionForTimer";
-    final String FACE_QUESTION_TYPE_REF_FOR_COMPLETION = "faceQuestionForComplation";
+    public final String FACE_QUESTION_TYPE_REF_FOR_TIMER = "faceQuestionForTimer";
+    public final String FACE_QUESTION_TYPE_REF_FOR_COMPLETION = "faceQuestionForComplation";
     final String LATE_PROPOSED_START_TIME_QUESTION_REF = "lateStartQuestion";
     final String SELF_EVALUATION_REF = "selfEvaluation";
-    final String Evaluation_REF = "evaluation";
+    public final String Evaluation_REF = "evaluation";
     final String SELF_EVALUATION_LATE_START_REF = "IstartedLateBecause";
 
     final String IS_GRADED_REF = "grade";

@@ -40,6 +40,7 @@ import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.PersonalNoteModel;
 import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.groupgoalsingleGoalView;
 import com.example.proccoli2.oldModels.SubGoalModel;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
@@ -84,6 +85,7 @@ public class singleGoalView extends AppCompatActivity {
     Button goalProgressBtn;
     int smileRating;
     int studiedFromTimer;
+    SingletonStrings ss = new SingletonStrings();
 
     //Set Reminder
     SingleDateAndTimePicker setReminderPicker;
@@ -399,18 +401,6 @@ public class singleGoalView extends AppCompatActivity {
         startWorking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Intent i = new Intent(singleGoalView.this, timerView.class);
-                startActivity(i);
-
-                 */
-                /*
-                Intent i = new Intent(singleGoalView.this, timerView.class);
-                activityResultLaunchTimer.launch(i);
-
-                 */
-
-
                 //Determines how many goals need to be added to startWorking (aka what goals in myGoals.getSubgoals are incomplete)
                 int numOfSubGoalsIncomplete = 0;
                 for(int i = 0; i < myGoal.getSubGoals().size(); i++){
@@ -424,6 +414,7 @@ public class singleGoalView extends AppCompatActivity {
                 if(numOfSubGoalsIncomplete == 0){
                     Intent i = new Intent(singleGoalView.this, timerView.class);
                     i.putExtra("bigGoal",myGoal);
+
                     activityResultLaunchTimer.launch(i);
 
                 }
@@ -516,15 +507,6 @@ public class singleGoalView extends AppCompatActivity {
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Mark goal as complete
-                /*
-                myGoal.setCompleted(true);
-                completeBtn.setBackgroundColor(Color.GREEN);
-                checkIfGoalComplete(myGoal.isCompleted());
-
-
-                 */
-
                 controller.completeBtnTapped(myGoal, new ResultHandler<Object>() {
 
                     @Override
@@ -536,6 +518,10 @@ public class singleGoalView extends AppCompatActivity {
 
                             //Launch activity to get smileFace Survey
                             Intent intent = new Intent(singleGoalView.this, smileyFaceSurveyView.class);
+                            intent.putExtra("questionType",ss.FACE_QUESTION_TYPE_REF_FOR_COMPLETION);
+                            intent.putExtra("isGroupStudy",false);
+                            intent.putExtra("goalId",myGoal.getGoalId());
+
                             activityResultLaunchSmileyRating.launch(intent);
                         }
 

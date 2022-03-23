@@ -1,6 +1,8 @@
 package com.example.proccoli2.NewModels;
 
 
+import static com.example.proccoli2.NewModels.LogActivityModel.activityChain;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -217,7 +219,7 @@ public class DataServices {
     final String FACE_QUESTION_TYPE_REF_FOR_TIMER = "faceQuestionForTimer";
     final String FACE_QUESTION_TYPE_REF_FOR_COMPLETION = "faceQuestionForComplation";
     final String LATE_PROPOSED_START_TIME_QUESTION_REF = "lateStartQuestion";
-    final String SELF_EVALUATION_REF = "selfEvaluation";
+    static final String SELF_EVALUATION_REF = "selfEvaluation";
     final String Evaluation_REF = "evaluation";
     final String SELF_EVALUATION_LATE_START_REF = "IstartedLateBecause";
 
@@ -1461,13 +1463,13 @@ public class DataServices {
        // TabbarVC.sharedInstance?.profileVCInstance?.isProgressBtnAnimationOn = true
     }
 
-    public void sendEvaluationDataAfterIndividualStudy(String goalId, String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
+    public static void sendEvaluationDataAfterIndividualStudy(String goalId, String selectedSubgoalId, String studyId, HashMap<String, Object> evaluationData) {
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(selectedSubgoalId).update(createHashmap(studyId + "." + SELF_EVALUATION_REF,evaluationData));
     }
-    public void sendEvaluationDataAfterGroupStudy(String goalId,String selectedSubgoalId, String studyId, HashMap<String,Object> evaluationData) {
-        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(this.uid+ "." + selectedSubgoalId + "." + studyId + "." + SELF_EVALUATION_REF,evaluationData));
+    public static void sendEvaluationDataAfterGroupStudy(String goalId, String selectedSubgoalId, String studyId, HashMap<String, Object> evaluationData) {
+        FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).collection(STUDY_TIME_REF).document(STUDY_TIME_DOC_ID_REF).update(createHashmap(DataServices.getInstance().getUID()+ "." + selectedSubgoalId + "." + studyId + "." + SELF_EVALUATION_REF,evaluationData));
     }
-    public void sendEvaluationDataAfterIndividialGoalCompletion(String goalId,HashMap<String,Object> evaluationData) {
+    public static void sendEvaluationDataAfterIndividialGoalCompletion(String goalId, HashMap<String, Object> evaluationData) {
         FirebaseFirestore.getInstance().collection(GOALS_COLLECTION_REF).document(goalId).update(createHashmap(SELF_EVALUATION_REF,evaluationData));
     }
 
@@ -1607,7 +1609,26 @@ public class DataServices {
     }
     ////end SelfReport
 
+    //Activity Log Data Start
+    public void saveActivityLogData() {
+        Log.d("savingLog", "saveActivityLogData: saving log");
+        activityChain.addActivity(APP_CLOSE_REF);
+        LogActivityModel activityLog = activityChain;
+        if(activityLog==null){
+            Log.d("error", "saveActivityLogData: log data write nil de kaldi");
+            return;
+        }
 
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).collection(LOG_ACTIVITY_COLLECTION_REF).document().set(activityLog).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.getException()==null)
+                    activityChain = null;
+                else
+                    Log.d("error on complete", "onComplete: " + task.getException().getLocalizedMessage());
+            }
+        });
+    }
     //Activity Log Data End
 
     public void fixCompletedGoalNumber(int number) {

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -23,9 +24,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.IndividualSubGoalStructModel;
 import com.example.proccoli2.NewModels.SingletonStrings;
+import com.example.proccoli2.NewModels.TimerDataModel;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisherTimer;
 import com.google.android.material.button.MaterialButton;
@@ -53,6 +56,7 @@ public class timerView extends AppCompatActivity {
     //Firebase integration
     String selectedSubGoalId;
     String goalId;
+    String studyId;
 
     IndividualGoalModel originalGoal;
     IndividualSubGoalStructModel clickedSubGoal;
@@ -71,14 +75,12 @@ public class timerView extends AppCompatActivity {
                         Log.d("onActivityResult", "ActivityResultLaunchSmileyRating: RUNNING");
                         smileRating = Integer.parseInt(result.getData().getStringExtra("smileRating"));
                         Log.d("RESULTSFROMsetSmile", String.valueOf(smileRating));
-                        //NEED TO ADD A NEW ATTRIBUTE TO GOAL MODAL TO HOLD SMILE RATING
 
                         Intent myIntent = new Intent(timerView.this, singleGoalView.class);
                         myIntent.putExtra("smileRating",Integer.toString(smileRating));
                         myIntent.putExtra("studiedTime",Integer.toString(studiedTime));
                         setResult(RESULT_OK,myIntent);
                         finish();
-                        //recreate();
                     }
                 }
             });
@@ -95,10 +97,17 @@ public class timerView extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         originalGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
-        clickedSubGoal = (IndividualSubGoalStructModel) bundle.getSerializable("subGoal_selected");
-        positionToUpdateStudiedTime = (int) bundle.getSerializable("positionToUpdateStudiedTime");
+        if((IndividualSubGoalStructModel) bundle.getSerializable("subGoal_selected")!=null){
+            clickedSubGoal = (IndividualSubGoalStructModel) bundle.getSerializable("subGoal_selected");
+            selectedSubGoalId = clickedSubGoal.get_subGoalId();
+            positionToUpdateStudiedTime = (int) bundle.getSerializable("positionToUpdateStudiedTime");
+
+
+        }
+        else{
+            selectedSubGoalId = ss.NO_SUB_GOAL_REF;
+        }
         goalId = originalGoal.getGoalId();
-        selectedSubGoalId = clickedSubGoal.get_subGoalId();
 
 
 
@@ -216,6 +225,19 @@ public class timerView extends AppCompatActivity {
                 toast.show();
                 selectedStudiedTime = desiredCountDownInMillis;
 
+                /*
+                originalGoal = (IndividualGoalModel) bundle.getSerializable("bigGoal");
+                clickedSubGoal = (IndividualSubGoalStructModel) bundle.getSerializable("subGoal_selected");
+                positionToUpdateStudiedTime = (int) bundle.getSerializable("positionToUpdateStudiedTime");
+                goalId = originalGoal.getGoalId();
+                selectedSubGoalId = clickedSubGoal.get_subGoalId();
+
+                 */
+                studyId = getAlphaNumericString(11);
+                TimerDataModel startData = new TimerDataModel(studyId,System.currentTimeMillis()/100L,0,false,desiredCountDownInMillis/100L);
+                DataServices.getInstance().startTimerIndividualGoal(goalId,selectedSubGoalId,studyId,startData);
+
+
                 timer = new CountDownTimer(desiredCountDownInMillis,1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -233,7 +255,17 @@ public class timerView extends AppCompatActivity {
                             startBtn.setVisibility(View.VISIBLE);
                             studiedTime = selectedStudiedTime;
 
+
+                            DataServices.getInstance().finishTimerForIndividual(goalId,selectedSubGoalId,studyId,studiedTime,prepareFinishData());
+
                             Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
+                            //Launch activity to get smileFace Survey
+                            intent.putExtra("questionType",ss.FACE_QUESTION_TYPE_REF_FOR_TIMER);
+                            intent.putExtra("isGroupStudy",false);
+                            intent.putExtra("goalId",goalId);
+                            intent.putExtra("selectedSubGoalId",selectedSubGoalId);
+
+
                             activityResultLaunchSmileyRating.launch(i);
                         }
                     }.start();
@@ -255,6 +287,8 @@ public class timerView extends AppCompatActivity {
                 alarmManager.cancel(pendingIntent);
                 //Get time that they did study
                 studiedTime = selectedStudiedTime - displayTime;
+
+                DataServices.getInstance().stopTimerForIndividualGoal(goalId,selectedSubGoalId,studyId, prepareStopData(studiedTime),studiedTime);
                 Intent myIntent2 = new Intent(timerView.this, singleGoalView.class);
                 myIntent2.putExtra("studiedTime",Integer.toString(studiedTime));
                 Log.d("StopStudyTime", "onClick: Timer stopped, passing studied time " + studiedTime);
@@ -280,6 +314,7 @@ public class timerView extends AppCompatActivity {
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
                 alarmManager.cancel(pendingIntent);
+                DataServices.getInstance().breakTimerForIndividualGoal(goalId,selectedSubGoalId,studyId,prepareBreakData());
 
             }
         });
@@ -347,6 +382,7 @@ public class timerView extends AppCompatActivity {
 
                 desiredCountDownInMillis =displayTime;
                 selectedStudiedTime = desiredCountDownInMillis;
+                DataServices.getInstance().resumeTimerForIndividualGoal(goalId,selectedSubGoalId,studyId,prepareResumeData());
 
                 counter =0;
                 timer = new CountDownTimer(desiredCountDownInMillis,1000) {
@@ -366,6 +402,13 @@ public class timerView extends AppCompatActivity {
                         startBtn.setVisibility(View.VISIBLE);
                         studiedTime = selectedStudiedTime;
 
+
+                        DataServices.getInstance().finishTimerForIndividual(goalId,selectedSubGoalId,studyId,studiedTime,prepareFinishData());
+                        //Launch activity to get smileFace Survey
+                        intent.putExtra("questionType",ss.FACE_QUESTION_TYPE_REF_FOR_TIMER);
+                        intent.putExtra("isGroupStudy",false);
+                        intent.putExtra("goalId",goalId);
+                        intent.putExtra("selectedSubGoalId",selectedSubGoalId);
 
                         Intent i = new Intent(timerView.this, smileyFaceSurveyView.class);
                         activityResultLaunchSmileyRating.launch(i);
@@ -421,30 +464,6 @@ public class timerView extends AppCompatActivity {
         hashMap.put(ss.FINISH_LOCATION_REF, ss.NO_LOCATION_REF);
         return hashMap;
     }
-
-
-    /*
-    @IBAction func timerBackBtnTapped(_ sender:UIButton) {
-        var isInitiated:Bool
-        if TabbarVC.sharedInstance?.timerClass != nil {
-            //counter is initiated
-            isInitiated = true
-        }
-		else {
-            isInitiated = false
-        }
-        timerView.removeFromSuperview()
-        delegate?.timerBackTapped(isCounterInitiated:isInitiated)
-    }
-    @IBAction func resumeTapped(_ sender:UIButton) {
-        onlyStopAndBreakeBtnActive()
-        TabbarVC.sharedInstance?.timerClass?.resume()
-        guard let selectedSubgoalId = self.selectedSubGoalId,
-                let studyId = self.studyId else {return}
-        delegate?.resumeTimer(selectedSubGoalId: selectedSubgoalId, studyId: studyId, resumeData: prepareResumeData())
-    }
-
-     */
     public HashMap<String,Object> prepareResumeData(){
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put(ss.RESUME_TIME_REF,"TabbarVC.sharedInstance.timerClass.calculateStuiedTime()");
@@ -453,4 +472,32 @@ public class timerView extends AppCompatActivity {
 
         return  hashMap;
     }
+
+    public static String getAlphaNumericString(int n)
+    {
+
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
+
 }

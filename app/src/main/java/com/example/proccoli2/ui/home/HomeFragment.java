@@ -640,8 +640,6 @@ public class HomeFragment extends Fragment{
                             }
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
 
-
-                            //  recyclerList = expiredPersonal;
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
                             /*
                             //Had to comment this out and just reset up the recycler view because it was having issues

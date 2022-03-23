@@ -98,12 +98,7 @@ public class goalSettingView extends AppCompatActivity {
                                     Log.d("MATCH", "onActivityResult: ");
                                     adapter.items.set(editedSubGoalPosition, passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size() - 1));
                                     adapter.notifyItemChanged(editedSubGoalPosition);
-
-                           // passedGoal.getSubGoals().remove(editedSubGoalPosition);
-                           // adapter.remove(editedSubGoalPosition);
-                          //  passedGoal.getSubGoals().add(passedGoal2.getSubGoals().get(passedGoal2.getSubGoals().size()-1));
                             Log.d("HERE PassedGoal w/Edit", String.valueOf(passedGoal));
-                         //   adapter.add(passedGoal.getSubGoals().get(passedGoal.getSubGoals().size()-1));
                             subGoalRecyclerView.setVisibility(View.VISIBLE);
                         }
                     }
@@ -314,9 +309,10 @@ public class goalSettingView extends AppCompatActivity {
             if (items.contains(item)) {
                 items.remove(position);
                 notifyItemRemoved(position);
-                for(int i = 0; i<passedGoal.getSubGoals().size()-1;i++){
+                for(int i = 0; i<passedGoal.getSubGoals().size();i++){
                     if(passedGoal.getSubGoals().get(i) == item){
                         passedGoal.getSubGoals().remove(item);
+                        Log.d("mark delete", "remove: " + item.get_subGoalId());
                         DataServices.getInstance().deleteSubGoal(item.get_subGoalId(),passedGoal.getGoalId());
                         indexChange = indexChange-1;
                     }
@@ -364,12 +360,12 @@ public class goalSettingView extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.d("deleteMe", "onClick: " + passedGoal.getSubGoals());
                     Log.d("editted", "onClick: "+ passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange));
-                    /*
+                    passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange).set_isDeleted(true);
+
                     int swipedPosition = getSubGoalPosition()+indexChange;
                     SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
                     adapter.remove(swipedPosition);
 
-                     */
                 }
             });
 
