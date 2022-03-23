@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
+import com.example.proccoli2.NewModels.GroupGoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NewModels.UserDataModel;
@@ -54,6 +55,7 @@ import com.example.proccoli2.mainProgressView;
 import com.example.proccoli2.ui.profile.profileView;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -111,6 +113,108 @@ public class HomeFragment extends Fragment{
                         colorCode = result.getData().getStringExtra("colorCode");
                         setAvatar(Integer.parseInt(avatarImage),colorCode);
                         passedAvatar = Integer.parseInt(avatarImage);
+                    }
+                }
+            });
+
+    //Catch data from singleGoalView
+    ActivityResultLauncher<Intent> activityResultLaunch3 = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    if (result.getResultCode() == RESULT_OK) {
+                        Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
+                        GroupGoalModel passedIndividualGoal = (GroupGoalModel) result.getData().getSerializableExtra("bigGoal");
+                        passedGoal = GroupGoalModel.goalsModelConverterForDataWrite(passedIndividualGoal);
+                        /*
+                        Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
+                        Log.d("HERE PassedGoal", String.valueOf(passedGoal));
+
+                         */
+
+                        controller.removeGoalFromList(goalSelected,goalList);
+                        goalList.add(passedGoal);
+                        Log.d("goalList", "Just added onActivityResult: goalLst" + goalList);
+
+                        controller.findOldAndRemoveFromRecyclers(passedGoal);
+                        controller.assignGoal(passedGoal);
+                        Log.d("activePersonal", "activePersonal: "+activePersonal);
+                        Log.d("AD", "AD: "+activeDue );
+                        Log.d("eP", "EP: "+expiredPersonal );
+                        Log.d("ED", "ED: "+expiredDue );
+                        Log.d("FP", "FP: "+finishedPersonal );
+                        Log.d("FD", "FD: "+ finishedDue );
+
+
+                        recyclerView.setVisibility(View.VISIBLE);
+                        switch(controller.setRecyclerViewList(HomeFragment.this)){
+                            case "activePersonal":
+                                Log.d("switch", "onActivityResult: activePerconal");
+                                recyclerList = activePersonal;
+                                //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
+
+                                break;
+                            case "activeDue":
+                                Log.d("switch", "onActivityResult: activedue");
+                                recyclerList = activeDue;
+                                //  recyclerList.add(activeDue.get(activeDue.size()-1));
+                                break;
+                            case "expiredPersonal:":
+                                Log.d("switch", "onActivityResult: expiredPersonal");
+                                recyclerList = expiredPersonal;
+                                //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
+                                break;
+                            case "expiredDue":
+                                Log.d("switch", "onActivityResult: expiredDue");
+                                recyclerList = expiredPersonal;
+                                //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            case "finishedPersonal":
+                                Log.d("switch", "onActivityResult: finishedPersonal");
+                                recyclerList = finishedPersonal;
+                                //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            case "finishedDue":
+                                recyclerList = finishedDue;
+                                Log.d("switch", "onActivityResult: finishedPersonal");
+                                //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            default:
+                                Log.d("switcherror", "onCreate: error in switch");
+                        }
+                        Log.d("recyclerList", "onActivityResult: " + recyclerList);
+
+
+                        //  recyclerList = expiredPersonal;
+                        Log.d("recyclerList", "onActivityResult: " + recyclerList);
+                        CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                        Log.d("addItems1", "onActivityResult: addItems1");
+                        adapter.addItems();
+                        Log.d("currentItemList", "onActivityResult: " + adapter.items);
+                        adapter.notifyDataSetChanged();
+
+                        Log.d("FIVES", "onActivityResult: " + goalList);
+                        Log.d("SIX", "onActivityResult: " + finishedDue);
+                        Log.d("SIX", "onActivityResult: " + finishedPersonal);
+
+
+                        //Used to get a list of all of the group goals, individual goals to get counts
+                        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                        int sumindividualCount = 0;
+                        int sumgroupCount = 0;
+                        for(int i=0; i<sumArray.size();i++){
+                            if(sumArray.get(i).getTaskType().equals("individual"))
+                                sumindividualCount++;
+                            else
+                                sumgroupCount++;
+                        }
+
+                        Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
+                        completedCount = controller.countCompletedGoals(finishedDue);
+                        goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
+
                     }
                 }
             });
@@ -263,9 +367,9 @@ public class HomeFragment extends Fragment{
             public boolean onMenuItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if(itemId == R.id.logoutBtn){
+                    FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(getActivity(), loginView.class);
                     startActivity(intent);
-                    //   finish(); Commented this out when I tried to refactor HomeFragment
                 }
                 return false;
             }
@@ -452,129 +556,144 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
+        Log.d("check", "onCreateView: " + DataServices.getInstance().getUID() + DataServices.getInstance().getEMAIL());
 
-            @Override
-            public void onSuccess(Object data) {
-                Log.d("LoadProfile", "onSuccess: " + UserDataModel.sharedInstance.getProfileImg());
-                setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));
-            }
+//        try{
+            DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
 
-            @Override
-            public void onFailure(Exception e) {
+                @Override
+                public void onSuccess(Object data) {
+                    Log.d("LoadProfile", "onSuccess: " + UserDataModel.sharedInstance.getProfileImg());
+                    setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));
+                }
 
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+    //    }
+    //    catch(Exception e){
+            Log.d("here", "onCreateView: user not logged in");
+     //   }
+
+
         //Initialize recyclerView
         recyclerView = binding.goalList;
         setUpRecyclerView();
         Log.d("Home Fragment", "onCreateView: I AM HOME FRAGMENT");
-        DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
+       // try{
+            DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
 
-            @Override
-            public void onSuccess(Object data) {
-                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
-                if(hashMap.get("_error")==null){
-                    Log.d("personalGoals", "onSuccess: " + hashMap);
-                    goalList = (ArrayList<GoalModel>) hashMap.get("_response");
+                @Override
+                public void onSuccess(Object data) {
+                    HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                    if(hashMap.get("_error")==null){
+                        Log.d("personalGoals", "onSuccess: " + hashMap);
+                        goalList = (ArrayList<GoalModel>) hashMap.get("_response");
 
-                    for(GoalModel goal: goalList){
-                        controller.assignGoal(goal);
+                        for(GoalModel goal: goalList){
+                            controller.assignGoal(goal);
+                        }
+                        Log.d("activePersonal", "activePersonal: "+activePersonal);
+
+                        Log.d("AD", "AD: "+activeDue );
+                        Log.d("eP", "EP: "+expiredPersonal );
+                        Log.d("ED", "ED: "+expiredDue );
+                        Log.d("FP", "FP: "+finishedPersonal );
+                        Log.d("FD", "FD: "+ finishedDue );
+
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                        switch(controller.setRecyclerViewList(HomeFragment.this)){
+                            case "activePersonal":
+                                Log.d("switch", "onActivityResult: activePerconal");
+                                recyclerList = activePersonal;
+                                //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
+
+                                break;
+                            case "activeDue":
+                                Log.d("switch", "onActivityResult: activedue");
+                                recyclerList = activeDue;
+                                //  recyclerList.add(activeDue.get(activeDue.size()-1));
+                                break;
+                            case "expiredPersonal:":
+                                Log.d("switch", "onActivityResult: expiredPersonal");
+                                recyclerList = expiredPersonal;
+                                //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
+                                break;
+                            case "expiredDue":
+                                Log.d("switch", "onActivityResult: expiredDue");
+                                recyclerList = expiredPersonal;
+                                //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            case "finishedPersonal":
+                                Log.d("switch", "onActivityResult: finishedPersonal");
+                                recyclerList = finishedPersonal;
+                                //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            case "finishedDue":
+                                recyclerList = finishedDue;
+                                Log.d("switch", "onActivityResult: finishedPersonal");
+                                //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
+                                break;
+                            default:
+                                Log.d("switcherror", "onCreate: error in switch");
+                        }
+                        Log.d("recyclerList", "onActivityResult: " + recyclerList);
+
+
+                        //  recyclerList = expiredPersonal;
+
+                        Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
+
+                        CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                        Log.d("addItems5", "onActivityResult: addItems5");
+
+                        adapter.addItems();
+                        Log.d("currentItemList", "onActivityResult: " + adapter.items);
+
+
+                        //setUpRecyclerView();
+
+                        Log.d("FIVES", "onActivityResult: " + goalList);
+                        Log.d("SIX", "onActivityResult: " + finishedDue);
+                        Log.d("SIX", "onActivityResult: " + finishedPersonal);
+
+
+                        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                        int sumindividualCount = 0;
+                        int sumgroupCount = 0;
+                        for(int i=0; i<sumArray.size();i++){
+                            if(sumArray.get(i).getTaskType().equals("individual"))
+                                sumindividualCount++;
+                            else
+                                sumgroupCount++;
+                        }
+
+                        Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
+                        completedCount = controller.countCompletedGoals(finishedDue);
+                        goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
+
+
+
                     }
-                    Log.d("activePersonal", "activePersonal: "+activePersonal);
-
-                    Log.d("AD", "AD: "+activeDue );
-                    Log.d("eP", "EP: "+expiredPersonal );
-                    Log.d("ED", "ED: "+expiredDue );
-                    Log.d("FP", "FP: "+finishedPersonal );
-                    Log.d("FD", "FD: "+ finishedDue );
-
-                    recyclerView.setVisibility(View.VISIBLE);
-
-                    switch(controller.setRecyclerViewList(HomeFragment.this)){
-                        case "activePersonal":
-                            Log.d("switch", "onActivityResult: activePerconal");
-                            recyclerList = activePersonal;
-                            //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
-
-                            break;
-                        case "activeDue":
-                            Log.d("switch", "onActivityResult: activedue");
-                            recyclerList = activeDue;
-                            //  recyclerList.add(activeDue.get(activeDue.size()-1));
-                            break;
-                        case "expiredPersonal:":
-                            Log.d("switch", "onActivityResult: expiredPersonal");
-                            recyclerList = expiredPersonal;
-                            //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
-                            break;
-                        case "expiredDue":
-                            Log.d("switch", "onActivityResult: expiredDue");
-                            recyclerList = expiredPersonal;
-                            //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        case "finishedPersonal":
-                            Log.d("switch", "onActivityResult: finishedPersonal");
-                            recyclerList = finishedPersonal;
-                            //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        case "finishedDue":
-                            recyclerList = finishedDue;
-                            Log.d("switch", "onActivityResult: finishedPersonal");
-                            //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        default:
-                            Log.d("switcherror", "onCreate: error in switch");
+                    else{
+                        Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
                     }
-                    Log.d("recyclerList", "onActivityResult: " + recyclerList);
-
-
-                    //  recyclerList = expiredPersonal;
-
-                    Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
-
-                    CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                    Log.d("addItems5", "onActivityResult: addItems5");
-
-                    adapter.addItems();
-                    Log.d("currentItemList", "onActivityResult: " + adapter.items);
-
-
-                    //setUpRecyclerView();
-
-                    Log.d("FIVES", "onActivityResult: " + goalList);
-                    Log.d("SIX", "onActivityResult: " + finishedDue);
-                    Log.d("SIX", "onActivityResult: " + finishedPersonal);
-
-
-                    ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
-                    int sumindividualCount = 0;
-                    int sumgroupCount = 0;
-                    for(int i=0; i<sumArray.size();i++){
-                        if(sumArray.get(i).getTaskType().equals("individual"))
-                            sumindividualCount++;
-                        else
-                            sumgroupCount++;
-                    }
-
-                    Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
-                    completedCount = controller.countCompletedGoals(finishedDue);
-                    goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
-
-
 
                 }
-                else{
-                    Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
+
+                @Override
+                public void onFailure(Exception e) {
+
                 }
+            });
+     //   }
+    //    catch(Exception e){
+            Log.d("homefragment", "onCreateView: user not logged in");
+   //     }
 
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
 
         //Data from createGoal Page
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
@@ -952,7 +1071,7 @@ public class HomeFragment extends Fragment{
                         i.putExtra("bigGoal",goalModel);
                         goalSelected = itemView.getVerticalScrollbarPosition();
                         Log.d("goalModelPut", "onClick: " +goalModel);
-                        activityResultLaunch2.launch(i);
+                        activityResultLaunch3.launch(i);
                     }
 
                 }

@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -11,9 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proccoli2.GoalAdapterEvolution;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.ResultHandler;
+import com.example.proccoli2.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

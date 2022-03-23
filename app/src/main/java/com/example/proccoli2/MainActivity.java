@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity{
     int completedCount = 0;
     String colorCode;
     int passedAvatar = 6;
-    DataServices ss = DataServices.getInstance();
     FirebaseAuth auth;
 
 
@@ -120,59 +119,12 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         auth = FirebaseAuth.getInstance();
+        Log.d("check", "onCreate: " + auth.getCurrentUser());
         if (auth.getCurrentUser() == null || auth.getCurrentUser().isEmailVerified() == false) {
+            Log.d("mainActivity", "onCreate: need to login");
             Intent intent = new Intent(MainActivity.this, loginView.class);
             startActivity(intent);
         }
-
-        /*
-        FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null || firebaseAuth.getCurrentUser().isEmailVerified()==false){
-                    firebaseAuth.removeAuthStateListener(this);
-                    Intent intent = new Intent(MainActivity.this,loginView.class);
-                    startActivity(intent);
-                }
-                else{
-                    Log.d("UserLoggedINV", "onAuthStateChanged: load data for main" );
-                    ss.callUserInfo(new ResultHandler<Object>() {
-                        @Override
-                        public void onSuccess(Object data) {
-                            HashMap<String,Object> results = (HashMap<String, Object>) data;
-                            if((boolean) results.get("_status")==true){
-                               // this.addAppStatusNotifications();
-                                ss.requestPersonalGoals(new ResultHandler<Object>() {
-                                    @Override
-                                    public void onSuccess(Object data) {
-                                        HashMap<String,Object> results = (HashMap<String, Object>) data;
-                                        if( results.get("_response")!=null){
-                                            ArrayList<com.example.proccoli2.NewModels.GoalModel> rawData = (ArrayList<com.example.proccoli2.NewModels.GoalModel>) results.get("_response");
-                                            UserDataModel.sharedInstance.setRawGoalsData(rawData);
-                                           // ss.notificationCallWithListener();
-                                        }
-                                    }
-                                    @Override
-                                    public void onFailure(Exception e) {
-
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Exception e) {
-                            //problem with fecthin data
-                            //self.alertView(message: error?.localizedDescription ?? "connection err", colorPereferences: alertColor)
-                            Toast.makeText(getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-
-                        }
-                    });
-                }
-            }
-        });
-
-        */
 
 
         Log.d("New main", "onCreate: Creating new view");
@@ -256,4 +208,5 @@ public class MainActivity extends AppCompatActivity{
 
 
     }
+
 }

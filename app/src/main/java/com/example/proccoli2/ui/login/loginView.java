@@ -1,6 +1,7 @@
 package com.example.proccoli2.ui.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,18 +10,28 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.R;
+import com.example.proccoli2.ui.home.HomeFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class loginView extends AppCompatActivity {
     DataServices dataServices = new DataServices();
+  //  DataServices dataServices;
+
     TextInputEditText emailInput, passwordInput;
     Button signUpShowBtn, signUpBtn, forgotPasswordBtn, loginBtn,loginShowBtn;
     ProgressBar loading;
+    FirebaseAuth auth;
 
 
     login_VC login_VC = new login_VC(this);
@@ -28,7 +39,18 @@ public class loginView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         Log.d("loginView", "onCreate: " + "Login page");
+        auth = FirebaseAuth.getInstance();
+        Log.d("MainActivity", "onCreate: " + FirebaseAuth.getInstance().getCurrentUser());
+        if (auth.getCurrentUser() == null || auth.getCurrentUser().isEmailVerified() == false) {
+            Log.d("loginView", "onCreate: login user");
+        }
+        else{
+            Log.d("loginView", "onCreate: userloggedin");
+
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_view);
 
@@ -76,7 +98,30 @@ public class loginView extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Log.d("Clicked login", "onClick: I clicked loginBtn");
+
+
+
+                /*
+                auth.signInWithEmailAndPassword(emailInput.getText().toString(), passwordInput.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
+                                    Log.d("test", "signInWithEmail:success");
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w("test", "signInWithEmail:failure", task.getException());
+                                }
+                            }
+                        });
+
+                 */
+
+
                 login_VC.login(emailInput.getText().toString(),passwordInput.getText().toString());
+
             }
         });
         loginShowBtn = findViewById(R.id.loginBtn);

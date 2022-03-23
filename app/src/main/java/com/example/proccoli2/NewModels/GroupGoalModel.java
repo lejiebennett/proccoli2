@@ -94,6 +94,11 @@ public class GroupGoalModel implements Serializable {
     public String getRelatedCourse() {
         return relatedCourse;
     }
+
+    public static GoalModel goalsModelConverterForDataWrite(GroupGoalModel data){
+        return new GoalModel(data.bigGoal, data.taskType, data.goalId, data.createdAt, data.isGoalCompleted, data.goalType, data.whenIsItDue, data.goalCreaterUid, 0.0, 0.0, false);
+
+    }
 }
     class groupMembersPack implements Serializable {
         DataServices ss = new DataServices();
@@ -184,6 +189,8 @@ public class GroupGoalModel implements Serializable {
         public  <T> T getValueOrDefault(T value, T defaultValue) {
             return value == null ? defaultValue : value;
         }
+
+
     }
 
 

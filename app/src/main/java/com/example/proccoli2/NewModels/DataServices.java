@@ -394,11 +394,15 @@ public class DataServices {
     
     
     
-    
+
     
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
-    static String uid = auth.getCurrentUser().getUid();
-    String email = auth.getCurrentUser().getEmail();
+    static String uid;
+    String email;
+    FirebaseUser user;
+    public void setEmail(){
+        email = user.getEmail();
+    }
 
     public String getEMAIL() {
         return EMAIL;
@@ -406,6 +410,14 @@ public class DataServices {
 
     public String getUID() {
         return UID;
+    }
+
+    public void setUID(String uid){
+        this.uid = uid;
+    }
+
+    public void setEmail(String email){
+        this.email = email;
     }
 
     //   static String uid = auth.getCurrentUser().getUid();
@@ -529,11 +541,20 @@ public class DataServices {
                 if(task.isSuccessful()){
                     if(auth.getCurrentUser().isEmailVerified()==true){
                         //Signed in and verified
-                        Log.d("SignedInNotV", "onComplete: singed in, not verified");
+                        uid = auth.getCurrentUser().getUid();
+                        user = auth.getCurrentUser();
+                        setEmail();
+                        Log.d("getUserInfo", "onComplete: " + email + uid);
+
+
+
+                        Log.d("SignedInNotV", "onComplete: singed in, verified");
                         HashMap<String,Object> handlerData = new HashMap<>();
                         handlerData.put("_status",true);
                         handlerData.put("_error",null);
                         handlerData.put("isLoginVerified", true);
+                        handlerData.put("email",email);
+                        handlerData.put("uid",uid);
                         handler.onSuccess(handlerData);
                     }
                     else{
@@ -557,49 +578,6 @@ public class DataServices {
             }
         });
     }
-
-    /*
-    public void loginUser(String email, String pass, ResultHandler<Object> handler) {
-        Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)")
-        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(user->{
-            if(user.isSuccessful()){
-                handler.onSuccess(user);
-
-            }else{
-                handler.onFailure(user.getException());
-                if(auth.getCurrentUser().isEmailVerified()==true){
-                    //signed in and verified
-                }
-                else{
-                    //signed in but no verification
-                    handler.onFailure(user.getException());
-                    //
-                }
-            }
-        });
-    }
-
-
-    public loginUser(String email, String pass, completion:@escaping(_ status:Bool, _ error:Error?, _ isLoginVerified:Bool)->()) {
-        Log.d("loginUser", "instance initializer: " + "checking Database statics \(this.uid)\n \(DatabaseService.email)")
-        auth.signIn(email, pass) { (user, error) in
-            if( error != null) {
-                completion(true, error, false);
-            }
-			else {
-                if(auth.getCurrentUser().isEmailVerified() == true) {
-                    //signed in and verified
-                    completion(true, null, true);
-                }
-				else {
-                    //signed in but no verification
-                    completion(true, null, false);
-                }
-            }
-        }
-    }
-
-     */
 
     public void sendVerificationEmail(String email,ResultHandler<Object> handler){
         FirebaseUser currentUser = auth.getCurrentUser();
@@ -1055,6 +1033,7 @@ public class DataServices {
 
     ////Mark: Profile VC funcs
     public void callUserInfo(ResultHandler<Object> handler) {
+        Log.d("check", "callUserInfo: " + uid + email);
         FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(this.uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -1611,7 +1590,7 @@ public class DataServices {
 
     //Activity Log Data Start
     public void saveActivityLogData() {
-        Log.d("savingLog", "saveActivityLogData: saving log");
+        Log.d("savng log", "saveActivityLogData: saving log");
         activityChain.addActivity(APP_CLOSE_REF);
         LogActivityModel activityLog = activityChain;
         if(activityLog==null){

@@ -29,6 +29,21 @@ public class GoalModel implements Serializable {
     double studiedTime;
     boolean isGraded;
 
+    public GoalModel(String bigGoal, String taskType, String goalId, long createdAt, boolean isGoalCompleted, String goalType, long whenIsItDue, String goalCreaterUid, double proposedStudyTime, double studiedTime, boolean isGraded) {
+        this.bigGoal = bigGoal;
+        this.taskType = taskType;
+        this.goalId = goalId;
+        this.createdAt = createdAt;
+        this.isCompleted = isGoalCompleted;
+        this.goalType = goalType;
+        this.whenIsDue = whenIsItDue;
+        this.goalCreaterUid = goalCreaterUid;
+        this.proposedStudyTime = proposedStudyTime;
+        this.studiedTime = studiedTime;
+        this.isGraded = isGraded;
+
+    }
+
     public long getPersonalDeadline() {
         return personalDeadline;
     }

@@ -3,12 +3,14 @@ package com.example.proccoli2.ui.login;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.oldModels.UserModel;
@@ -21,6 +23,8 @@ public class login_VC extends AppCompatActivity {
     private loginView loginView; //View
     private UserModel model;
     DataServices dataServices = new DataServices();
+    String emailForDataServices;
+    String uid;
 
     public login_VC(loginView loginView){
         this.loginView = loginView;
@@ -113,10 +117,22 @@ public class login_VC extends AppCompatActivity {
                     if(isLoginVerified==true){
                         //Email has been verified
                         //Good to send to profile VC
-                        //Send alert for email verification
-                        Log.d("userloggedinV", "onSuccess: ");
+                        Log.d("check", "onSuccess: " + loginView + result.get("email") + result.get("uid"));
+                        emailForDataServices = (String) result.get("email");
+                        uid = (String) result.get("uid");
+                        DataServices.getInstance().setEmail(email);
+                        DataServices.getInstance().setUID(uid);
+
+                        /*
                         loginView.finish();
                         finish();
+
+                         */
+                        loginView.setResult(RESULT_OK);
+                        loginView.finish();
+                        finish();
+
+
 
                     }
                     else{
