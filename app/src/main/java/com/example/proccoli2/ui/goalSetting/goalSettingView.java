@@ -242,7 +242,6 @@ public class goalSettingView extends AppCompatActivity {
                                 revisedDue = (controller.dateStrToUnix(controller.dateToStr(date)));
 
                                 dueDate.setText(controller.unixToStringDateTime(revisedDue));
-                               // DataServices.getInstance().revisePersonalOrHardDeadline(revisedDue,passedGoal.getWhenIsDue(),false,passedGoal.getGoalId());
                             }
                         }).display();
             }
@@ -361,10 +360,26 @@ public class goalSettingView extends AppCompatActivity {
                     Log.d("deleteMe", "onClick: " + passedGoal.getSubGoals());
                     Log.d("editted", "onClick: "+ passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange));
                     passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange).set_isDeleted(true);
+                    DataServices.getInstance().deleteSubGoal(passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange).get_subGoalId(),passedGoal.getGoalId());
 
                     int swipedPosition = getSubGoalPosition()+indexChange;
                     SubGoalFullAdapter adapter = (SubGoalFullAdapter) subGoalRecyclerView.getAdapter();
-                    adapter.remove(swipedPosition);
+
+                    adapter.items.set(swipedPosition, passedGoal.getSubGoals().get(getSubGoalPosition()+indexChange));
+                    adapter.notifyItemChanged(swipedPosition);
+                    int numOriginalSubGoals = passedGoal.getSubGoals().size();
+                    ArrayList<IndividualSubGoalStructModel> actualSubgoals = new ArrayList<>();
+                    for (int i = 0; i<numOriginalSubGoals; i++) {
+                        if(passedGoal.getSubGoals().get(i).is_isDeleted()==false){
+                            actualSubgoals.add(passedGoal.getSubGoals().get(i));
+                        }
+                    }
+
+                    passedGoal.setSubGoals(actualSubgoals);
+                    setUpSubgoalRecyclerView();
+                    //adapter.remove(swipedPosition);
+
+
 
                 }
             });

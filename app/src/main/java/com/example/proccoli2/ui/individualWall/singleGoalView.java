@@ -171,6 +171,18 @@ public class singleGoalView extends AppCompatActivity {
                         subGoalRecyclerView.setAdapter(adapter);
                         subGoalLabel.setVisibility(View.VISIBLE);
 
+                        ////////
+                        int numOriginalSubGoals = myGoal.getSubGoals().size();
+                        ArrayList<IndividualSubGoalStructModel> actualSubgoals = new ArrayList<>();
+                        for (int i = 0; i<numOriginalSubGoals; i++) {
+                            if(myGoal.getSubGoals().get(i).is_isDeleted()==false){
+                                actualSubgoals.add(myGoal.getSubGoals().get(i));
+                            }
+                        }
+
+                        myGoal.setSubGoals(actualSubgoals);
+                        /////////////
+
                         Log.d("newItems", "onActivityResult: " + adapter.items);
                         Log.d("newItems", "onActivityResult: " + myGoal.getSubGoals());
                     }

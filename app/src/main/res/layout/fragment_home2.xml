@@ -7,9 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarMainActivity"
+        android:id="@+id/toolbarMainActivity2"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/teal_700"
@@ -19,18 +18,18 @@
         app:menu="@menu/logoutmenu" />
 
     <Button
-        android:id="@+id/mainProgressBtn"
+        android:id="@+id/mainProgressBtn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Main Progress"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@+id/goalBoard"
-        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome"
-        app:layout_constraintStart_toEndOf="@+id/createGoalBtnHome"
+        app:layout_constraintBottom_toBottomOf="@+id/goalBoard2"
+        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome2"
+        app:layout_constraintStart_toEndOf="@+id/createGoalBtnHome2"
         tools:layout_editor_absoluteY="5dp" />
 
     <TextView
-        android:id="@+id/goalBoard"
+        android:id="@+id/goalBoard2"
         android:layout_width="194dp"
         android:layout_height="132dp"
         android:background="#A3A4A4"
@@ -39,15 +38,15 @@
         android:textColor="#040303"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/createGoalBtnHome"
+        app:layout_constraintBottom_toTopOf="@+id/createGoalBtnHome2"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome"
-        app:layout_constraintStart_toEndOf="@+id/createGoalBtnHome"
+        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome2"
+        app:layout_constraintStart_toEndOf="@+id/createGoalBtnHome2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.823" />
 
     <TextView
-        android:id="@+id/text_home"
+        android:id="@+id/text_home2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -61,31 +60,31 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/avatarHome"
+        android:id="@+id/avatarHome2"
         android:layout_width="137dp"
         android:layout_height="131dp"
-        app:layout_constraintBottom_toTopOf="@+id/editProfileBtn"
-        app:layout_constraintEnd_toEndOf="@+id/editProfileBtn"
-        app:layout_constraintStart_toStartOf="@id/editProfileBtn"
+        app:layout_constraintBottom_toTopOf="@+id/editProfileBtn2"
+        app:layout_constraintEnd_toEndOf="@+id/editProfileBtn2"
+        app:layout_constraintStart_toStartOf="@id/editProfileBtn2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.8"
         app:srcCompat="@drawable/light6" />
 
     <Button
-        android:id="@+id/editProfileBtn"
+        android:id="@+id/editProfileBtn2"
         android:layout_width="137dp"
         android:layout_height="50dp"
         android:text="Edit Profile"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome"
+        app:layout_constraintEnd_toStartOf="@+id/createGoalBtnHome2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.293" />
 
     <Button
-        android:id="@+id/createGoalBtnHome"
+        android:id="@+id/createGoalBtnHome2"
         android:layout_width="194dp"
         android:layout_height="50dp"
         android:text="Create Goal"
@@ -93,36 +92,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/editProfileBtn"
+        app:layout_constraintStart_toEndOf="@+id/editProfileBtn2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.293" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButtonGroup"
+        android:id="@+id/toggleButtonGroup2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editProfileBtn"
+        app:layout_constraintTop_toBottomOf="@+id/editProfileBtn2"
         app:singleSelection="true">
 
         <Button
-            android:id="@+id/activeBtn"
+            android:id="@+id/activeBtn2"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Active" />
 
         <Button
-            android:id="@+id/expiredBtn"
+            android:id="@+id/expiredBtn2"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Expired" />
 
         <Button
-            android:id="@+id/finishedBtn"
+            android:id="@+id/finishedBtn2"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,7 +130,7 @@
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout32"
         android:layout_width="229dp"
         android:layout_height="40dp"
         android:orientation="horizontal"
@@ -143,7 +142,7 @@
         app:layout_constraintVertical_bias="0.442">
 
         <ImageButton
-            android:id="@+id/personalDeadlineBtn"
+            android:id="@+id/personalDeadlineBtn2"
             android:layout_width="50dp"
             android:layout_height="48dp"
             android:backgroundTint="@color/grey"
@@ -151,14 +150,14 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
-            android:id="@+id/personalDeadlineTxt"
+            android:id="@+id/personalDeadlineTxt2"
             android:layout_width="63dp"
             android:layout_height="39dp"
             android:text="Personal Deadline"
             android:textAllCaps="false" />
 
         <ImageButton
-            android:id="@+id/dueDateBtn"
+            android:id="@+id/dueDateBtn2"
             android:layout_width="50dp"
             android:layout_height="48dp"
             android:backgroundTint="@color/grey"
@@ -166,7 +165,7 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView
-            android:id="@+id/dueDateTxt"
+            android:id="@+id/dueDateTxt2"
             android:layout_width="50dp"
             android:layout_height="35dp"
             android:text="Due Date"
@@ -175,7 +174,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/goalList"
+        android:id="@+id/goalList2"
         android:layout_width="match_parent"
         android:layout_height="325dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -185,7 +184,7 @@
         app:layout_constraintVertical_bias="0.683" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/goalList2"
+        android:id="@+id/goalList22"
         android:layout_width="411dp"
         android:layout_height="234dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -194,7 +193,7 @@
 
 
     <TextView
-        android:id="@+id/selectGoalTypeLabel"
+        android:id="@+id/selectGoalTypeLabel22"
         android:layout_width="170dp"
         android:layout_height="111dp"
         android:background="@color/light_grey"
@@ -210,7 +209,7 @@
         app:layout_constraintVertical_bias="0.395" />
 
     <ImageView
-        android:id="@+id/individualBtn"
+        android:id="@+id/individualBtn22"
         android:layout_width="77dp"
         android:layout_height="86dp"
         android:src="@drawable/individualbtn"
@@ -222,7 +221,7 @@
         app:layout_constraintVertical_bias="0.403" />
 
     <ImageView
-        android:id="@+id/cancelCreateGoalBtn"
+        android:id="@+id/cancelCreateGoalBtn22"
         android:layout_width="42dp"
         android:layout_height="57dp"
         android:src="@drawable/cancel_foreground"
@@ -234,13 +233,13 @@
         app:layout_constraintVertical_bias="0.345" />
 
     <ImageView
-        android:id="@+id/groupBtn"
+        android:id="@+id/groupBtn22"
         android:layout_width="77dp"
         android:layout_height="86dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="56dp"
         android:src="@drawable/groupbtn"
-        app:layout_constraintTop_toTopOf="@+id/individualBtn"
-        app:layout_constraintEnd_toStartOf="@id/individualBtn" />
+        app:layout_constraintTop_toTopOf="@+id/individualBtn22"
+        app:layout_constraintEnd_toStartOf="@id/individualBtn22" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

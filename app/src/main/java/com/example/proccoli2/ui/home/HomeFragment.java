@@ -52,6 +52,7 @@ import com.example.proccoli2.ui.groupGoalCreation.groupgoalView;
 import com.example.proccoli2.groupgoalsingleGoalView;
 import com.example.proccoli2.ui.login.loginView;
 import com.example.proccoli2.mainProgressView;
+import com.example.proccoli2.ui.notifications.NotificationsFragment;
 import com.example.proccoli2.ui.profile.profileView;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -60,6 +61,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,7 +72,6 @@ public class HomeFragment extends Fragment{
 
     Button createLoginBtn, editProfileBtn;
     RecyclerView recyclerView;
-    ImageView avatarHome;
     TextView goalBoard;
     int goalSelected;
     int completedCount = 0;
@@ -98,7 +99,7 @@ public class HomeFragment extends Fragment{
     //Used for create goal btn popup
     TextView selectType;
     ImageView cancelBtn, groupBtn, individualBtn;
-    String goalCreationType;
+    CustomGoalAdapterH adapter;
 
 
     //Catch data from profileAvatarPage
@@ -128,11 +129,6 @@ public class HomeFragment extends Fragment{
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
                         GroupGoalModel passedIndividualGoal = (GroupGoalModel) result.getData().getSerializableExtra("bigGoal");
                         passedGoal = GroupGoalModel.goalsModelConverterForDataWrite(passedIndividualGoal);
-                        /*
-                        Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
-                        Log.d("HERE PassedGoal", String.valueOf(passedGoal));
-
-                         */
 
                         controller.removeGoalFromList(goalSelected,goalList);
                         goalList.add(passedGoal);
@@ -168,7 +164,7 @@ public class HomeFragment extends Fragment{
                                 break;
                             case "expiredDue":
                                 Log.d("switch", "onActivityResult: expiredDue");
-                                recyclerList = expiredPersonal;
+                                recyclerList = expiredDue;
                                 //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
                                 break;
                             case "finishedPersonal":
@@ -189,11 +185,11 @@ public class HomeFragment extends Fragment{
 
                         //  recyclerList = expiredPersonal;
                         Log.d("recyclerList", "onActivityResult: " + recyclerList);
-                        CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                        adapter = new CustomGoalAdapterH();
                         Log.d("addItems1", "onActivityResult: addItems1");
-                        adapter.addItems();
+                        recyclerView.setAdapter(adapter);
+                        adapter.loadRV(recyclerList);
                         Log.d("currentItemList", "onActivityResult: " + adapter.items);
-                        adapter.notifyDataSetChanged();
 
                         Log.d("FIVES", "onActivityResult: " + goalList);
                         Log.d("SIX", "onActivityResult: " + finishedDue);
@@ -230,11 +226,7 @@ public class HomeFragment extends Fragment{
                         Log.d("FromSingleGoal", "onActivityResult: Returned from single Goal view");
                         IndividualGoalModel passedIndividualGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                         passedGoal = IndividualGoalModel.goalsModelConverterForDataWrite(passedIndividualGoal);
-                        /*
-                        Log.d("Passed Notes", "onActivityResult: " + passedGoal.getPersonalNotes());
-                        Log.d("HERE PassedGoal", String.valueOf(passedGoal));
 
-                         */
 
                         controller.removeGoalFromList(goalSelected,goalList);
                         goalList.add(passedGoal);
@@ -255,33 +247,27 @@ public class HomeFragment extends Fragment{
                             case "activePersonal":
                                 Log.d("switch", "onActivityResult: activePerconal");
                                 recyclerList = activePersonal;
-                                //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
 
                                 break;
                             case "activeDue":
                                 Log.d("switch", "onActivityResult: activedue");
                                 recyclerList = activeDue;
-                                //  recyclerList.add(activeDue.get(activeDue.size()-1));
                                 break;
                             case "expiredPersonal:":
                                 Log.d("switch", "onActivityResult: expiredPersonal");
                                 recyclerList = expiredPersonal;
-                                //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
                                 break;
                             case "expiredDue":
                                 Log.d("switch", "onActivityResult: expiredDue");
-                                recyclerList = expiredPersonal;
-                                //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
+                                recyclerList = expiredDue;
                                 break;
                             case "finishedPersonal":
                                 Log.d("switch", "onActivityResult: finishedPersonal");
                                 recyclerList = finishedPersonal;
-                                //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
                                 break;
                             case "finishedDue":
                                 recyclerList = finishedDue;
-                                Log.d("switch", "onActivityResult: finishedPersonal");
-                                //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
+                                Log.d("switch", "onActivityResult: finishedDue");
                                 break;
                             default:
                                 Log.d("switcherror", "onCreate: error in switch");
@@ -289,13 +275,11 @@ public class HomeFragment extends Fragment{
                         Log.d("recyclerList", "onActivityResult: " + recyclerList);
 
 
-                        //  recyclerList = expiredPersonal;
                         Log.d("recyclerList", "onActivityResult: " + recyclerList);
-                        CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                        Log.d("addItems1", "onActivityResult: addItems1");
-                        adapter.addItems();
+                        adapter = new CustomGoalAdapterH();
+                        recyclerView.setAdapter(adapter);
+                        adapter.loadRV(recyclerList);
                         Log.d("currentItemList", "onActivityResult: " + adapter.items);
-                        adapter.notifyDataSetChanged();
 
                         Log.d("FIVES", "onActivityResult: " + goalList);
                         Log.d("SIX", "onActivityResult: " + finishedDue);
@@ -312,7 +296,6 @@ public class HomeFragment extends Fragment{
                             else
                                 sumgroupCount++;
                         }
-
                         Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
                         completedCount = controller.countCompletedGoals(finishedDue);
                         goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
@@ -350,15 +333,15 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        cancelBtn = binding.cancelCreateGoalBtn2;
-        groupBtn = binding.groupBtn2;
-        individualBtn = binding.individualBtn2;
+        cancelBtn = binding.cancelCreateGoalBtn;
+        groupBtn = binding.groupBtn;
+        individualBtn = binding.individualBtn;
 
 
 
-        groupBtn = binding.groupBtn2;
-        individualBtn = binding.individualBtn2;
-        selectType = binding.selectGoalTypeLabel2;
+        groupBtn = binding.groupBtn;
+        individualBtn = binding.individualBtn;
+        selectType = binding.selectGoalTypeLabel;
 
 
         toolbar = binding.toolbarMainActivity;
@@ -390,65 +373,73 @@ public class HomeFragment extends Fragment{
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
                 Log.d("toggle", "onButtonChecked: "+  "toggle group");
-                recyclerView.setAdapter(new CustomGoalAdapterH());
 
                 if(isChecked){
                     if(checkedId == R.id.activeBtn){
                         if(personalSelected == true){
                             Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
                             Collections.sort(activePersonal,controller.compareByPersonal);
-                            recyclerList = activePersonal;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(activePersonal);
 
                         }
                         else{
                             Log.d("activeDue", "setRecyclerViewList: activeDue" + activeDue);
                             Collections.sort(activeDue,controller.compareByDeadline);
-                            recyclerList = activeDue;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(activeDue);
+
                         }
 
                     }
                     if(checkedId == R.id.expiredBtn){
                         if(personalSelected == true){
-                            recyclerView.setVisibility(View.GONE);
-                            recyclerView = binding.goalList;
-                            recyclerView.setVisibility(View.VISIBLE);
                             Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
                             Collections.sort(expiredPersonal,controller.compareByPersonal);
-                            recyclerList = expiredPersonal;
-                            setUpRecyclerView();
-                           // recyclerView.setAdapter(new CustomGoalAdapterH());
+                            CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                            Log.d("test", "onButtonChecked: " + adapter.getItemCount());
+                            int deleteMe = adapter.getItemCount();
+                            adapter.items.clear();
+                            Log.d("test", "onButtonChecked: " + adapter.getItemCount());
+                            recyclerView.getAdapter().notifyItemRangeRemoved(0,deleteMe);
+                           /* adapter = new CustomGoalAdapterH();
+                            recyclerView.getAdapter().
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(expiredPersonal);
 
+                            */
                         }
                         else{
                             Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
                             Collections.sort(expiredDue,controller.compareByDeadline);
-                            recyclerList = expiredDue;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
-
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(expiredDue);
                         }
-
                     }
                     if(checkedId == R.id.finishedBtn){
                         if(personalSelected == true){
                             Log.d("finishedPersonal", "setRecyclerViewList: finishedPerosnal" + finishedPersonal);
                             Collections.sort(finishedPersonal,controller.compareByPersonal);
-                            recyclerList = finishedPersonal;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(finishedPersonal);
+
 
                         }
                         else{
                             Log.d("finishedDue", "setRecyclerViewList: finishedDue" + finishedDue);
                             Collections.sort(finishedDue,controller.compareByDeadline);
-                            recyclerList = finishedDue;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(finishedDue);
 
 
                         }
                     }
                     Log.d("toggleHERE", "onButtonChecked: " + recyclerList);
-                    //setUpRecyclerView();
 
                 }
             }
@@ -467,6 +458,7 @@ public class HomeFragment extends Fragment{
         finishedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Log.d("finishedBtn", "onClick: ");
 
                 toggleGroup.check(R.id.finishedBtn);
@@ -487,6 +479,7 @@ public class HomeFragment extends Fragment{
         });
 
         personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+
         personalDeadlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -501,28 +494,33 @@ public class HomeFragment extends Fragment{
 
                     Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
                     Collections.sort(activePersonal,controller.compareByPersonal);
-                    recyclerList = activePersonal;
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(activePersonal);
 
                 }
                 if(checkedId2 == R.id.expiredBtn){
 
                     Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
                     Collections.sort(expiredPersonal,controller.compareByPersonal);
-                    recyclerList = expiredPersonal;
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(expiredPersonal);;
 
                 }
                 if(checkedId2 == R.id.finishedBtn){
                     Log.d("finishedPersonal", "setRecyclerViewList: finishedPerosnal" + finishedPersonal);
                     Collections.sort(finishedPersonal,controller.compareByPersonal);
-                    recyclerList = finishedPersonal;
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(finishedPersonal);
                 }
-                CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                Log.d("addItems3", "onActivityResult: addItems3");
-
-                adapter.addItems();
                 Log.d("currentItemList", "onActivityResult: " + adapter.items);
             }
         });
+
+
+
 
         dueDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -536,32 +534,35 @@ public class HomeFragment extends Fragment{
                 int checkedId2 = toggleGroup.getCheckedButtonId();
                 if(checkedId2 == R.id.activeBtn){
 
-                    Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
-                    Collections.sort(activePersonal,controller.compareByPersonal);
-                    recyclerList = activePersonal;
+                    Log.d("activeDue", "setRecyclerViewList: activePersonal" + activeDue);
+                    Collections.sort(activeDue,controller.compareByPersonal);
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(activeDue);
 
                 }
                 if(checkedId2 == R.id.expiredBtn){
                     Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
                     Collections.sort(expiredDue,controller.compareByDeadline);
-                    recyclerList = expiredDue;
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(expiredDue);
 
                 }
                 if(checkedId2 == R.id.finishedBtn){
                     Log.d("finishedDue", "setRecyclerViewList: finishedDue" + finishedDue);
                     Collections.sort(finishedDue,controller.compareByDeadline);
-                    recyclerList = finishedDue;
+                    adapter = new CustomGoalAdapterH();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(finishedDue);
                 }
-                CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                Log.d("addItems4", "onActivityResult: addItems4");
-                adapter.addItems();
+
                 Log.d("currentItemList", "onActivityResult: " + adapter.items);
             }
         });
 
         Log.d("check", "onCreateView: " + DataServices.getInstance().getUID() + DataServices.getInstance().getEMAIL());
 
-//        try{
         DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
 
             @Override
@@ -575,17 +576,12 @@ public class HomeFragment extends Fragment{
 
             }
         });
-        //    }
-        //    catch(Exception e){
         Log.d("here", "onCreateView: user not logged in");
-        //   }
-
 
         //Initialize recyclerView
-        recyclerView = binding.goalList;
+        recyclerView = binding.goalList2;
         setUpRecyclerView();
         Log.d("Home Fragment", "onCreateView: I AM HOME FRAGMENT");
-        // try{
         DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
 
             @Override
@@ -608,53 +604,17 @@ public class HomeFragment extends Fragment{
 
                     recyclerView.setVisibility(View.VISIBLE);
 
-                    switch(controller.setRecyclerViewList(HomeFragment.this)){
-                        case "activePersonal":
-                            Log.d("switch", "onActivityResult: activePerconal");
-                            recyclerList = activePersonal;
-                            //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
-
-                            break;
-                        case "activeDue":
-                            Log.d("switch", "onActivityResult: activedue");
-                            recyclerList = activeDue;
-                            //  recyclerList.add(activeDue.get(activeDue.size()-1));
-                            break;
-                        case "expiredPersonal:":
-                            Log.d("switch", "onActivityResult: expiredPersonal");
-                            recyclerList = expiredPersonal;
-                            //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
-                            break;
-                        case "expiredDue":
-                            Log.d("switch", "onActivityResult: expiredDue");
-                            recyclerList = expiredPersonal;
-                            //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        case "finishedPersonal":
-                            Log.d("switch", "onActivityResult: finishedPersonal");
-                            recyclerList = finishedPersonal;
-                            //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        case "finishedDue":
-                            recyclerList = finishedDue;
-                            Log.d("switch", "onActivityResult: finishedPersonal");
-                            //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
-                            break;
-                        default:
-                            Log.d("switcherror", "onCreate: error in switch");
-                    }
-                    Log.d("recyclerList", "onActivityResult: " + recyclerList);
-
-
-                    //  recyclerList = expiredPersonal;
-
                     Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
 
-                    CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
                     Log.d("addItems5", "onActivityResult: addItems5");
 
-                    adapter.addItems();
+                    adapter = new CustomGoalAdapterH();
+                    Collections.sort(activeDue, controller.compareByPersonal);
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(activeDue);
                     Log.d("currentItemList", "onActivityResult: " + adapter.items);
+
+
 
                     Log.d("FIVES", "onActivityResult: " + goalList);
                     Log.d("SIX", "onActivityResult: " + finishedDue);
@@ -674,6 +634,9 @@ public class HomeFragment extends Fragment{
                     Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
                     completedCount = controller.countCompletedGoals(finishedDue);
                     goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
+
+
+
                 }
                 else{
                     Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
@@ -686,10 +649,7 @@ public class HomeFragment extends Fragment{
 
             }
         });
-        //   }
-        //    catch(Exception e){
         Log.d("homefragment", "onCreateView: user not logged in");
-        //     }
 
 
         //Data from createGoal Page
@@ -729,27 +689,22 @@ public class HomeFragment extends Fragment{
                                 case "activeDue":
                                     Log.d("switch", "onActivityResult: activedue");
                                     recyclerList = activeDue;
-                                    //  recyclerList.add(activeDue.get(activeDue.size()-1));
                                     break;
                                 case "expiredPersonal:":
                                     Log.d("switch", "onActivityResult: expiredPersonal");
                                     recyclerList = expiredPersonal;
-                                    //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
                                     break;
                                 case "expiredDue":
                                     Log.d("switch", "onActivityResult: expiredDue");
-                                    recyclerList = expiredPersonal;
-                                    //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
+                                    recyclerList = expiredDue;
                                     break;
                                 case "finishedPersonal":
                                     Log.d("switch", "onActivityResult: finishedPersonal");
                                     recyclerList = finishedPersonal;
-                                    //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
                                     break;
                                 case "finishedDue":
                                     recyclerList = finishedDue;
                                     Log.d("switch", "onActivityResult: finishedPersonal");
-                                    //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
                                     break;
                                 default:
                                     Log.d("switcherror", "onCreate: error in switch");
@@ -757,16 +712,10 @@ public class HomeFragment extends Fragment{
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
 
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
-                            /*
-                            //Had to comment this out and just reset up the recycler view because it was having issues
-                            syncing with the bindviewHolder
-                            CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                            adapter.addItems();
-                            Log.d("currentItemList", "onActivityResult: " + adapter.items);
 
-
-                             */
-                            setUpRecyclerView();
+                            adapter = new CustomGoalAdapterH();
+                            recyclerView.setAdapter(adapter);
+                            adapter.loadRV(recyclerList);
 
 
                             Log.d("FIVES", "onActivityResult: " + goalList);
@@ -958,16 +907,19 @@ public class HomeFragment extends Fragment{
         List<GoalModel> items;
         public CustomGoalAdapterH() {
             items = new ArrayList<>();
+        }
 
-            for(int i = 0; i < recyclerList.size(); i++){
-                Log.d("trying to add", "setUpRecyclerViewH: " + recyclerList.get(i));
-                items.add(recyclerList.get(i));
-                Log.d("Added", "setUpRecyclerViewH: " + recyclerList.get(i));
+        public void loadRV(ArrayList<GoalModel> list){
+            for(int i = 0; i <list.size(); i++){
+                items.add(list.get(i));
+                Log.d("Added", "setUpRecyclerView: " + list.get(i));
+                notifyDataSetChanged();
             }
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Log.d("onCreateViewHolder", "onCreateViewHolder: " +   recyclerView.getAdapter().getItemCount());
             return new GoalViewHolder(parent);
         }
 
@@ -986,7 +938,6 @@ public class HomeFragment extends Fragment{
             //if(items.get(position).getGoalType().equals("individual"))
             viewHolder.avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
             //else
-            //    viewHolder.avatarGoal.setImageResource(R.drawable.groupgoal_foreground);
         }
 
         @Override
@@ -994,17 +945,6 @@ public class HomeFragment extends Fragment{
             return items.size();
         }
 
-        public void addItems(){
-            if(items.size()!=0)
-                clearItems();
-            items = new ArrayList<>();
-            for(int i = 0; i<recyclerList.size();i++){
-                items.add(recyclerList.get(i));
-                Log.d("addItems", "addItems: notify" + (items.size()-1));
-                notifyItemInserted(items.size()-1);
-                Log.d("addItems", "addItems: " + items.get(i));
-            }
-        }
 
         public void clearItems(){
             for(int i = 0; i<items.size(); i++){
@@ -1029,6 +969,8 @@ public class HomeFragment extends Fragment{
             countDownDueDate = (TextView) itemView.findViewById(R.id.countDownDueDate);
             countDownPersonal = (TextView) itemView.findViewById(R.id.countDownPersonal);
             avatarGoal = (ImageView) itemView.findViewById(R.id.avatarGoal);
+            Log.d("GoldViewHolder", "GoalViewHolder: " + goalModel);
+
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -1143,4 +1085,5 @@ public class HomeFragment extends Fragment{
             }
         }
     }
+
 }

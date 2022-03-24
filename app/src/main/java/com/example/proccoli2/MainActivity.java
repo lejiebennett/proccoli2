@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity{
         transaction.add(homeFragment,null).show(homeFragment).commit();
 
          */
-        activeFragment = homeFragment;
+       // activeFragment = homeFragment;
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override

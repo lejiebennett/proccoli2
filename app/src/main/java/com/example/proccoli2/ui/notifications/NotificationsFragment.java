@@ -507,14 +507,6 @@ public class NotificationsFragment extends Fragment {
             items = new ArrayList<>();
         }
 
-        public void loadOriginalVR(ArrayList<GoalModel>list){
-            for(int i = 0; i <list.size(); i++){
-                items.add(list.get(i));
-                Log.d("Added", "setUpRecyclerView: " + list.get(i));
-                notifyDataSetChanged();
-            }
-        }
-
         public void loadRV(ArrayList<GoalModel> list){
             for(int i = 0; i <list.size(); i++){
                 items.add(list.get(i));
@@ -608,6 +600,13 @@ public class NotificationsFragment extends Fragment {
                         }
 
                          */
+                                    //Alert popup
+                                    AlertDialog dialog = new AlertDialog.Builder(getContext())
+                                            .setTitle("Success")
+                                            .setMessage("Thanks for reporting your working session! Proccoli has updated your progress charts.")
+                                            .setNegativeButton("Ok", null)
+                                            .create();
+                                    dialog.show();
                                 }
                                 else{
                                     String err = (String)hashMap.get("_error");
