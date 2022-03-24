@@ -406,16 +406,19 @@ public class HomeFragment extends Fragment{
                             Collections.sort(activeDue,controller.compareByDeadline);
                             recyclerList = activeDue;
                             recyclerView.setAdapter(new CustomGoalAdapterH());
-
                         }
 
                     }
                     if(checkedId == R.id.expiredBtn){
                         if(personalSelected == true){
+                            recyclerView.setVisibility(View.GONE);
+                            recyclerView = binding.goalList;
+                            recyclerView.setVisibility(View.VISIBLE);
                             Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
                             Collections.sort(expiredPersonal,controller.compareByPersonal);
                             recyclerList = expiredPersonal;
-                            recyclerView.setAdapter(new CustomGoalAdapterH());
+                            setUpRecyclerView();
+                           // recyclerView.setAdapter(new CustomGoalAdapterH());
 
                         }
                         else{
@@ -488,30 +491,30 @@ public class HomeFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Log.d("personal", "onClick: ");
-                    personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
-                    dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
-                    dueDateSelected = false;
+                personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
+                dueDateSelected = false;
                 Log.d("prep for switch", "onClick: About to run switch statements");
                 recyclerView.setAdapter(new CustomGoalAdapterH());
                 int checkedId2 = toggleGroup.getCheckedButtonId();
                 if(checkedId2 == R.id.activeBtn){
 
-                        Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
-                        Collections.sort(activePersonal,controller.compareByPersonal);
-                        recyclerList = activePersonal;
+                    Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
+                    Collections.sort(activePersonal,controller.compareByPersonal);
+                    recyclerList = activePersonal;
 
                 }
                 if(checkedId2 == R.id.expiredBtn){
 
-                        Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
-                        Collections.sort(expiredPersonal,controller.compareByPersonal);
-                        recyclerList = expiredPersonal;
+                    Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
+                    Collections.sort(expiredPersonal,controller.compareByPersonal);
+                    recyclerList = expiredPersonal;
 
                 }
                 if(checkedId2 == R.id.finishedBtn){
-                        Log.d("finishedPersonal", "setRecyclerViewList: finishedPerosnal" + finishedPersonal);
-                        Collections.sort(finishedPersonal,controller.compareByPersonal);
-                        recyclerList = finishedPersonal;
+                    Log.d("finishedPersonal", "setRecyclerViewList: finishedPerosnal" + finishedPersonal);
+                    Collections.sort(finishedPersonal,controller.compareByPersonal);
+                    recyclerList = finishedPersonal;
                 }
                 CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
                 Log.d("addItems3", "onActivityResult: addItems3");
@@ -525,174 +528,168 @@ public class HomeFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Log.d("due", "onClick: ");
-                    dueDateSelected = true;
-                    dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
-                    personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
-                    personalSelected= false;
-                    recyclerView.setAdapter(new CustomGoalAdapterH());
-                    int checkedId2 = toggleGroup.getCheckedButtonId();
-                    if(checkedId2 == R.id.activeBtn){
+                dueDateSelected = true;
+                dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
+                personalSelected= false;
+                recyclerView.setAdapter(new CustomGoalAdapterH());
+                int checkedId2 = toggleGroup.getCheckedButtonId();
+                if(checkedId2 == R.id.activeBtn){
 
-                            Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
-                            Collections.sort(activePersonal,controller.compareByPersonal);
-                            recyclerList = activePersonal;
+                    Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
+                    Collections.sort(activePersonal,controller.compareByPersonal);
+                    recyclerList = activePersonal;
 
-                    }
-                    if(checkedId2 == R.id.expiredBtn){
-                            Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
-                            Collections.sort(expiredDue,controller.compareByDeadline);
-                            recyclerList = expiredDue;
+                }
+                if(checkedId2 == R.id.expiredBtn){
+                    Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
+                    Collections.sort(expiredDue,controller.compareByDeadline);
+                    recyclerList = expiredDue;
 
-                    }
-                    if(checkedId2 == R.id.finishedBtn){
-                            Log.d("finishedDue", "setRecyclerViewList: finishedDue" + finishedDue);
-                            Collections.sort(finishedDue,controller.compareByDeadline);
-                            recyclerList = finishedDue;
-                    }
-                    CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                    Log.d("addItems4", "onActivityResult: addItems4");
-                    adapter.addItems();
-                    Log.d("currentItemList", "onActivityResult: " + adapter.items);
+                }
+                if(checkedId2 == R.id.finishedBtn){
+                    Log.d("finishedDue", "setRecyclerViewList: finishedDue" + finishedDue);
+                    Collections.sort(finishedDue,controller.compareByDeadline);
+                    recyclerList = finishedDue;
+                }
+                CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                Log.d("addItems4", "onActivityResult: addItems4");
+                adapter.addItems();
+                Log.d("currentItemList", "onActivityResult: " + adapter.items);
             }
         });
 
         Log.d("check", "onCreateView: " + DataServices.getInstance().getUID() + DataServices.getInstance().getEMAIL());
 
 //        try{
-            DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
+        DataServices.getInstance().callUserInfo(new ResultHandler<Object>() {
 
-                @Override
-                public void onSuccess(Object data) {
-                    Log.d("LoadProfile", "onSuccess: " + UserDataModel.sharedInstance.getProfileImg());
-                    setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));
-                }
+            @Override
+            public void onSuccess(Object data) {
+                Log.d("LoadProfile", "onSuccess: " + UserDataModel.sharedInstance.getProfileImg());
+                setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));
+            }
 
-                @Override
-                public void onFailure(Exception e) {
+            @Override
+            public void onFailure(Exception e) {
 
-                }
-            });
-    //    }
-    //    catch(Exception e){
-            Log.d("here", "onCreateView: user not logged in");
-     //   }
+            }
+        });
+        //    }
+        //    catch(Exception e){
+        Log.d("here", "onCreateView: user not logged in");
+        //   }
 
 
         //Initialize recyclerView
         recyclerView = binding.goalList;
         setUpRecyclerView();
         Log.d("Home Fragment", "onCreateView: I AM HOME FRAGMENT");
-       // try{
-            DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
+        // try{
+        DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
 
-                @Override
-                public void onSuccess(Object data) {
-                    HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
-                    if(hashMap.get("_error")==null){
-                        Log.d("personalGoals", "onSuccess: " + hashMap);
-                        goalList = (ArrayList<GoalModel>) hashMap.get("_response");
+            @Override
+            public void onSuccess(Object data) {
+                HashMap<String,Object> hashMap = (HashMap<String, Object>) data;
+                if(hashMap.get("_error")==null){
+                    Log.d("personalGoals", "onSuccess: " + hashMap);
+                    goalList = (ArrayList<GoalModel>) hashMap.get("_response");
 
-                        for(GoalModel goal: goalList){
-                            controller.assignGoal(goal);
-                        }
-                        Log.d("activePersonal", "activePersonal: "+activePersonal);
-
-                        Log.d("AD", "AD: "+activeDue );
-                        Log.d("eP", "EP: "+expiredPersonal );
-                        Log.d("ED", "ED: "+expiredDue );
-                        Log.d("FP", "FP: "+finishedPersonal );
-                        Log.d("FD", "FD: "+ finishedDue );
-
-                        recyclerView.setVisibility(View.VISIBLE);
-
-                        switch(controller.setRecyclerViewList(HomeFragment.this)){
-                            case "activePersonal":
-                                Log.d("switch", "onActivityResult: activePerconal");
-                                recyclerList = activePersonal;
-                                //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
-
-                                break;
-                            case "activeDue":
-                                Log.d("switch", "onActivityResult: activedue");
-                                recyclerList = activeDue;
-                                //  recyclerList.add(activeDue.get(activeDue.size()-1));
-                                break;
-                            case "expiredPersonal:":
-                                Log.d("switch", "onActivityResult: expiredPersonal");
-                                recyclerList = expiredPersonal;
-                                //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
-                                break;
-                            case "expiredDue":
-                                Log.d("switch", "onActivityResult: expiredDue");
-                                recyclerList = expiredPersonal;
-                                //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
-                                break;
-                            case "finishedPersonal":
-                                Log.d("switch", "onActivityResult: finishedPersonal");
-                                recyclerList = finishedPersonal;
-                                //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
-                                break;
-                            case "finishedDue":
-                                recyclerList = finishedDue;
-                                Log.d("switch", "onActivityResult: finishedPersonal");
-                                //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
-                                break;
-                            default:
-                                Log.d("switcherror", "onCreate: error in switch");
-                        }
-                        Log.d("recyclerList", "onActivityResult: " + recyclerList);
-
-
-                        //  recyclerList = expiredPersonal;
-
-                        Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
-
-                        CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
-                        Log.d("addItems5", "onActivityResult: addItems5");
-
-                        adapter.addItems();
-                        Log.d("currentItemList", "onActivityResult: " + adapter.items);
-
-
-                        //setUpRecyclerView();
-
-                        Log.d("FIVES", "onActivityResult: " + goalList);
-                        Log.d("SIX", "onActivityResult: " + finishedDue);
-                        Log.d("SIX", "onActivityResult: " + finishedPersonal);
-
-
-                        ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
-                        int sumindividualCount = 0;
-                        int sumgroupCount = 0;
-                        for(int i=0; i<sumArray.size();i++){
-                            if(sumArray.get(i).getTaskType().equals("individual"))
-                                sumindividualCount++;
-                            else
-                                sumgroupCount++;
-                        }
-
-                        Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
-                        completedCount = controller.countCompletedGoals(finishedDue);
-                        goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
-
-
-
+                    for(GoalModel goal: goalList){
+                        controller.assignGoal(goal);
                     }
-                    else{
-                        Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
+                    Log.d("activePersonal", "activePersonal: "+activePersonal);
+
+                    Log.d("AD", "AD: "+activeDue );
+                    Log.d("eP", "EP: "+expiredPersonal );
+                    Log.d("ED", "ED: "+expiredDue );
+                    Log.d("FP", "FP: "+finishedPersonal );
+                    Log.d("FD", "FD: "+ finishedDue );
+
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                    switch(controller.setRecyclerViewList(HomeFragment.this)){
+                        case "activePersonal":
+                            Log.d("switch", "onActivityResult: activePerconal");
+                            recyclerList = activePersonal;
+                            //  recyclerList.add(activePersonal.get(activePersonal.size()-1));
+
+                            break;
+                        case "activeDue":
+                            Log.d("switch", "onActivityResult: activedue");
+                            recyclerList = activeDue;
+                            //  recyclerList.add(activeDue.get(activeDue.size()-1));
+                            break;
+                        case "expiredPersonal:":
+                            Log.d("switch", "onActivityResult: expiredPersonal");
+                            recyclerList = expiredPersonal;
+                            //  recyclerList.add(expiredPersonal.get(expiredPersonal.size()-1));
+                            break;
+                        case "expiredDue":
+                            Log.d("switch", "onActivityResult: expiredDue");
+                            recyclerList = expiredPersonal;
+                            //  recyclerList.add(recyclerList.get(recyclerList.size()-1))
+                            break;
+                        case "finishedPersonal":
+                            Log.d("switch", "onActivityResult: finishedPersonal");
+                            recyclerList = finishedPersonal;
+                            //   finishedPersonal.add(recyclerList.get(recyclerList.size()-1))
+                            break;
+                        case "finishedDue":
+                            recyclerList = finishedDue;
+                            Log.d("switch", "onActivityResult: finishedPersonal");
+                            //   finishedDue.add(recyclerList.get(recyclerList.size()-1))
+                            break;
+                        default:
+                            Log.d("switcherror", "onCreate: error in switch");
+                    }
+                    Log.d("recyclerList", "onActivityResult: " + recyclerList);
+
+
+                    //  recyclerList = expiredPersonal;
+
+                    Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
+
+                    CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
+                    Log.d("addItems5", "onActivityResult: addItems5");
+
+                    adapter.addItems();
+                    Log.d("currentItemList", "onActivityResult: " + adapter.items);
+
+                    Log.d("FIVES", "onActivityResult: " + goalList);
+                    Log.d("SIX", "onActivityResult: " + finishedDue);
+                    Log.d("SIX", "onActivityResult: " + finishedPersonal);
+
+
+                    ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
+                    int sumindividualCount = 0;
+                    int sumgroupCount = 0;
+                    for(int i=0; i<sumArray.size();i++){
+                        if(sumArray.get(i).getTaskType().equals("individual"))
+                            sumindividualCount++;
+                        else
+                            sumgroupCount++;
                     }
 
+                    Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
+                    completedCount = controller.countCompletedGoals(finishedDue);
+                    goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
+                }
+                else{
+                    Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
                 }
 
-                @Override
-                public void onFailure(Exception e) {
+            }
 
-                }
-            });
-     //   }
-    //    catch(Exception e){
-            Log.d("homefragment", "onCreateView: user not logged in");
-   //     }
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
+        //   }
+        //    catch(Exception e){
+        Log.d("homefragment", "onCreateView: user not logged in");
+        //     }
 
 
         //Data from createGoal Page
@@ -971,7 +968,6 @@ public class HomeFragment extends Fragment{
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            Log.d("onCreateViewHolder", "onCreateViewHolder: " +   recyclerView.getAdapter().getItemCount());
             return new GoalViewHolder(parent);
         }
 
@@ -1033,8 +1029,6 @@ public class HomeFragment extends Fragment{
             countDownDueDate = (TextView) itemView.findViewById(R.id.countDownDueDate);
             countDownPersonal = (TextView) itemView.findViewById(R.id.countDownPersonal);
             avatarGoal = (ImageView) itemView.findViewById(R.id.avatarGoal);
-            Log.d("GoldViewHolder", "GoalViewHolder: " + goalModel);
-
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override

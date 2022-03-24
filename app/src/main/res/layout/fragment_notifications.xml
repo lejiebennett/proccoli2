@@ -39,8 +39,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchGoalList"
-        android:layout_width="388dp"
-        android:layout_height="458dp"
+        android:layout_width="402dp"
+        android:layout_height="645dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

@@ -154,6 +154,11 @@ public class NotificationsFragment extends Fragment {
                 if(hashMap.get("_error")==null) {
                     Log.d("personalGoals", "onSuccess: " + hashMap);
                     searchGoalList = (ArrayList<GoalModel>) hashMap.get("_response");
+                    Log.d("here", "onSuccess: " + searchGoalList);
+                    adapter = new searchGoalAdapter();
+                    recyclerView.setAdapter(adapter);
+                    adapter.loadRV(searchGoalList);
+
 
                 }
             }
@@ -500,6 +505,14 @@ public class NotificationsFragment extends Fragment {
         List<GoalModel> items;
         public searchGoalAdapter() {
             items = new ArrayList<>();
+        }
+
+        public void loadOriginalVR(ArrayList<GoalModel>list){
+            for(int i = 0; i <list.size(); i++){
+                items.add(list.get(i));
+                Log.d("Added", "setUpRecyclerView: " + list.get(i));
+                notifyDataSetChanged();
+            }
         }
 
         public void loadRV(ArrayList<GoalModel> list){
