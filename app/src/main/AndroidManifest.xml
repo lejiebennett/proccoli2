@@ -35,7 +35,7 @@
         <activity android:name=".ui.subGoalView_goalSetting.subGoalView_goalSetting"></activity>
         <activity android:name=".ui.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit"></activity>
         <activity android:name=".ui.individualChart.goalProgressView"></activity>
-        <activity android:name=".mainProgressView"></activity>
+        <activity android:name=".ui.mainProgress.mainProgressView"></activity>
         <activity android:name=".SplashScreen"
             android:theme="@style/SplashScreenWindow"
             android:screenOrientation="portrait"

@@ -162,6 +162,13 @@ public class GoalModel implements Serializable {
 
     }
 
+    //Use for progress chart dummy data
+    public GoalModel(String bigGoal,double proposedStudyTime, double studiedTime){
+        this.bigGoal = bigGoal;
+        this.proposedStudyTime = proposedStudyTime;
+        this.studiedTime = studiedTime;
+    }
+
     //New constructor for parseSingleGoalData
 
     public static ArrayList<GoalModel> parseGoalsData(QuerySnapshot snapshots){

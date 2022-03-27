@@ -11,7 +11,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,8 +50,7 @@ import com.example.proccoli2.ui.individualGoalCreation.goalView2;
 import com.example.proccoli2.ui.groupGoalCreation.groupgoalView;
 import com.example.proccoli2.groupgoalsingleGoalView;
 import com.example.proccoli2.ui.login.loginView;
-import com.example.proccoli2.mainProgressView;
-import com.example.proccoli2.ui.notifications.NotificationsFragment;
+import com.example.proccoli2.ui.mainProgress.mainProgressView;
 import com.example.proccoli2.ui.profile.profileView;
 import com.example.proccoli2.ui.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -61,7 +59,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 

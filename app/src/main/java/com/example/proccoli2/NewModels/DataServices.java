@@ -1588,6 +1588,16 @@ public class DataServices {
     }
     ////end SelfReport
 
+
+    public void sendMainProgressViewTimeSpend(double timeSpend) {
+        HashMap<String,Object> hashMap = createHashmap(TIME_SPEND_REF,timeSpend);
+        hashMap.put(CREATED_AT,System.currentTimeMillis()/100L);
+        hashMap.put(GOAL_TYPE_REF,MAIN_PROGRESS_REF);
+        //			LOCATION_REF : Locator.sharedInstance?.getCurrentLocation() as Any
+
+        FirebaseFirestore.getInstance().collection(USER_COLLECTION_REF).document(DataServices.uid).collection(CHARTS_TIME_SPEND_REF).document().set(hashMap);
+    }
+
     //Activity Log Data Start
     public void saveActivityLogData() {
         Log.d("savng log", "saveActivityLogData: saving log");
