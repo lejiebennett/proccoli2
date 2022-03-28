@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.UnusedFiles;
 
 import android.content.Context;
 import android.util.Log;
@@ -8,11 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proccoli2.NewModels.GoalModel;
-import com.example.proccoli2.ui.home.HomeFragment_VC;
+import com.example.proccoli2.R;
 
 import java.util.List;
 

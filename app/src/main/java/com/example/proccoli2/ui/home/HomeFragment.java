@@ -62,12 +62,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Fragment controls the main goal page that displays all of the user goals, profile, main progress btn, etc
+ * Started to add group goals integration, but did not finish. Individual goals work
+ */
 public class HomeFragment extends Fragment{
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
 
-    Button createLoginBtn, editProfileBtn;
+    Button createGoalBtn, editProfileBtn;
     RecyclerView recyclerView;
     TextView goalBoard;
     int goalSelected;
@@ -86,7 +91,6 @@ public class HomeFragment extends Fragment{
     ImageButton personalDeadlineBtn, dueDateBtn;
     Button activeBtn, expiredBtn, finishedBtn;
     boolean personalSelected = true;
-    boolean dueDateSelected = false;
     MaterialButtonToggleGroup toggleGroup;
     GoalModel passedGoal;
     Button mainProgressBtn;
@@ -97,6 +101,7 @@ public class HomeFragment extends Fragment{
     TextView selectType;
     ImageView cancelBtn, groupBtn, individualBtn;
     CustomGoalAdapterH adapter;
+
 
 
     //Catch data from profileAvatarPage
@@ -115,7 +120,8 @@ public class HomeFragment extends Fragment{
                 }
             });
 
-    //Catch data from singleGoalView
+    //Catch data from groupGoal creation
+    //This still needs work
     ActivityResultLauncher<Intent> activityResultLaunch3 = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -239,6 +245,7 @@ public class HomeFragment extends Fragment{
                         Log.d("FD", "FD: "+ finishedDue );
 
 
+                        //Update the recycler view with the new data
                         recyclerView.setVisibility(View.VISIBLE);
                         switch(controller.setRecyclerViewList(HomeFragment.this)){
                             case "activePersonal":
@@ -294,6 +301,7 @@ public class HomeFragment extends Fragment{
                                 sumgroupCount++;
                         }
                         Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
+                        //Update the goal board
                         completedCount = controller.countCompletedGoals(finishedDue);
                         goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
 
@@ -364,8 +372,8 @@ public class HomeFragment extends Fragment{
 
         finishedBtn = binding.finishedBtn;
 
+        //Controls what recycler view data is shown aka what goal list adn depending on personalSelected, how it is ordered
         toggleGroup = binding.toggleButtonGroup;
-        toggleGroup.check(R.id.activeBtn);
         toggleGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
             @Override
             public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
@@ -395,18 +403,23 @@ public class HomeFragment extends Fragment{
                         if(personalSelected == true){
                             Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
                             Collections.sort(expiredPersonal,controller.compareByPersonal);
+
+
+                            /*
+                            //Used to test recyclerview display
                             CustomGoalAdapterH adapter = (CustomGoalAdapterH) recyclerView.getAdapter();
                             Log.d("test", "onButtonChecked: " + adapter.getItemCount());
                             int deleteMe = adapter.getItemCount();
                             adapter.items.clear();
                             Log.d("test", "onButtonChecked: " + adapter.getItemCount());
                             recyclerView.getAdapter().notifyItemRangeRemoved(0,deleteMe);
-                           /* adapter = new CustomGoalAdapterH();
-                            recyclerView.getAdapter().
+
+                             */
+                            adapter = new CustomGoalAdapterH();
                             recyclerView.setAdapter(adapter);
                             adapter.loadRV(expiredPersonal);
 
-                            */
+
                         }
                         else{
                             Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
@@ -455,9 +468,7 @@ public class HomeFragment extends Fragment{
         finishedBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Log.d("finishedBtn", "onClick: ");
-
                 toggleGroup.check(R.id.finishedBtn);
                 toggleGroup.uncheck(R.id.expiredBtn);
                 toggleGroup.uncheck(R.id.activeBtn);
@@ -468,7 +479,6 @@ public class HomeFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 Log.d("activeBtn", "onClick: ");
-
                 toggleGroup.check(R.id.activeBtn);
                 toggleGroup.uncheck(R.id.expiredBtn);
                 toggleGroup.uncheck(R.id.finishedBtn);
@@ -476,34 +486,29 @@ public class HomeFragment extends Fragment{
         });
 
         personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
-
         personalDeadlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("personal", "onClick: ");
                 personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                 dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
-                dueDateSelected = false;
+                personalSelected = !personalSelected;
                 Log.d("prep for switch", "onClick: About to run switch statements");
                 recyclerView.setAdapter(new CustomGoalAdapterH());
                 int checkedId2 = toggleGroup.getCheckedButtonId();
                 if(checkedId2 == R.id.activeBtn){
-
                     Log.d("activePersonal", "setRecyclerViewList: activePersonal" + activePersonal);
                     Collections.sort(activePersonal,controller.compareByPersonal);
                     adapter = new CustomGoalAdapterH();
                     recyclerView.setAdapter(adapter);
                     adapter.loadRV(activePersonal);
-
                 }
                 if(checkedId2 == R.id.expiredBtn){
-
                     Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + expiredPersonal);
                     Collections.sort(expiredPersonal,controller.compareByPersonal);
                     adapter = new CustomGoalAdapterH();
                     recyclerView.setAdapter(adapter);
-                    adapter.loadRV(expiredPersonal);;
-
+                    adapter.loadRV(expiredPersonal);
                 }
                 if(checkedId2 == R.id.finishedBtn){
                     Log.d("finishedPersonal", "setRecyclerViewList: finishedPerosnal" + finishedPersonal);
@@ -517,26 +522,21 @@ public class HomeFragment extends Fragment{
         });
 
 
-
-
         dueDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("due", "onClick: ");
-                dueDateSelected = true;
                 dueDateBtn.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                 personalDeadlineBtn.setBackgroundTintList(ColorStateList.valueOf(GRAY));
                 personalSelected= false;
                 recyclerView.setAdapter(new CustomGoalAdapterH());
                 int checkedId2 = toggleGroup.getCheckedButtonId();
                 if(checkedId2 == R.id.activeBtn){
-
                     Log.d("activeDue", "setRecyclerViewList: activePersonal" + activeDue);
                     Collections.sort(activeDue,controller.compareByPersonal);
                     adapter = new CustomGoalAdapterH();
                     recyclerView.setAdapter(adapter);
                     adapter.loadRV(activeDue);
-
                 }
                 if(checkedId2 == R.id.expiredBtn){
                     Log.d("expiredDue", "setRecyclerViewList: expiredDue" + expiredDue);
@@ -544,7 +544,6 @@ public class HomeFragment extends Fragment{
                     adapter = new CustomGoalAdapterH();
                     recyclerView.setAdapter(adapter);
                     adapter.loadRV(expiredDue);
-
                 }
                 if(checkedId2 == R.id.finishedBtn){
                     Log.d("finishedDue", "setRecyclerViewList: finishedDue" + finishedDue);
@@ -588,6 +587,7 @@ public class HomeFragment extends Fragment{
                     Log.d("personalGoals", "onSuccess: " + hashMap);
                     goalList = (ArrayList<GoalModel>) hashMap.get("_response");
 
+                    //Assign the goals to appropriate list
                     for(GoalModel goal: goalList){
                         controller.assignGoal(goal);
                     }
@@ -600,24 +600,18 @@ public class HomeFragment extends Fragment{
                     Log.d("FD", "FD: "+ finishedDue );
 
                     recyclerView.setVisibility(View.VISIBLE);
-
                     Log.d("recyclerListA5", "onActivityResult: " + recyclerList);
-
-                    Log.d("addItems5", "onActivityResult: addItems5");
 
                     adapter = new CustomGoalAdapterH();
                     Collections.sort(activeDue, controller.compareByPersonal);
                     recyclerView.setAdapter(adapter);
-                    adapter.loadRV(activeDue);
+                    adapter.loadRV(new ArrayList<>());
+                    //adapter.loadRV(activePersonal);
                     Log.d("currentItemList", "onActivityResult: " + adapter.items);
+                    Log.d("initialRVSetup", "setUpRecyclerView" + recyclerView.getAdapter().getItemCount());
 
 
-
-                    Log.d("FIVES", "onActivityResult: " + goalList);
-                    Log.d("SIX", "onActivityResult: " + finishedDue);
-                    Log.d("SIX", "onActivityResult: " + finishedPersonal);
-
-
+                    //Update goal board
                     ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                     int sumindividualCount = 0;
                     int sumgroupCount = 0;
@@ -631,9 +625,6 @@ public class HomeFragment extends Fragment{
                     Log.d("summy", "onActivityResult: " + sumindividualCount + "group: " + sumgroupCount +"\n" +  sumArray);
                     completedCount = controller.countCompletedGoals(finishedDue);
                     goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
-
-
-
                 }
                 else{
                     Log.d("requestPersonalError", "onSuccess: " + hashMap.get("_error"));
@@ -646,10 +637,8 @@ public class HomeFragment extends Fragment{
 
             }
         });
-        Log.d("homefragment", "onCreateView: user not logged in");
 
-
-        //Data from createGoal Page
+        //Data from create individual Goal Page
         ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -659,12 +648,11 @@ public class HomeFragment extends Fragment{
                             recyclerView.setVisibility(View.VISIBLE);
 
                             Log.d("Result_OK", "onActivityResult: HERE HOME FRAGMENT" + recyclerView.getAdapter().getItemCount());
-
-                            //GoalModel passedGoal = (GoalModel) result.getData().getSerializableExtra("bigGoal");
                             IndividualGoalModel passedIndividualGoal = (IndividualGoalModel) result.getData().getSerializableExtra("bigGoal");
                             Log.d("HERE PassedGoal", passedIndividualGoal.getGoalId());
                             passedGoal = controller.convertIndividualToGoalModel(passedIndividualGoal);
                             passedGoal.setGoalId(passedIndividualGoal.getGoalId());
+                            //Adds goal to goalList and then assigns it to the correct goal list
                             goalList.add(passedGoal);
                             Log.d("goalList", "Just added onActivityResult: goalLst" + goalList);
                             controller.assignGoal(passedGoal);
@@ -707,19 +695,11 @@ public class HomeFragment extends Fragment{
                                     Log.d("switcherror", "onCreate: error in switch");
                             }
                             Log.d("recyclerList", "onActivityResult: " + recyclerList);
-
-                            Log.d("recyclerList", "onActivityResult: " + recyclerList);
-
                             adapter = new CustomGoalAdapterH();
                             recyclerView.setAdapter(adapter);
                             adapter.loadRV(recyclerList);
 
-
-                            Log.d("FIVES", "onActivityResult: " + goalList);
-                            Log.d("SIX", "onActivityResult: " + finishedDue);
-                            Log.d("SIX", "onActivityResult: " + finishedPersonal);
-
-
+                            //Update the goal board
                             ArrayList<GoalModel> sumArray=controller.combineArraysForCount(activeDue,expiredDue,finishedDue);
                             int sumindividualCount = 0;
                             int sumgroupCount = 0;
@@ -734,7 +714,6 @@ public class HomeFragment extends Fragment{
                             completedCount = controller.countCompletedGoals(finishedDue);
                             goalBoard.setText("\nIndividual Goals: " + sumindividualCount + "\nGroup Goals: " + sumgroupCount+"\nCompleted Goals: " + completedCount);
 
-
                         }
                     }
                 });
@@ -748,8 +727,8 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        createLoginBtn = binding.createGoalBtnHome;
-        createLoginBtn.setOnClickListener(new View.OnClickListener() {
+        createGoalBtn = binding.createGoalBtnHome;
+        createGoalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("I was clicked", "onClick: ");
@@ -794,47 +773,9 @@ public class HomeFragment extends Fragment{
         editProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /*
-                //Used to view searchforfriends class
-                Intent myIntent = new Intent(MainActivity.this,progressReportView.class);
-                startActivity(myIntent);
-
-                 */
-
-
-                // openReportPercentagePicker();
-                /*
-                //Used to view searchforfriends class
-                Intent myIntent = new Intent(MainActivity.this,searchforfreinds_view.class);
-                startActivity(myIntent);
-                */
-
-
-                /*
-                //Used to view groupgoalsubgoal class
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("passedGoal", new GoalModel());
-                Intent myIntent = new Intent(MainActivity.this,groupgoalsubGoalView.class);
-                myIntent.putExtras(bundle);
-                startActivity(myIntent);
-
-                 */
-
-
-
-                /*
-                //Uses to view goalProgressView
-                Intent myIntent = new Intent(MainActivity.this, goalProgressView.class);
-                startActivity(myIntent);
-                */
-
-
                 //Actual edit profile btn code
                 Log.d("I was clicked", "onClick: ");
                 Intent myIntent = new Intent(getActivity(), profileView.class);
-
-
                 Bundle bundle = new Bundle();
 
                 bundle.putString("avatarImage", Integer.toString(passedAvatar));
@@ -932,6 +873,7 @@ public class HomeFragment extends Fragment{
             viewHolder.countDownDueDate.setText(controller.calculateDaysLeft((int)items.get(position).getWhenIsDue()) + "  Days Left");
             viewHolder.countDownPersonal.setText(controller.calculateDaysLeft((int)items.get(position).getPersonalDeadline()) + " Days Left");
 
+            //Recomment this in when group goals are added
             //if(items.get(position).getGoalType().equals("individual"))
             viewHolder.avatarGoal.setImageResource(R.drawable.individualgoal_foreground);
             //else
@@ -986,7 +928,6 @@ public class HomeFragment extends Fragment{
                                 Log.d("dataFromRequestHome", "onSuccess: ");
                                 IndividualGoalModel parsedGoal = IndividualGoalModel.parseData((DocumentSnapshot) data);
                                 Log.d("HomeFragment", "onSuccess: " + parsedGoal);
-                                //i.putExtra("bigGoal", goalModel);
                                 i.putExtra("bigGoal", parsedGoal);
                                 goalSelected = itemView.getVerticalScrollbarPosition();
                                 Log.d("goalModelPut", "onClick: " +data);
@@ -1018,7 +959,7 @@ public class HomeFragment extends Fragment{
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new CustomGoalAdapterH());
         recyclerView.setHasFixedSize(false);
-        Log.d("setupRecycler", "setUpRecyclerView" + recyclerView.getAdapter().getItemCount());
+        Log.d("initialRVSetup", "setUpRecyclerView" + recyclerView.getAdapter().getItemCount());
     }
 
     /**
@@ -1038,7 +979,7 @@ public class HomeFragment extends Fragment{
      * Makes all of the elements disabled making them unclickable
      */
     private void makeUnclickable(){
-        setViewAndChildrenEnabled(createLoginBtn,false);
+        setViewAndChildrenEnabled(createGoalBtn,false);
         setViewAndChildrenEnabled(editProfileBtn,false);
         setViewAndChildrenEnabled(recyclerView,false);
         setViewAndChildrenEnabled(personalDeadlineBtn,false);
@@ -1055,7 +996,7 @@ public class HomeFragment extends Fragment{
      * Makes all of the elements enabled making them clickable
      */
     private void makeClickable(){
-        setViewAndChildrenEnabled(createLoginBtn,true);
+        setViewAndChildrenEnabled(createGoalBtn,true);
         setViewAndChildrenEnabled(editProfileBtn,true);
         setViewAndChildrenEnabled(recyclerView,true);
         setViewAndChildrenEnabled(personalDeadlineBtn,true);

@@ -59,7 +59,7 @@
         <activity android:name=".ui.home.groupGoalWall.searchForFriends.searchforfreinds_view"
             android:windowSoftInputMode="adjustNothing">
         </activity>
-        <activity android:name=".progressReportView"
+        <activity android:name=".ui.home.groupGoalWall.progressReportView"
             android:theme="@style/Theme.AppCompat.Translucent">
             ></activity>
         <activity android:name=".ui.home.groupGoalCreation.groupgoalView"
