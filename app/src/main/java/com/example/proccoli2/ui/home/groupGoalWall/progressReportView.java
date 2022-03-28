@@ -1,4 +1,4 @@
-package com.example.proccoli2;
+package com.example.proccoli2.ui.home.groupGoalWall;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.proccoli2.R;
 import com.example.proccoli2.ui.home.individualWall.singleGoalView;
 
 import java.util.Arrays;
 
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * This is used for progressReportView in group goal single goal view
+ */
 public class progressReportView extends AppCompatActivity{
 
     Button cancelBtn, submitBtn;

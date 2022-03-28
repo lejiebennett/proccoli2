@@ -15,8 +15,10 @@ import com.example.proccoli2.ui.home.individualWall.singleGoalView;
 import java.util.HashMap;
 
 /**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
  * Used to get goal feedback using smiley faces from the user once an individual goal is marked complete
- * Data will be sent back to singeGoalView so it can update that singleGoal which will then be sent to main actiivty page
+ * Data will be sent back to singeGoalView so it can update that singleGoal which will then be sent to main activity page
+ * Will need to create a copy for group goals when group goal is implemented most likely
  */
 public class smileyFaceSurveyView extends AppCompatActivity {
 

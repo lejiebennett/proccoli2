@@ -1,4 +1,8 @@
 package com.example.proccoli2.ui.mainActivity;
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Main Activity, control the different fragment screens
+ */
 
 import android.content.Intent;
 import android.os.Build;
@@ -37,10 +41,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
     private ActivityMainBinding binding;
-    int goalSelected;
-    int completedCount = 0;
-    String colorCode;
-    int passedAvatar = 6;
     FirebaseAuth auth;
 
 
@@ -51,19 +51,7 @@ public class MainActivity extends AppCompatActivity{
     ArrayList<GoalModel> goalList = new ArrayList<>(); //List used to keep track of all Users' goals
 
     MainActivity_Controller controller = new MainActivity_Controller(this);
-
-    //Buttons to specify what recycler view to show, what order they should be sorted by
-    ImageButton personalDeadlineBtn, dueDateBtn;
-    Button activeBtn, expiredBtn, finishedBtn;
-    boolean personalSelected = true;
-    boolean dueDateSelected = false;
-    MaterialButtonToggleGroup toggleGroup;
-
-    //Collect goal from goal creation pages (both indivudal and grou goals)
-    IndividualGoalModel passedGoal;
-    Button mainProgressBtn;
     TextView texthome; //Default text created by android studio
-    Toolbar toolbar;
 
     //Used for bottom navigation
     AppBarConfiguration appBarConfiguration;
@@ -72,9 +60,6 @@ public class MainActivity extends AppCompatActivity{
     androidx.fragment.app.FragmentTransaction transaction;
 
     //Used for create goal btn popup
-    TextView selectType;
-    ImageView cancelBtn, groupBtn, individualBtn;
-    String goalCreationType;
 
     final androidx.fragment.app.Fragment homeFragment = new HomeFragment();
    // final androidx.fragment.app.Fragment dashboardFragment = new DashboardFragment();

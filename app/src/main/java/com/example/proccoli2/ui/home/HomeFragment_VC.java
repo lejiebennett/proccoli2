@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Controller for the homeFragment
+ */
 public class HomeFragment_VC {
     private HomeFragment homeFragment;
 
@@ -113,9 +117,8 @@ public class HomeFragment_VC {
 
     public ArrayList<GoalModel> setRecyclerViewList2(HomeFragment homeFragment){
         boolean personalEnabled = homeFragment.personalSelected;
-        boolean dueEnabled = homeFragment.dueDateSelected;
         int checkedBtn = homeFragment.toggleGroup.getCheckedButtonId();
-        Log.d("setRecyclerList", "setRecyclerViewList: " + String.valueOf(personalEnabled) + " due: " + String.valueOf(dueEnabled) + " checked: " + String.valueOf(checkedBtn));
+        Log.d("setRecyclerList", "setRecyclerViewList: " + String.valueOf(personalEnabled)  + " checked: " + String.valueOf(checkedBtn));
 
 
 
@@ -124,7 +127,7 @@ public class HomeFragment_VC {
             Log.d("activePersonal", "setRecyclerViewList: activePersonal" + homeFragment.activePersonal);
             return homeFragment.activePersonal;
         }
-        else if(checkedBtn == R.id.activeBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.activeBtn && personalEnabled == false){
             Collections.sort(homeFragment.activeDue,compareByDeadline);
             Log.d("activeDue", "setRecyclerViewList: activeDue" + homeFragment.activeDue);
             return homeFragment.activeDue;
@@ -134,7 +137,7 @@ public class HomeFragment_VC {
             Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + homeFragment.expiredPersonal);
             return homeFragment.expiredPersonal;
         }
-        else if(checkedBtn == R.id.expiredBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.expiredBtn && personalEnabled == false){
             Collections.sort(homeFragment.expiredDue,compareByDeadline);
             Log.d("expiredDue", "setRecyclerViewList: expiredDue" + homeFragment.expiredDue);
             return homeFragment.expiredDue;
@@ -145,7 +148,7 @@ public class HomeFragment_VC {
 
             return homeFragment.finishedPersonal;
         }
-        else if(checkedBtn == R.id.finishedBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.finishedBtn && personalEnabled == false){
             Collections.sort(homeFragment.finishedDue,compareByDeadline);
             Log.d("finishedDue", "setRecyclerViewList: finishedDue" + homeFragment.finishedDue);
             return homeFragment.finishedDue;
@@ -157,10 +160,9 @@ public class HomeFragment_VC {
 
     public String setRecyclerViewList(HomeFragment homeFragment){
         boolean personalEnabled = homeFragment.personalSelected;
-        boolean dueEnabled = homeFragment.dueDateSelected;
         int checkedBtn = homeFragment.toggleGroup.getCheckedButtonId();
         Log.d("checkedToggle", "setRecyclerViewList: " + homeFragment.toggleGroup.getCheckedButtonId());
-        Log.d("setRecyclerList", "setRecyclerViewList: " + String.valueOf(personalEnabled) + " due: " + String.valueOf(dueEnabled) + " checked: " + String.valueOf(checkedBtn));
+        Log.d("setRecyclerList", "setRecyclerViewList: " + String.valueOf(personalEnabled) + " checked: " + String.valueOf(checkedBtn));
 
 
 
@@ -169,7 +171,7 @@ public class HomeFragment_VC {
             Log.d("activePersonal", "setRecyclerViewList: activePersonal" + homeFragment.activePersonal);
             return "activePersonal";
         }
-        else if(checkedBtn == R.id.activeBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.activeBtn && personalEnabled == false){
             Collections.sort(homeFragment.activeDue,compareByDeadline);
             Log.d("activeDue", "setRecyclerViewList: activeDue" + homeFragment.activeDue);
             return "activeDue";
@@ -179,7 +181,7 @@ public class HomeFragment_VC {
             Log.d("expiredPersonal", "setRecyclerViewList: expieredPersonal" + homeFragment.expiredPersonal);
             return "expiredPersonal";
         }
-        else if(checkedBtn == R.id.expiredBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.expiredBtn && personalEnabled == false){
             Collections.sort(homeFragment.expiredDue,compareByDeadline);
             Log.d("expiredDue", "setRecyclerViewList: expiredDue" + homeFragment.expiredDue);
             return "expiredDue";
@@ -190,7 +192,7 @@ public class HomeFragment_VC {
 
             return "finishedPersonal";
         }
-        else if(checkedBtn == R.id.finishedBtn && dueEnabled == true){
+        else if(checkedBtn == R.id.finishedBtn && personalEnabled == false){
             Collections.sort(homeFragment.finishedDue,compareByDeadline);
             Log.d("finishedDue", "setRecyclerViewList: finishedDue" + homeFragment.finishedDue);
             return "finishedDue";
@@ -202,7 +204,6 @@ public class HomeFragment_VC {
 
 
     public void removeGoalFromList(int goalSelected,ArrayList<GoalModel> arrayList){
-
         arrayList.remove(goalSelected);
     }
 
@@ -232,8 +233,6 @@ public class HomeFragment_VC {
 
         if((index = searchArray(homeFragment.finishedDue,updatedGoal))!=-1){
             removeGoalFromList(index,homeFragment.finishedDue);
-
-
         }
         if((index = searchArray(homeFragment.finishedPersonal,updatedGoal))!=-1){
             removeGoalFromList(index,homeFragment.finishedPersonal);

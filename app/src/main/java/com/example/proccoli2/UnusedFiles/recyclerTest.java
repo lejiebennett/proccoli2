@@ -1,24 +1,16 @@
 package com.example.proccoli2.UnusedFiles;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.proccoli2.GoalAdapterEvolution;
-import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.GoalModel;
-import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class recyclerTest extends AppCompatActivity {
     ArrayList<GoalModel> recyclerList = new ArrayList();

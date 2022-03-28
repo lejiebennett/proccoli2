@@ -44,7 +44,6 @@ import com.example.proccoli2.ui.home.groupGoalWall.groupGoalSubGoalCreation.grou
 import com.example.proccoli2.oldModels.GoalModel;
 import com.example.proccoli2.oldModels.PersonalNoteModel;
 import com.example.proccoli2.oldModels.SubGoalModel;
-import com.example.proccoli2.progressReportView;
 import com.example.proccoli2.ui.notificationPublisher.NotificationPublisher;
 import com.example.proccoli2.ui.home.groupGoalWall.searchForFriends.searchforfreinds_view;
 import com.example.proccoli2.ui.home.groupGoalWall.timerViewGroupGoals.timerViewGroupGoal;

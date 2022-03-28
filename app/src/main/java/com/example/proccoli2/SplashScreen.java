@@ -17,6 +17,7 @@ import com.example.proccoli2.ui.mainActivity.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
  * Used to create spalsh screen
  */
 public class SplashScreen extends AppCompatActivity {
@@ -38,8 +39,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-     //   FirebaseAuth.getInstance().signOut();
-
         if(FirebaseAuth.getInstance().getCurrentUser()==null||FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()==false){
             Log.d("SplashScreen", "onCreate: login page display");
             Intent intent = new Intent(this, loginView.class);
