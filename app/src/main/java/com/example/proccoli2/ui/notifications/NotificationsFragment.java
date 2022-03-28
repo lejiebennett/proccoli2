@@ -45,6 +45,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * This fragment is the activity for self reporting goal information
+ * Will need to be updated to incorporate group goals, but works for individual goals
+ */
 public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;
@@ -133,19 +138,10 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
-                /*
-                getParentFragmentManager().setFragmentResultListener("requestKey", getViewLifecycleOwner(), new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        ArrayList<GoalModel> newGoalList = (ArrayList<GoalModel>) result.getSerializable("goalList");
-                        Log.d("From home fragment", "onFragmentResult: " + newGoalList);
-                    }
-                });
-
-                 */
             }
         });
 
+        //Load the goals data
         DataServices.getInstance().requestPersonalGoals(new ResultHandler<Object>() {
 
             @Override
@@ -155,6 +151,7 @@ public class NotificationsFragment extends Fragment {
                     Log.d("personalGoals", "onSuccess: " + hashMap);
                     searchGoalList = (ArrayList<GoalModel>) hashMap.get("_response");
                     Log.d("here", "onSuccess: " + searchGoalList);
+                    //Populate the reyclcer view with the goals data
                     adapter = new searchGoalAdapter();
                     recyclerView.setAdapter(adapter);
                     adapter.loadRV(searchGoalList);
@@ -315,7 +312,6 @@ public class NotificationsFragment extends Fragment {
                     Log.d("for goal", "onClick for goal: " + searchGoalList.get(goalSelected));
                     searchGoalList.get(goalSelected).setGraded(true);
                     tempGoalHolder = searchGoalList.get(goalSelected);
-                  //  DataServices.sendGradeReportData(gradePickedInput.getText().toString(),tempGoalHolder.getGoalId());
                     gradePercentageDescription.setText(gradePercentageInput.getText().toString() + " out of what score?");
 
                     adapter = new searchGoalAdapter();
@@ -393,7 +389,7 @@ public class NotificationsFragment extends Fragment {
                                 Log.d("for goal", "onClick for goal: " + searchGoalList.get(goalSelected));
 
 
-                                //NEED TO UPDATE STUDIED TIME BY Calculating the difference between start and stop
+                                //Calculating the difference between start and stop
                                 //Then update the appropriate goal
                                 Log.d("CURRENT STUDIED", "onClick: " + String.valueOf(searchGoalList.get(goalSelected).getStudiedTime()));
                                 searchGoalList.get(goalSelected).setStudiedTime(searchGoalList.get(goalSelected).getStudiedTime()+controller.calculateTimeDifferenceConvertToMins(uStart,uStop));
@@ -401,7 +397,6 @@ public class NotificationsFragment extends Fragment {
 
                                 Log.d("New STUDIED", "onClick: " + String.valueOf(searchGoalList.get(goalSelected).getStudiedTime()));
                                 //Refresh the adapter
-
                                 adapter = new searchGoalAdapter();
                                 recyclerView.setAdapter(adapter);
                                 closeTimeReport();

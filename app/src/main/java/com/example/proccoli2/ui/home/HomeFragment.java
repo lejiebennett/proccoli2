@@ -46,13 +46,13 @@ import com.example.proccoli2.NewModels.ResultHandler;
 import com.example.proccoli2.NewModels.UserDataModel;
 import com.example.proccoli2.R;
 import com.example.proccoli2.databinding.FragmentHomeBinding;
-import com.example.proccoli2.ui.individualGoalCreation.goalView2;
-import com.example.proccoli2.ui.groupGoalCreation.groupgoalView;
-import com.example.proccoli2.groupgoalsingleGoalView;
+import com.example.proccoli2.ui.home.individualGoalCreation.goalView2;
+import com.example.proccoli2.ui.home.groupGoalCreation.groupgoalView;
+import com.example.proccoli2.ui.home.groupGoalWall.groupgoalsingleGoalView;
 import com.example.proccoli2.ui.login.loginView;
-import com.example.proccoli2.ui.mainProgress.mainProgressView;
+import com.example.proccoli2.ui.home.mainProgress.mainProgressView;
 import com.example.proccoli2.ui.profile.profileView;
-import com.example.proccoli2.ui.individualWall.singleGoalView;
+import com.example.proccoli2.ui.home.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -1017,7 +1017,7 @@ public class HomeFragment extends Fragment{
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new CustomGoalAdapterH());
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         Log.d("setupRecycler", "setUpRecyclerView" + recyclerView.getAdapter().getItemCount());
     }
 

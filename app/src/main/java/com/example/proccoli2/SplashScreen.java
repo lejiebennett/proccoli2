@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
-import com.example.proccoli2.databinding.LoginViewBinding;
 import com.example.proccoli2.ui.login.loginView;
+import com.example.proccoli2.ui.mainActivity.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -29,7 +29,7 @@ public class SplashScreen extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         Log.d("splashscreen", "onActivityResult: recieved login data");
-                        Intent intent = new Intent(SplashScreen.this,MainActivity.class);
+                        Intent intent = new Intent(SplashScreen.this, MainActivity.class);
                         startActivity(intent);
                     }
                 }
