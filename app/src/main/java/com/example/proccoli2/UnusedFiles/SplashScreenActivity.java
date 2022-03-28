@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.ui.mainActivity.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
     @Override

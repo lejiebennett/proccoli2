@@ -26,10 +26,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.ui.mainActivity.MainActivity;
 import com.example.proccoli2.NewModels.SingletonStrings;
 import com.example.proccoli2.R;
-import com.example.proccoli2.ui.avatarCollection.avatarView;
+import com.example.proccoli2.ui.profile.avatarCollection.avatarView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.ParseException;
@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
  * Used to collect, change, update user profile data
  */
 public class profileView extends AppCompatActivity {
@@ -55,7 +56,6 @@ public class profileView extends AppCompatActivity {
     String avatarImageO;
     Toolbar toolbar;
     String avatarImage; //Avatar image from main
-    edit_profile_VC edit_controller = new edit_profile_VC(this);
     profile_VC profile_controller = new profile_VC(this);
 
     //get data from the avatar collection
@@ -251,6 +251,7 @@ public class profileView extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                profile_controller.backBtnTapped();
                 this.finish();
                 return true;
         }
@@ -321,8 +322,9 @@ public class profileView extends AppCompatActivity {
         Log.d("Birthdate", "setAvatarIntent: " + dateButtonBirthdate.getText().toString());
         hashMap.put(ss.BIRTHDAY_REF,profile_controller.dateStrToUnix2(dateButtonBirthdate.getText().toString()));
         Log.d("UpdateProfileInfo", "setAvatarIntent: " + hashMap);
-        edit_controller.updateProfileInfo(hashMap);
+        profile_controller.updateProfileInfo(hashMap);
         setResult(RESULT_OK,myIntent);
+        profile_controller.backBtnTapped();
         finish();
     }
 

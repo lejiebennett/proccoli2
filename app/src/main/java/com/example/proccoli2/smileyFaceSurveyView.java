@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.NewModels.SingletonStrings;
-import com.example.proccoli2.ui.individualWall.singleGoalView;
+import com.example.proccoli2.ui.home.individualWall.singleGoalView;
 
 import java.util.HashMap;
 

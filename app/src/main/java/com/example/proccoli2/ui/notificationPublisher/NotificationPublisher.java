@@ -1,26 +1,21 @@
 package com.example.proccoli2.ui.notificationPublisher;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.example.proccoli2.MainActivity;
-import com.example.proccoli2.NewModels.DataServices;
-import com.example.proccoli2.NewModels.IndividualGoalModel;
+import com.example.proccoli2.ui.mainActivity.MainActivity;
 import com.example.proccoli2.R;
 
-import java.util.HashMap;
-
 /**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Used to receive notifications when alarm for reminder goes off
+ * Will need further work when more testing is complete
  * https://gist.github.com/BrandonSmith/6679223
  */
 public class NotificationPublisher extends BroadcastReceiver {
@@ -43,7 +38,6 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     private void showNotification(Context context, String content) {
-        //THIS IS ALL CORRECT and IS PUSHED AND COMMITTED
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);

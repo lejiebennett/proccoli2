@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proccoli2.MainActivity;
+import com.example.proccoli2.ui.mainActivity.MainActivity;
 import com.example.proccoli2.R;
 import com.example.proccoli2.oldModels.GoalModel;
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;

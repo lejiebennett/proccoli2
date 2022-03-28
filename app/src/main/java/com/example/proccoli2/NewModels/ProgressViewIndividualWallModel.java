@@ -10,13 +10,12 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.proccoli2.ui.individualChart.goalProgressView;
+import com.example.proccoli2.ui.home.individualWall.individualChart.goalProgressView;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;

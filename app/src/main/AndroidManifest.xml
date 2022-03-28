@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Proccoli2">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.mainActivity.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -22,20 +22,20 @@
         <activity android:name=".ui.login.loginView"></activity>
         <activity android:name=".ui.profile.profileView"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.individualGoalCreation.goalView2"
+        <activity android:name=".ui.home.individualGoalCreation.goalView2"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
-        <activity android:name=".ui.subGoalCreation.subGoalView"></activity>
-        <activity android:name=".ui.avatarCollection.avatarView"></activity>
-        <activity android:name=".ui.individualWall.singleGoalView"
+        <activity android:name=".ui.home.individualGoalCreation.subGoalCreation.subGoalView"></activity>
+        <activity android:name=".ui.profile.avatarCollection.avatarView"></activity>
+        <activity android:name=".ui.home.individualWall.singleGoalView"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             ></activity>
-        <activity android:name=".ui.goalSetting.goalSettingView"></activity>
-        <activity android:name=".ui.subGoalView_goalSetting.subGoalView_goalSetting"></activity>
-        <activity android:name=".ui.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit"></activity>
-        <activity android:name=".ui.individualChart.goalProgressView"></activity>
-        <activity android:name=".ui.mainProgress.mainProgressView"></activity>
+        <activity android:name=".ui.home.individualWall.goalSetting.goalSettingView"></activity>
+        <activity android:name=".ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting"></activity>
+        <activity android:name=".ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit"></activity>
+        <activity android:name=".ui.home.individualWall.individualChart.goalProgressView"></activity>
+        <activity android:name=".ui.home.mainProgress.mainProgressView"></activity>
         <activity android:name=".SplashScreen"
             android:theme="@style/SplashScreenWindow"
             android:screenOrientation="portrait"
@@ -45,9 +45,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".timerView">
+        <activity android:name=".ui.home.individualWall.timerViewIndividualGoal.timerView">
         </activity>
-        <activity android:name=".ui.timerViewGroupGoals.timerViewGroupGoal">
+        <activity android:name=".ui.home.groupGoalWall.timerViewGroupGoals.timerViewGroupGoal">
         </activity>
         <activity android:name=".UnusedFiles.timeReportView"></activity>
         <activity android:name=".UnusedFiles.recyclerTest"></activity>
@@ -55,17 +55,17 @@
             android:windowSoftInputMode="adjustNothing">
             ></activity>
         <activity android:name=".smileyFaceSurveyView"></activity>
-        <activity android:name=".groupgoalsubGoalView"></activity>
-        <activity android:name=".searchforfreinds_view"
+        <activity android:name=".ui.home.groupGoalWall.groupGoalSubGoalCreation.groupgoalsubGoalView"></activity>
+        <activity android:name=".ui.home.groupGoalWall.searchForFriends.searchforfreinds_view"
             android:windowSoftInputMode="adjustNothing">
         </activity>
         <activity android:name=".progressReportView"
             android:theme="@style/Theme.AppCompat.Translucent">
             ></activity>
-        <activity android:name=".ui.groupGoalCreation.groupgoalView"
+        <activity android:name=".ui.home.groupGoalCreation.groupgoalView"
             android:windowSoftInputMode="adjustNothing"
             ></activity>
-        <activity android:name=".groupgoalsingleGoalView"
+        <activity android:name=".ui.home.groupGoalWall.groupgoalsingleGoalView"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
         <activity android:name=".UnusedFiles.notification_fragment_activity"

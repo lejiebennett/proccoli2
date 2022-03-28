@@ -1,7 +1,6 @@
 package com.example.proccoli2.ui.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,23 +9,19 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.R;
-import com.example.proccoli2.ui.home.HomeFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Activity for logging in
+ */
 public class loginView extends AppCompatActivity {
     DataServices dataServices = new DataServices();
-  //  DataServices dataServices;
 
     TextInputEditText emailInput, passwordInput;
     Button signUpShowBtn, signUpBtn, forgotPasswordBtn, loginBtn,loginShowBtn;
@@ -34,7 +29,7 @@ public class loginView extends AppCompatActivity {
     FirebaseAuth auth;
 
 
-    login_VC login_VC = new login_VC(this);
+    login_Controller login_Controller = new login_Controller(this);
 
 
     @Override
@@ -78,7 +73,7 @@ public class loginView extends AppCompatActivity {
 
                 while(checkFields(emailText,passwordText)==false)
                     Log.d("Clicked Signup", "onClick: I clicked Signup Button w email: " + emailText + " and password: " + passwordText);
-                login_VC.signUp(emailInput.getText().toString(),passwordInput.getText().toString(),emailInput.getText().toString());
+                login_Controller.signUp(emailInput.getText().toString(),passwordInput.getText().toString(),emailInput.getText().toString());
             }
         });
 
@@ -87,7 +82,6 @@ public class loginView extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Log.d("Clicked forgotPassword", "onClick: I clicked forgotPassword Button");
-             //   login_VC.forgotPassword();
                 dataServices.resetPassword(emailInput.toString());
             }
         });
@@ -98,29 +92,7 @@ public class loginView extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Log.d("Clicked login", "onClick: I clicked loginBtn");
-
-
-
-                /*
-                auth.signInWithEmailAndPassword(emailInput.getText().toString(), passwordInput.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d("test", "signInWithEmail:success");
-
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w("test", "signInWithEmail:failure", task.getException());
-                                }
-                            }
-                        });
-
-                 */
-
-
-                login_VC.login(emailInput.getText().toString(),passwordInput.getText().toString());
+                login_Controller.login(emailInput.getText().toString(),passwordInput.getText().toString());
 
             }
         });

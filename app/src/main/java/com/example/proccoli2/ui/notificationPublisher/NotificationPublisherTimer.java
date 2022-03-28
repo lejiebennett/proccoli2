@@ -12,7 +12,12 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.proccoli2.NewModels.DataServices;
 import com.example.proccoli2.R;
 import com.example.proccoli2.smileyFaceSurveyView;
-
+/**
+ * Copyright © 2022 Le Jie Bennett. All rights reserved.
+ * Used to receive notifications when alarm for timer goes off
+ * Will need further work when more testing is complete
+ * https://gist.github.com/BrandonSmith/6679223
+ */
 public class NotificationPublisherTimer extends BroadcastReceiver {
 
     public static String NOTIFICATION_ID = "notification-id";

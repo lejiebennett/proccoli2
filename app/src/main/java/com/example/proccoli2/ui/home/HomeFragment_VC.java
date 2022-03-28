@@ -1,17 +1,13 @@
 package com.example.proccoli2.ui.home;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.example.proccoli2.MainActivity;
 import com.example.proccoli2.NewModels.GoalModel;
 import com.example.proccoli2.NewModels.IndividualGoalModel;
 import com.example.proccoli2.R;
-import com.example.proccoli2.ui.notifications.NotificationsFragment;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
