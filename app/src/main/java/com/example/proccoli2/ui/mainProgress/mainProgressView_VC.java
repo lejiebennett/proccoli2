@@ -32,13 +32,10 @@ public class mainProgressView_VC extends AppCompatActivity {
         ArrayList<BarEntry> values = new ArrayList<BarEntry>();
         for(int i = 0; i<list.size();i++){
             float studied = (float) hourConverterForChart(list.get(i).getStudiedTime());
-            float proposed = (float) hourConverterForChart(list.get(i).getProposedStudyTime());
-            //Sets all proposed times equal to 20 since test dataset had all 0's, wasn't filtered properly for things that were worked on
-            if((proposed==0 | proposed==-0) && (proposed!=0 && studied!=0))
-                proposed=20;
+            float proposed = (float) list.get(i).getProposedStudyTime();
             proposed = -1*proposed;
             values.add(new BarEntry(i,new float[]{proposed,studied}));
-            Log.d("entries", "createdBar: " + studied + " " + proposed + " " + list.get(i).getBigGoal());
+            Log.d("entries", "createdBar: " + proposed + " " + studied + " " + list.get(i).getBigGoal());
           //  values.add(new BarEntry(proposed,studied,list.get(i)));
         }
         Log.d("values", "generateBarEntries: " + values);
