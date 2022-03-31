@@ -594,7 +594,10 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                int position = viewHolder.getAdapterPosition();
+                //int position = viewHolder.getAdapterPosition(); depreciated method
+                //Log.d("getAdapterPosition", "getSwipeDirs: " + viewHolder.getAdapterPosition());
+                Log.d("getBindingPosition", "getSwipeDirs: " + viewHolder.getBindingAdapterPosition());
+                int position = viewHolder.getBindingAdapterPosition();
                 TestAdapter testAdapter = (TestAdapter)recyclerView.getAdapter();
                 if (testAdapter.isPendingRemoval(position)) {
                     return 0;
@@ -604,7 +607,9 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                int swipedPosition = viewHolder.getAdapterPosition();
+            //    int swipedPosition = viewHolder.getAdapterPosition(); depreciated method
+                int swipedPosition = viewHolder.getBindingAdapterPosition();
+
                 TestAdapter adapter = (TestAdapter)subGoalRecyclerView.getAdapter();
                 adapter.remove(swipedPosition);
 
@@ -615,8 +620,10 @@ public class goalView2 extends AppCompatActivity implements AdapterView.OnItemSe
                 View itemView = viewHolder.itemView;
 
                 // not sure why, but this method get's called for viewholder that are already swiped away
-                if (viewHolder.getAdapterPosition() == -1) {
-                    // not interested in those
+            //    if (viewHolder.getAdapterPosition() == -1) {
+                if (viewHolder.getBindingAdapterPosition() == -1) {
+
+                        // not interested in those
                     return;
                 }
 

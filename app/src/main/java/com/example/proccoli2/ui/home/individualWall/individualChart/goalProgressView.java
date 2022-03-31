@@ -285,7 +285,8 @@ public class goalProgressView extends AppCompatActivity {
         return colors;
     }
 
-    public class MyValueFormatter extends ValueFormatter implements IValueFormatter
+    //public class MyValueFormatter extends ValueFormatter implements IValueFormatter Depreciated
+    public class MyValueFormatter extends ValueFormatter
     {
 
         private final DecimalFormat mFormat;
@@ -306,8 +307,16 @@ public class goalProgressView extends AppCompatActivity {
         }
 
 
+        /*
+        Depreciated Method
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            return mFormat.format(value) + " m";
+        }
+
+         */
+        @Override
+        public String getFormattedValue(float value) {
             return mFormat.format(value) + " m";
         }
 

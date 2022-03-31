@@ -7,15 +7,46 @@ import java.util.Date;
 public class DateExtended extends Date {
     public int dailyBaseTimeInterval(Date now){
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        /*
+        Depreciated
         Date myDate  = now;
         int year = myDate.getYear();
         int month = myDate.getMonth();
         int day = myDate.getDay();
         Date newDate = new Date(year,month,day);
         return (int) ((int) newDate.getTime()/100L);
+         */
+
+        Calendar newDate = Calendar.getInstance();
+        newDate.set(year,month,day);
+
+        return (int)((int)newDate.getTimeInMillis()/100L);
+
+
     }
 
     public int dailyBaseTimeIntervalConverterForDeadlines(long deadline){
+        Date myDate  = new Date(deadline*100L);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(myDate);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int timezoneOffset = calendar.get(Calendar.ZONE_OFFSET);
+        Calendar newDate = Calendar.getInstance();
+        newDate.set(year,month,day);
+
+        return (int)((int)newDate.getTimeInMillis()/100L);
+
+
+        /*
+        Depreciated
         Date myDate  = new Date(deadline*100L);
         int year = myDate.getYear();
         int month = myDate.getMonth();
@@ -24,6 +55,7 @@ public class DateExtended extends Date {
         Date newDate = new Date(year,month,day);
         //ELse return 000000
         return (int) ((int) newDate.getTime()/100L);
+         */
     }
 
     public String reverseDailyBaseTimeIntervalAsString(String date){

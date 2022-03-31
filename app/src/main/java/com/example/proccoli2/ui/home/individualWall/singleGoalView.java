@@ -273,25 +273,26 @@ public class singleGoalView extends AppCompatActivity {
 
                 //Get the time of when to set the alarm
                 Calendar cal = Calendar.getInstance();
-                Date picked = setReminderPicker.getDate();
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getYear());
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getMonth());
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getDate());
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getHours());
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getMinutes());
-                Log.d("calSet", "onClick: " + setReminderPicker.getDate().getSeconds());
+
+                Calendar reminderCal = Calendar.getInstance();
+                reminderCal.setTime(setReminderPicker.getDate());
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.YEAR));
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.MONTH));
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.DATE));
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.HOUR));
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.MINUTE));
+                Log.d("calSet", "onClick: " + reminderCal.get(Calendar.SECOND));
 
 
                 //Need to had 1900 snce the year returned from setReminder is picked-1900  = year
                 //but in order for the alarm to properly go off, it needs have +1900 to have the actual year
-                int year = setReminderPicker.getDate().getYear();
+                int year =reminderCal.get(Calendar.YEAR);
                 cal.set(Calendar.YEAR,year +1900);
-                cal.set(Calendar.MONTH,setReminderPicker.getDate().getMonth());
-                cal.set(Calendar.DATE, setReminderPicker.getDate().getDate());
-                cal.set(Calendar.HOUR_OF_DAY, setReminderPicker.getDate().getHours());  // set hour
-                cal.set(Calendar.MINUTE, setReminderPicker.getDate().getMinutes());          // set minute
-                cal.set(Calendar.SECOND, setReminderPicker.getDate().getSeconds());               // set seconds
-
+                cal.set(Calendar.MONTH,reminderCal.get(Calendar.MONTH));
+                cal.set(Calendar.DATE, reminderCal.get(Calendar.DATE));
+                cal.set(Calendar.HOUR_OF_DAY,reminderCal.get(Calendar.HOUR));  // set hour
+                cal.set(Calendar.MINUTE, reminderCal.get(Calendar.MINUTE));          // set minute
+                cal.set(Calendar.SECOND, reminderCal.get(Calendar.SECOND));               // set seconds
 
                 //Alarm approach
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
