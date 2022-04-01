@@ -138,7 +138,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/subGoalRecyclerViewFull"
             android:layout_width="400dp"
-            android:layout_height="179dp" />
+            app:layout_constraintTop_toTopOf="@id/SubGoalRecyclerLabel"
+            app:layout_constraintBottom_toBottomOf="@id/NotesRecyclerLabel"
+            android:layout_height="200dp" />
 
 
     </LinearLayout>

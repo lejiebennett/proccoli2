@@ -417,13 +417,33 @@ public class notification_fragment_activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
+            Log.d("Position", "onBindViewHolder: position" + holder.getBindingAdapterPosition());
+
+            /*
+            old version using position
             SearchGoalViewHolder viewHolder = (SearchGoalViewHolder) holder;
             final GoalModel item = items.get(position);
+
             Log.d("Position", "onBindViewHolder: position" + item);
             viewHolder.goalText.setText(items.get(position).getBigGoal());
             viewHolder.positionInSearchGoalList = position;
             viewHolder.goal = items.get(position);
             if(items.get(position).getIsGraded()==true){
+                viewHolder.gradeReport.setVisibility(View.INVISIBLE);
+            }
+            else{
+                viewHolder.gradeReport.setVisibility(View.VISIBLE);
+            }
+
+             */
+            SearchGoalViewHolder viewHolder = (SearchGoalViewHolder) holder;
+            final GoalModel item = items.get(holder.getBindingAdapterPosition());
+
+            Log.d("Position", "onBindViewHolder: position" + item);
+            viewHolder.goalText.setText(items.get(holder.getBindingAdapterPosition()).getBigGoal());
+            viewHolder.positionInSearchGoalList = holder.getBindingAdapterPosition();
+            viewHolder.goal = items.get(holder.getBindingAdapterPosition());
+            if(items.get(holder.getBindingAdapterPosition()).getIsGraded()==true){
                 viewHolder.gradeReport.setVisibility(View.INVISIBLE);
             }
             else{

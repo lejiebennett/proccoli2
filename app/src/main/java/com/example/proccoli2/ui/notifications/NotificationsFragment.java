@@ -518,6 +518,9 @@ public class NotificationsFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             Log.d("Position", "onBindViewHolder: position" + position);
+
+            /*
+            //Old way using position
             SearchGoalViewHolder viewHolder = (SearchGoalViewHolder) holder;
             final GoalModel item = items.get(position);
             Log.d("Position", "onBindViewHolder: position" + item);
@@ -525,6 +528,20 @@ public class NotificationsFragment extends Fragment {
             viewHolder.positionInSearchGoalList = position;
             viewHolder.goal = items.get(position);
             if(items.get(position).isGraded()==true){
+                viewHolder.gradeReport.setVisibility(View.INVISIBLE);
+            }
+            else{
+                viewHolder.gradeReport.setVisibility(View.VISIBLE);
+            }
+
+             */
+            SearchGoalViewHolder viewHolder = (SearchGoalViewHolder) holder;
+            final GoalModel item = items.get(holder.getBindingAdapterPosition());
+            Log.d("Position", "onBindViewHolder: position" + item);
+            viewHolder.goalText.setText(items.get(holder.getBindingAdapterPosition()).getBigGoal());
+            viewHolder.positionInSearchGoalList =holder.getBindingAdapterPosition();
+            viewHolder.goal = items.get(holder.getBindingAdapterPosition());
+            if(items.get(holder.getBindingAdapterPosition()).isGraded()==true){
                 viewHolder.gradeReport.setVisibility(View.INVISIBLE);
             }
             else{
