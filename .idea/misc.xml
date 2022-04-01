@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/SingleDateAndTimePicker-master/app/src/main/res/drawable/ic_event_available_black_24dp.xml" value="0.123" />
         <entry key="app/SingleDateAndTimePicker-master/app/src/main/res/layout/single_date_picker_activity_main.xml" value="0.23229166666666667" />
         <entry key="app/SingleDateAndTimePicker-master/app/src/main/res/layout/single_date_picker_activity_main_double_picker.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/drawable-anydpi/ic_backbtn.xml" value="0.13" />
@@ -47,17 +48,17 @@
         <entry key="app/src/main/res/layout/avatarcollection_view.xml" value="0.2842998585572843" />
         <entry key="app/src/main/res/layout/creategoal_popup.xml" value="0.6358695652173914" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_home2.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_invitations.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.22" />
         <entry key="app/src/main/res/layout/friendsitem_view.xml" value="0.49310872894333846" />
         <entry key="app/src/main/res/layout/goal_view.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/goal_view2.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/goal_view2.xml" value="0.2640449438202247" />
         <entry key="app/src/main/res/layout/goalitem_selfReport.xml" value="0.67" />
         <entry key="app/src/main/res/layout/goalitem_selfreport.xml" value="0.10416666666666667" />
         <entry key="app/src/main/res/layout/goalitem_view.xml" value="0.21" />
-        <entry key="app/src/main/res/layout/goalprogress_view.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/goalprogress_view.xml" value="0.22" />
         <entry key="app/src/main/res/layout/goalsetting_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/goaltwowheels.xml" value="0.3590568060021436" />
         <entry key="app/src/main/res/layout/goaltypewheel.xml" value="0.1265625" />
@@ -73,7 +74,7 @@
         <entry key="app/src/main/res/layout/invite_popupvtwo.xml" value="0.1" />
         <entry key="app/src/main/res/layout/light0_background.xml" value="0.19322916666666667" />
         <entry key="app/src/main/res/layout/login_view.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/mainprogress_view.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/mainprogress_view.xml" value="0.3163097199341021" />
         <entry key="app/src/main/res/layout/makeavailable_popup.xml" value="0.25" />
         <entry key="app/src/main/res/layout/notes_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/profile_view.xml" value="0.33" />
@@ -86,9 +87,9 @@
         <entry key="app/src/main/res/layout/searchForFriends_view.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/searchforfriends_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/seeprogress_popup.xml" value="0.2078125" />
-        <entry key="app/src/main/res/layout/seeprogressitem_view.xml" value="0.27935723114956734" />
+        <entry key="app/src/main/res/layout/seeprogressitem_view.xml" value="0.2724252491694352" />
         <entry key="app/src/main/res/layout/settings_action_bar.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/singlegoalfulldisplay_view.xml" value="0.41398865784499056" />
+        <entry key="app/src/main/res/layout/singlegoalfulldisplay_view.xml" value="0.1724137931034483" />
         <entry key="app/src/main/res/layout/smileyfacesurvey_view.xml" value="0.6442166910688141" />
         <entry key="app/src/main/res/layout/specify_planned_study_time.xml" value="0.12689969604863222" />
         <entry key="app/src/main/res/layout/splashscreen_view.xml" value="0.25" />

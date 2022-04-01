@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#abc"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#abc">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarGoalProgress"
@@ -13,6 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_backbtn" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
@@ -22,6 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:singleSelection="true">
 
         <Button
@@ -50,17 +52,17 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartActive"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
         app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="3dp" />
+        tools:layout_editor_absoluteX="3dp"/>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartExpired"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
@@ -70,7 +72,7 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/goalProgressChartFinished"
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="701dp"
         android:background="#abc"
         android:rotation="90"
@@ -79,12 +81,13 @@
         tools:layout_editor_absoluteX="3dp" />
 
     <LinearLayout
-        android:layout_width="370dp"
+        android:layout_width="match_parent"
         android:layout_height="34dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="29dp"
-        app:layout_constraintTop_toBottomOf="@id/toggleButtonGroupMainProgress"
-        tools:layout_editor_absoluteY="21dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toggleButtonGroupMainProgress">
 
         <TextView
             android:id="@+id/mainProgressProposed"

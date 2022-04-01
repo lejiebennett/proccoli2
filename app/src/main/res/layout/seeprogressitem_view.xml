@@ -70,8 +70,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="15dp"
-                        android:progressDrawable="@drawable/greenprogress" /><!--custom progress drawable for progress mode-->
-                        android:max="100"/>
+
+                        android:progressDrawable="@drawable/greenprogress" /><!--custom progress drawable for progress mode-->/>
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

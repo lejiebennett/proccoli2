@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#abc"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#abc">
 
 
     <LinearLayout
-        android:layout_width="407dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
         android:orientation="horizontal"
         android:translationZ="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Space
@@ -43,8 +46,10 @@
         android:layout_height="672dp"
         android:background="#abc"
         android:rotation="90"
-        app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress"
-        tools:layout_editor_absoluteX="0dp" >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarGoalProgress">
 
     </com.github.mikephil.charting.charts.BarChart>
 
@@ -56,13 +61,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_backbtn" />
 
     <LinearLayout
         android:id="@+id/dateGoalProgressLinearLayout"
-        android:background="@color/light_grey"
         android:layout_width="409dp"
         android:layout_height="229dp"
+        android:background="@color/light_grey"
         android:orientation="vertical"
         android:translationZ="200dp"
         android:visibility="invisible"
@@ -107,9 +113,9 @@
         <DatePicker
             android:id="@+id/datePickerGoalProgress"
             android:layout_width="match_parent"
-            android:datePickerMode="spinner"
+            android:layout_height="198dp"
             android:calendarViewShown="false"
-            android:layout_height="198dp" />
+            android:datePickerMode="spinner" />
 
 
     </LinearLayout>
