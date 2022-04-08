@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.proccoli2">
+    package="com.lejiebennett.proccoli2">
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
@@ -13,29 +13,29 @@
         android:theme="@style/Theme.Proccoli2">
 
         <activity
-            android:name=".ui.mainActivity.MainActivity"
+            android:name="com.lejiebennett.proccoli2.ui.mainActivity.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:label="@string/app_name">
         </activity>
-        <activity android:name=".ui.login.loginView"></activity>
-        <activity android:name=".ui.profile.profileView"
+        <activity android:name="com.lejiebennett.proccoli2.ui.login.loginView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.profile.profileView"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.home.individualGoalCreation.goalView2"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualGoalCreation.goalView2"
             android:windowSoftInputMode="adjustNothing"></activity>
-        <activity android:name=".ui.home.individualGoalCreation.subGoalCreation.subGoalView"></activity>
-        <activity android:name=".ui.profile.avatarCollection.avatarView"></activity>
-        <activity android:name=".ui.home.individualWall.singleGoalView"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualGoalCreation.subGoalCreation.subGoalView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.profile.avatarCollection.avatarView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.singleGoalView"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
             ></activity>
-        <activity android:name=".ui.home.individualWall.goalSetting.goalSettingView"></activity>
-        <activity android:name=".ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting"></activity>
-        <activity android:name=".ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit"></activity>
-        <activity android:name=".ui.home.individualWall.individualChart.goalProgressView"></activity>
-        <activity android:name=".ui.home.mainProgress.mainProgressView"></activity>
-        <activity android:name=".SplashScreen"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.goalSetting.goalSettingView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.goalSetting.subGoalView_goalSetting.subGoalView_goalSetting_edit.subGoalView_goalSetting_edit"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.individualChart.goalProgressView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.mainProgress.mainProgressView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.SplashScreen"
             android:theme="@style/SplashScreenWindow"
             android:screenOrientation="portrait"
             android:exported="true">
@@ -44,38 +44,38 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.home.individualWall.timerViewIndividualGoal.timerView">
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.individualWall.timerViewIndividualGoal.timerView">
         </activity>
-        <activity android:name=".ui.home.groupGoalWall.timerViewGroupGoals.timerViewGroupGoal">
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalWall.timerViewGroupGoals.timerViewGroupGoal">
         </activity>
-        <activity android:name=".UnusedFiles.timeReportView"></activity>
-        <activity android:name=".UnusedFiles.recyclerTest"></activity>
-        <activity android:name=".UnusedFiles.selfreport_activity"
+        <activity android:name="com.lejiebennett.proccoli2.UnusedFiles.timeReportView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.UnusedFiles.recyclerTest"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.UnusedFiles.selfreport_activity"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
-        <activity android:name=".smileyFaceSurveyView"></activity>
-        <activity android:name=".ui.home.groupGoalWall.groupGoalSubGoalCreation.groupgoalsubGoalView"></activity>
-        <activity android:name=".ui.home.groupGoalWall.searchForFriends.searchforfreinds_view"
+        <activity android:name="com.lejiebennett.proccoli2.smileyFaceSurveyView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalWall.groupGoalSubGoalCreation.groupgoalsubGoalView"></activity>
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalWall.searchForFriends.searchforfreinds_view"
             android:windowSoftInputMode="adjustNothing">
         </activity>
-        <activity android:name=".ui.home.groupGoalWall.progressReportView"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalWall.progressReportView"
             android:theme="@style/Theme.AppCompat.Translucent">
             ></activity>
-        <activity android:name=".ui.home.groupGoalCreation.groupgoalView"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalCreation.groupgoalView"
             android:windowSoftInputMode="adjustNothing"
             ></activity>
-        <activity android:name=".ui.home.groupGoalWall.groupgoalsingleGoalView"
+        <activity android:name="com.lejiebennett.proccoli2.ui.home.groupGoalWall.groupgoalsingleGoalView"
             android:windowSoftInputMode="adjustNothing">
             ></activity>
-        <activity android:name=".UnusedFiles.notification_fragment_activity"
+        <activity android:name="com.lejiebennett.proccoli2.UnusedFiles.notification_fragment_activity"
             android:windowSoftInputMode="adjustNothing"></activity>
-        <receiver android:name=".ui.notificationPublisher.NotificationPublisher"
+        <receiver android:name="com.lejiebennett.proccoli2.ui.notificationPublisher.NotificationPublisher"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>></receiver>
-        <receiver android:name=".ui.notificationPublisher.NotificationPublisherTimer"
+        <receiver android:name="com.lejiebennett.proccoli2.ui.notificationPublisher.NotificationPublisherTimer"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

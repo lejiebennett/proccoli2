@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711972027254:android:d40d0090f7cd046841d857",
+        "android_client_info": {
+          "package_name": "com.lejiebennett.proccoli2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711972027254-n7gbuet62krtev2ou936kc05jijoi6uv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGVEAvWDgyek27ia_h51CVuGFReC412OE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711972027254-n7gbuet62krtev2ou936kc05jijoi6uv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

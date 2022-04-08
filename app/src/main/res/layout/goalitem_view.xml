@@ -30,7 +30,6 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     tools:layout_editor_absoluteX="0dp"
-                    android:background="@color/teal_200"
                     tools:layout_editor_absoluteY="0dp">
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
