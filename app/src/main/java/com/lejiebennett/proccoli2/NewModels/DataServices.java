@@ -639,8 +639,13 @@ public class DataServices {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     //Sign in success
-                    Log.d("CreateNewUser", "onComplete: " + "sign in success");
+                    Log.d("CreateNewUser", "onComplete: " + "sign up success");
                     FirebaseUser currentUser = auth.getCurrentUser();
+                    Log.d("CreateNewUser", "onComplete: " + auth.getUid());
+                    uid = auth.getUid();
+                    Log.d("CreateNewUser", "onComplete: " + auth.getUid() + " " + uid);
+
+
                     //completion(true, nil, nil);
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(email)

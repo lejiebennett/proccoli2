@@ -73,6 +73,7 @@ public class loginView extends AppCompatActivity {
 
                 while(checkFields(emailText,passwordText)==false)
                     Log.d("Clicked Signup", "onClick: I clicked Signup Button w email: " + emailText + " and password: " + passwordText);
+                Log.d("Clicked Signup", "onClick: I clicked Signup Button w email: " + emailText + " and password: " + passwordText);
                 login_Controller.signUp(emailInput.getText().toString(),passwordInput.getText().toString(),emailInput.getText().toString());
             }
         });
