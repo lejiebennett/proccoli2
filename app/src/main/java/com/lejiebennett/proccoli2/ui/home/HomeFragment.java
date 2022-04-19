@@ -564,7 +564,11 @@ public class HomeFragment extends Fragment{
             @Override
             public void onSuccess(Object data) {
                 Log.d("LoadProfile", "onSuccess: " + UserDataModel.sharedInstance.getProfileImg());
-                setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));
+                try{setAvatar(Integer.valueOf(String.valueOf(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0])),UserDataModel.sharedInstance.getProfileImg().get(UserDataModel.sharedInstance.getProfileImg().keySet().toArray()[0]));}
+                catch(Exception e){
+                    Log.d("here", "onSuccess: new profile");
+                    setAvatar(6,"#FFFFFF");
+                }
             }
 
             @Override
