@@ -93,6 +93,7 @@ public class loginView extends AppCompatActivity {
             public void onClick(View view){
                 Log.d("Clicked login", "onClick: I clicked loginBtn");
                 login_Controller.login(emailInput.getText().toString(),passwordInput.getText().toString());
+                Log.d("fields", "onClick: " + emailInput.getText().toString() + passwordInput.getText().toString());
 
             }
         });

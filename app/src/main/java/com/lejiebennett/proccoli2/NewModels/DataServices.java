@@ -569,6 +569,7 @@ public class DataServices {
                     return;
                 }
                 else{
+                    Log.d("DataServiceLoginFailed", "onComplete: Failed");
                     HashMap<String,Object> handlerData = new HashMap<>();
                     handlerData.put("_status",true);
                     handlerData.put("_error",task.getException());
