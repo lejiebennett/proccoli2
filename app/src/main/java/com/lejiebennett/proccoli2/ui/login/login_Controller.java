@@ -104,6 +104,8 @@ public class login_Controller extends AppCompatActivity {
         dataServices.loginUser(email,pass, new ResultHandler<Object>() {
             @Override
             public void onSuccess(Object data) {
+                Log.d("Sucesslogin", "onSucess: Dataservices");
+
                 loginView.hideLoading();
                 HashMap<String,Object> result = (HashMap<String, Object>) data;
                 Exception e = (Exception) result.get("_error");
@@ -145,7 +147,7 @@ public class login_Controller extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-
+                Log.d("failedLogin", "onFailure: Failed DataSErvices");
             }
         });
     }

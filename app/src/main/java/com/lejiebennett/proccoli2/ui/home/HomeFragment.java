@@ -51,6 +51,7 @@ import com.lejiebennett.proccoli2.ui.home.groupGoalCreation.groupgoalView;
 import com.lejiebennett.proccoli2.ui.home.groupGoalWall.groupgoalsingleGoalView;
 import com.lejiebennett.proccoli2.ui.login.loginView;
 import com.lejiebennett.proccoli2.ui.home.mainProgress.mainProgressView;
+import com.lejiebennett.proccoli2.ui.mainActivity.MainActivity;
 import com.lejiebennett.proccoli2.ui.profile.profileView;
 import com.lejiebennett.proccoli2.ui.home.individualWall.singleGoalView;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -355,7 +356,13 @@ public class HomeFragment extends Fragment{
             public boolean onMenuItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if(itemId == R.id.logoutBtn){
+                    Log.d("clickedLoggedOut", "onMenuItemClick: Logged out clicked");
                     FirebaseAuth.getInstance().signOut();
+                    Log.d("loggedOutAuth", "onMenuItemClick: " + FirebaseAuth.getInstance().getCurrentUser());
+                    getActivity().finish();//added
+                    Intent intent1 = new Intent(getActivity(), MainActivity.class); //Added
+                    startActivity(intent1); //added
+
                     Intent intent = new Intent(getActivity(), loginView.class);
                     startActivity(intent);
                 }
